@@ -1,0 +1,324 @@
+/**
+ * MD 主题：白茶（极简双线边框）
+ * 特点：二级标题带双线边框和四角十字装饰
+ */
+
+/* 全局背景：纯色背景 */
+.md-container {
+  background-color: hsl(var(--background));
+}
+
+.dark .md-container {
+  background-color: hsl(var(--background));
+}
+
+/* 基础排版 */
+p {
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+  font-size: calc(var(--md-font-size) * 1.02);
+  font-weight: 300;
+}
+
+/* 一级标题后面的段落：每一行文本底部都出现“虚线”效果
+ * 使用 text-decoration 实现多行下划线，避免之前那种整块“灰色实线底纹”
+ * 这样：
+ *  - 在应用里：每一行文字底部都有虚线下划线
+ *  - 复制到公众号：inline style 中只剩下 text-decoration，更容易在预览/发布中保留下来
+ */
+h1 + p {
+  line-height: 1.8;
+  margin-bottom: 15px;
+  /* 兼容写法：先声明基础下划线，再指定为虚线，并控制颜色/粗细/偏移 */
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: rgba(0, 0, 0, 0.4);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+.dark h1 + p {
+  text-decoration-color: rgba(255, 255, 255, 0.6);
+}
+
+/* 一级标题：加粗纯黑 */
+h1 {
+  font-size: calc(var(--md-font-size) * 1.8);
+  font-weight: 500;
+  color: rgb(0, 0, 0);
+  margin: 24px auto 18px;
+  padding: 0;
+  border: none;
+  text-align: center;
+  line-height: 1.5;
+  letter-spacing: 0.5px;
+}
+
+.dark h1 {
+  color: rgb(255, 255, 255);
+}
+
+/* 二级标题：极简双线边框 + 左上 / 右下矩形直角装饰 */
+h2 {
+  font-size: calc(var(--md-font-size) * 1.4);
+  font-weight: 400;
+  /* 文本保持中性黑，修饰线条使用主题色 */
+  color: rgb(0, 0, 0);
+  margin: 20px auto 16px;
+  padding: 12px 30px;
+  background-color: #ffffff;
+  /* 外层边框 + 底部双线效果：使用主题色 */
+  border: 2px solid var(--md-primary-color);
+  border-radius: 0;
+  border-bottom: 4px double var(--md-primary-color);
+  display: block;
+  line-height: 1.3;
+  position: relative;
+  text-align: center;
+  width: fit-content;
+  max-width: 90%;
+  /* 内部矩形直角装饰（左上 + 右下）：使用主题色 */
+  background-image:
+    linear-gradient(var(--md-primary-color), var(--md-primary-color)),
+    linear-gradient(var(--md-primary-color), var(--md-primary-color)),
+    linear-gradient(var(--md-primary-color), var(--md-primary-color)),
+    linear-gradient(var(--md-primary-color), var(--md-primary-color));
+  background-size:
+    2px 10px,
+    10px 2px,
+    2px 10px,
+    10px 2px;
+  /* 使用方位语法，避免 calc() 在公众号中可能导致的坐标偏移 */
+  background-position:
+    left 6px top 5px,
+    left 6px top 5px,
+    right 6px bottom 5px,
+    right 6px bottom 5px;
+  background-repeat: no-repeat;
+}
+
+.dark h2 {
+  /* 深色模式下文本用白色，修饰线条仍然跟随主题色 */
+  color: rgb(255, 255, 255);
+  border-color: var(--md-primary-color);
+  border-bottom-color: var(--md-primary-color);
+  background-color: hsl(var(--background));
+  background-image:
+    linear-gradient(var(--md-primary-color), var(--md-primary-color)),
+    linear-gradient(var(--md-primary-color), var(--md-primary-color)),
+    linear-gradient(var(--md-primary-color), var(--md-primary-color)),
+    linear-gradient(var(--md-primary-color), var(--md-primary-color));
+}
+
+/* 三级标题：底部渐隐横线装饰 */
+h3 {
+  font-size: calc(var(--md-font-size) * 1.2);
+  font-weight: 700;
+  color: rgb(0, 0, 0);
+  margin: 25px 0 15px;
+  padding: 0 0 10px 0;
+  padding-left: 0;
+  border-left: none;
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+h3::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 120%;
+  max-width: 100%;
+  height: 2px;
+  background: linear-gradient(to right, rgb(0, 0, 0) 0%, rgb(0, 0, 0) 70%, transparent 100%);
+}
+
+.dark h3 {
+  color: rgb(255, 255, 255);
+}
+
+.dark h3::after {
+  background: linear-gradient(to right, rgb(255, 255, 255) 0%, rgb(255, 255, 255) 70%, transparent 100%);
+}
+
+/* 四级标题：纯黑文本 */
+h4 {
+  font-size: calc(var(--md-font-size) * 1.1);
+  font-weight: 700;
+  color: rgb(0, 0, 0);
+  margin: 20px 0 12px;
+}
+
+.dark h4 {
+  color: rgb(255, 255, 255);
+}
+
+/* 五级标题：纯黑文本 */
+h5 {
+  font-size: calc(var(--md-font-size) * 1.05);
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  margin: 18px 0 10px;
+}
+
+.dark h5 {
+  color: rgb(255, 255, 255);
+}
+
+/* 六级标题：纯黑文本 */
+h6 {
+  font-size: var(--md-font-size);
+  font-weight: 600;
+  color: rgb(0, 0, 0);
+  margin: 15px 0 8px;
+}
+
+.dark h6 {
+  color: rgb(255, 255, 255);
+}
+
+/* 链接 */
+a {
+  color: var(--md-primary-color);
+  text-decoration: none;
+  border-bottom: 1px solid var(--md-primary-color);
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+/* 强调 */
+strong {
+  font-weight: 700;
+  color: var(--md-primary-color);
+}
+
+/* 斜体 */
+em {
+  font-style: italic;
+  color: hsl(var(--foreground) / 0.9);
+}
+
+/* 引用块：纯黑左边框 */
+blockquote {
+  margin: 0;
+  padding: 8px 12px 8px 16px;
+  border-left: 4px solid rgb(0, 0, 0);
+  background-color: hsl(var(--foreground) / 0.05);
+  color: hsl(var(--foreground) / 0.8);
+}
+
+.dark blockquote {
+  background-color: hsl(var(--foreground) / 0.1);
+  border-left-color: rgb(255, 255, 255);
+}
+
+/* 行内代码 */
+code {
+  padding: 2px 6px;
+  background-color: hsl(var(--foreground) / 0.08);
+  color: var(--md-primary-color);
+  border-radius: 3px;
+  font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+  font-size: 0.9em;
+}
+
+.dark code {
+  background-color: hsl(var(--foreground) / 0.15);
+}
+
+/* 代码块 */
+pre.code__pre,
+.hljs.code__pre {
+  margin: 20px 0;
+  padding: 15px;
+  border-radius: 6px;
+  overflow-x: auto;
+}
+
+pre.code__pre > code,
+.hljs.code__pre > code {
+  background: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+/* 列表 */
+ul,
+ol {
+  margin: 15px 0;
+  padding-left: 30px;
+}
+
+li {
+  margin: 8px 0;
+  line-height: 1.8;
+}
+
+/* 隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+/* 表格 */
+table {
+  width: 100%;
+  margin: 20px 0;
+  border-collapse: collapse;
+  border: 1px solid hsl(var(--foreground) / 0.2);
+}
+
+thead {
+  background-color: hsl(var(--foreground) / 0.05);
+}
+
+.dark thead {
+  background-color: hsl(var(--foreground) / 0.1);
+}
+
+th {
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid hsl(var(--foreground) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+td {
+  padding: 10px 15px;
+  border: 1px solid hsl(var(--foreground) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+/* 图片 */
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 20px auto;
+  border-radius: 4px;
+}
+
+/* 分割线 - 极简风格，简单细横线 */
+hr {
+  border-style: solid;
+  border-width: 1px 0 0;
+  border-color: rgba(0, 0, 0, 0.15);
+  margin: 30px 0;
+}
+
+/* 深色模式下的分割线 */
+.dark hr {
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* 图注 */
+figcaption {
+  text-align: center;
+  color: hsl(var(--foreground) / 0.6);
+  font-size: 0.9em;
+  margin-top: 8px;
+}

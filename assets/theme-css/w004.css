@@ -1,0 +1,621 @@
+/**
+ * MD 主题：向日葵（童趣彩虹 / rainbow）
+ * 活泼可爱的儿童风格，彩虹色彩搭配，适合教育、亲子、儿童相关内容
+ * 注：尽量遵循现有系统变量；如未提供二级/强调色，使用固定色确保观感
+ * 支持深色模式
+ */
+
+/* 背景：淡蓝网格（浅色模式） */
+.md-container {
+  background-color: hsl(var(--background));
+  background-image:
+    linear-gradient(to right, rgba(135, 206, 235, 0.12) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(135, 206, 235, 0.12) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: 0 0;
+}
+
+/* 深色模式下的背景网格 */
+.dark .md-container {
+  background-image:
+    linear-gradient(to right, rgba(135, 206, 235, 0.08) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(135, 206, 235, 0.08) 1px, transparent 1px);
+}
+
+/* 调整基础排版氛围 */
+p {
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+}
+
+/* ===== 标题 ===== */
+h1 {
+  font-size: calc(var(--md-font-size) * 1.4);
+  font-weight: 800;
+  color: #ff69b4;
+  /* 粉色 */
+  margin: 20px 8px 14px;
+  letter-spacing: 0.5px;
+}
+
+h2 {
+  padding: 0.3em 1.2em;
+  font-size: calc(var(--md-font-size) * 1.3);
+  border-radius: 8px 124px 8px 24px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+h3 {
+  font-size: calc(var(--md-font-size) * 1.1);
+  font-weight: 700;
+  color: #2e8b57;
+  /* 绿色文字 */
+  margin: 20px 8px 15px;
+  padding: 6px 0 6px 14px;
+  border-left: 4px solid #ffd700;
+  /* 金黄色左边框 */
+}
+
+h4 {
+  font-size: calc(var(--md-font-size) * 1.05);
+  font-weight: 700;
+  color: #ff69b4;
+  margin: 18px 8px 12px;
+}
+
+h5 {
+  font-size: var(--md-font-size);
+  font-weight: 700;
+  color: #40e0d0;
+  margin: 16px 8px 10px;
+  padding-bottom: 2px;
+  border-bottom: 2px solid rgba(64, 224, 208, 0.3);
+  display: inline-block;
+}
+
+h6 {
+  font-size: calc(var(--md-font-size) * 0.95);
+  font-weight: 700;
+  color: #9370db;
+  /* 中紫 */
+  margin: 14px 8px 8px;
+}
+
+/* ===== 引用 ===== */
+blockquote {
+  margin: 0;
+  padding: 2px 4px;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f3ff 100%);
+  color: #4169e1;
+  /* 皇家蓝 */
+  font-style: italic;
+  border-left: 4px solid #87ceeb;
+  /* 天蓝 */
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 2px 8px rgba(135, 206, 235, 0.15);
+}
+
+/* 深色模式下的引用块 */
+.dark blockquote {
+  background: linear-gradient(135deg, rgba(65, 105, 225, 0.15) 0%, rgba(135, 206, 235, 0.1) 100%);
+  color: #87ceeb;
+  border-left-color: #4169e1;
+}
+
+blockquote > p {
+  margin: 0;
+  color: #4169e1;
+  font-weight: 500;
+}
+
+.dark blockquote > p {
+  color: #87ceeb;
+}
+
+/* ===== 列表（去除背景框效果，与公众号一致） ===== */
+ul,
+ol {
+  margin: 20px 8px;
+  padding-left: 1.2em;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+/* 使用原生标记（与公众号一致） */
+ul {
+  list-style: disc;
+}
+
+ol {
+  list-style: decimal;
+}
+
+li {
+  margin: 8px 0;
+}
+
+/* 隐藏渲染器注入的前缀，统一使用原生 marker */
+.md-list-prefix {
+  display: none;
+}
+
+/* ===== 链接与强调 ===== */
+a {
+  color: #40e0d0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(64, 224, 208, 0.3);
+  transition:
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+a:hover {
+  color: #ff69b4;
+  border-bottom-color: rgba(255, 105, 180, 0.5);
+}
+
+strong {
+  color: var(--md-primary-color);
+}
+
+em {
+  color: #4169e1;
+  font-style: italic;
+}
+
+/* ===== 图片与表格、分割线 ===== */
+img {
+  border-radius: 10px;
+}
+
+hr {
+  border: 0;
+  height: 2px;
+  margin: 28px 0;
+  border-radius: 1px;
+  background: linear-gradient(90deg, #ffb6c1 0%, #87ceeb 25%, #98fb98 50%, #f0e68c 75%, #dda0dd 100%);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 8px;
+  background: #fff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+th {
+  background: linear-gradient(135deg, #ff69b4 0%, #ffb6c1 100%);
+  color: #fff;
+  padding: 12px;
+  text-align: left;
+  font-weight: 700;
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid #e0e0e0;
+  color: hsl(var(--foreground));
+}
+
+.dark td {
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+tr:nth-child(even) {
+  background-color: rgba(255, 182, 193, 0.05);
+}
+
+.dark tr:nth-child(even) {
+  background-color: rgba(255, 182, 193, 0.08);
+}
+
+/* ===== GFM Alert 警告块 ===== */
+
+/* Note - 蓝色系（笔记） */
+.alert-title-note {
+  color: #4169e1;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-note {
+  color: #87ceeb;
+}
+
+.alert-note {
+  background: #f0f8ff;
+  border: 2px solid #87ceeb;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(135, 206, 235, 0.2);
+}
+
+.dark .alert-note {
+  background: rgba(65, 105, 225, 0.1);
+  border-color: #4169e1;
+}
+
+.alert-note > :not(.alert-title-note) {
+  padding: 0 16px 12px;
+}
+
+/* Tip - 绿色系（提示） */
+.alert-title-tip {
+  color: #2e8b57;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-tip {
+  color: #98fb98;
+}
+
+.alert-tip {
+  background: #f0fff0;
+  border: 2px solid #98fb98;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(152, 251, 152, 0.2);
+}
+
+.dark .alert-tip {
+  background: rgba(46, 139, 87, 0.1);
+  border-color: #2e8b57;
+}
+
+.alert-tip > :not(.alert-title-tip) {
+  padding: 0 16px 12px;
+}
+
+/* Info - 青色系（信息） */
+.alert-title-info {
+  color: #20b2aa;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-info {
+  color: #40e0d0;
+}
+
+.alert-info {
+  background: #f0ffff;
+  border: 2px solid #40e0d0;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(64, 224, 208, 0.2);
+}
+
+.dark .alert-info {
+  background: rgba(32, 178, 170, 0.1);
+  border-color: #20b2aa;
+}
+
+.alert-info > :not(.alert-title-info) {
+  padding: 0 16px 12px;
+}
+
+/* Important - 紫色系（重要） */
+.alert-title-important {
+  color: #8b5cf6;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-important {
+  color: #9370db;
+}
+
+.alert-important {
+  background: #faf5ff;
+  border: 2px solid #9370db;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(147, 112, 219, 0.2);
+}
+
+.dark .alert-important {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #8b5cf6;
+}
+
+.alert-important > :not(.alert-title-important) {
+  padding: 0 16px 12px;
+}
+
+/* Warning - 橙黄色系（警告） */
+.alert-title-warning {
+  color: #ff8c00;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-warning {
+  color: #ffd700;
+}
+
+.alert-warning {
+  background: #fffef0;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);
+}
+
+.dark .alert-warning {
+  background: rgba(255, 140, 0, 0.1);
+  border-color: #ff8c00;
+}
+
+.alert-warning > :not(.alert-title-warning) {
+  padding: 0 16px 12px;
+}
+
+/* Caution - 粉红色系（注意） */
+.alert-title-caution {
+  color: #e91e63;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-caution {
+  color: #ff69b4;
+}
+
+.alert-caution {
+  background: #fff5f8;
+  border: 2px solid #ff69b4;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(255, 105, 180, 0.2);
+}
+
+.dark .alert-caution {
+  background: rgba(233, 30, 99, 0.1);
+  border-color: #e91e63;
+}
+
+.alert-caution > :not(.alert-title-caution) {
+  padding: 0 16px 12px;
+}
+
+/* 警告块内的段落样式 */
+.alert-note p,
+.alert-tip p,
+.alert-info p,
+.alert-important p,
+.alert-warning p,
+.alert-caution p {
+  margin: 8px 0;
+  line-height: 1.7;
+}
+
+.alert-title-note {
+  color: #4169e1;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-note {
+  color: #87ceeb;
+}
+
+.alert-note {
+  background: #f0f8ff;
+  border: 2px solid #87ceeb;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(135, 206, 235, 0.2);
+}
+
+.dark .alert-note {
+  background: rgba(65, 105, 225, 0.1);
+  border-color: #4169e1;
+}
+
+.alert-note > :not(.alert-title-note) {
+  padding: 0 16px 12px;
+}
+
+/* Tip - 绿色系（提示） */
+.alert-title-tip {
+  color: #2e8b57;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-tip {
+  color: #98fb98;
+}
+
+.alert-tip {
+  background: #f0fff0;
+  border: 2px solid #98fb98;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(152, 251, 152, 0.2);
+}
+
+.dark .alert-tip {
+  background: rgba(46, 139, 87, 0.1);
+  border-color: #2e8b57;
+}
+
+.alert-tip > :not(.alert-title-tip) {
+  padding: 0 16px 12px;
+}
+
+/* Info - 青色系（信息） */
+.alert-title-info {
+  color: #20b2aa;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-info {
+  color: #40e0d0;
+}
+
+.alert-info {
+  background: #f0ffff;
+  border: 2px solid #40e0d0;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(64, 224, 208, 0.2);
+}
+
+.dark .alert-info {
+  background: rgba(32, 178, 170, 0.1);
+  border-color: #20b2aa;
+}
+
+.alert-info > :not(.alert-title-info) {
+  padding: 0 16px 12px;
+}
+
+/* Important - 紫色系（重要） */
+.alert-title-important {
+  color: #8b5cf6;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-important {
+  color: #9370db;
+}
+
+.alert-important {
+  background: #faf5ff;
+  border: 2px solid #9370db;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(147, 112, 219, 0.2);
+}
+
+.dark .alert-important {
+  background: rgba(139, 92, 246, 0.1);
+  border-color: #8b5cf6;
+}
+
+.alert-important > :not(.alert-title-important) {
+  padding: 0 16px 12px;
+}
+
+/* Warning - 橙黄色系（警告） */
+.alert-title-warning {
+  color: #ff8c00;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-warning {
+  color: #ffd700;
+}
+
+.alert-warning {
+  background: #fffef0;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(255, 215, 0, 0.2);
+}
+
+.dark .alert-warning {
+  background: rgba(255, 140, 0, 0.1);
+  border-color: #ff8c00;
+}
+
+.alert-warning > :not(.alert-title-warning) {
+  padding: 0 16px 12px;
+}
+
+/* Caution - 粉红色系（注意） */
+.alert-title-caution {
+  color: #e91e63;
+  padding: 10px 16px;
+  font-weight: 700;
+  font-size: calc(var(--md-font-size) * 1.05);
+  display: flex;
+  align-items: center;
+}
+
+.dark .alert-title-caution {
+  color: #ff69b4;
+}
+
+.alert-caution {
+  background: #fff5f8;
+  border: 2px solid #ff69b4;
+  border-radius: 8px;
+  margin: 20px 8px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(255, 105, 180, 0.2);
+}
+
+.dark .alert-caution {
+  background: rgba(233, 30, 99, 0.1);
+  border-color: #e91e63;
+}
+
+.alert-caution > :not(.alert-title-caution) {
+  padding: 0 16px 12px;
+}
+
+/* 警告块内的段落样式 */
+.alert-note p,
+.alert-tip p,
+.alert-info p,
+.alert-important p,
+.alert-warning p,
+.alert-caution p {
+  margin: 8px 0;
+  line-height: 1.7;
+}

@@ -1,0 +1,391 @@
+/**
+ * MD 主题：罂粟（波普艺术 / popart）
+ * 明亮黄色网格背景配彩色标题框，展现波普艺术的视觉冲击力
+ * 黄色网格背景 + 彩色标题框 + 黑色边框 + 高对比度设计
+ * 支持深色模式（深色背景 + 霓虹色彩）
+ */
+
+/* 容器基础样式：参考 rainbow，亮黄色底色 + 网格负责主题感 */
+.md-container {
+  /* 恢复明显的黄色背景，让波普主题的黄色大底更突出 */
+  background-color: #ffff00;
+  background-image:
+    linear-gradient(rgba(224, 224, 39, 0.674) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(212, 212, 24, 0.817) 1px, transparent 1px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+  color: #000000;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  line-height: 1.6;
+  padding: 20px;
+  border: 5px solid #000000;
+  box-shadow: 8px 8px 0px #000000;
+}
+
+/* 深色模式 - 深色背景 + 霓虹网格，避免整片黄底 */
+.dark .md-container {
+  background-color: hsl(var(--background));
+  /* 深色模式下的网格改为更弱的霓虹线条，参考 rainbow 的 0.08 透明度，避免一整片发光 */
+  background-image:
+    linear-gradient(rgba(255, 20, 147, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.08) 1px, transparent 1px);
+  color: #ffffff;
+  border-color: #00ffff;
+  box-shadow: 8px 8px 0px #ff1493;
+}
+
+/* H1标题样式 - 红色背景框 + 居中 + 自适应宽度 */
+h1 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #ffffff;
+  background: #ff1493;
+  margin: 14px auto;
+  padding: 15px 20px;
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  display: block;
+  width: fit-content;
+}
+
+/* H2标题样式 - 青色背景框 + 居中 + 自适应宽度 */
+h2 {
+  font-size: 20px;
+  font-weight: bold;
+  color: #000000;
+  background: #00ffff;
+  margin: 12px auto;
+  padding: 12px 18px;
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+  text-align: center;
+  display: block;
+  width: fit-content;
+}
+
+/* H3标题样式 - 紫色背景框 */
+h3 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #ffffff;
+  background: #00bcd4;
+  margin: 16px 0;
+  padding: 10px 16px;
+  border: 3px solid #000000;
+  box-shadow: 3px 3px 0px #000000;
+}
+
+/* H4标题样式 - 绿色背景框 */
+h4 {
+  font-size: 16px;
+  font-weight: bold;
+  color: #000000;
+  background: #9c27b0;
+  margin: 14px 0;
+  padding: 8px 14px;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* H5标题样式 - 橙色背景框 */
+h5 {
+  font-size: 15px;
+  font-weight: bold;
+  color: #000000;
+  background: #4caf50;
+  margin: 12px 0;
+  padding: 6px 12px;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* H6标题样式 - 粉色背景框 */
+h6 {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000000;
+  background: #ff9800;
+  margin: 10px 0;
+  padding: 5px 10px;
+  border: 2px solid #000000;
+  box-shadow: 2px 2px 0px #000000;
+}
+
+/* 段落样式 */
+p {
+  margin: 15px 0;
+  color: #000000;
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+.dark p {
+  color: #ffffff;
+}
+
+/* 粗体文本 */
+strong {
+  color: #ff0000;
+  font-weight: bold;
+}
+
+.dark strong {
+  color: #ff1493;
+}
+
+/* 斜体文本 */
+em {
+  color: #9932cc;
+  font-style: italic;
+}
+
+.dark em {
+  color: #00ffff;
+}
+
+/* 行内代码 - 绿色边框效果 */
+code {
+  background: #000000;
+  color: #00ff00;
+  padding: 3px 8px;
+  border-radius: 0;
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  border: 2px solid #32cd32;
+  box-shadow: 2px 2px 0px #32cd32;
+  font-weight: bold;
+  display: inline-block;
+}
+
+/* 代码块容器 - 确保滚动条正常显示（不设置背景色和文字颜色，由代码高亮主题控制） */
+pre {
+  position: relative;
+  margin: 20px 0;
+  padding: 15px;
+  overflow-x: auto !important; /* 自适应显示水平滚动条 */
+  overflow-y: hidden !important;
+  white-space: nowrap !important; /* 保持换行符但不自动换行 */
+  word-wrap: normal !important;
+  word-break: normal !important;
+  text-wrap: nowrap !important; /* 额外的不换行设置 */
+  /* background 和 color 由代码高亮主题控制，不在此设置 */
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 代码内容样式 */
+pre code {
+  display: inline;
+  padding: 0;
+  background: transparent;
+  border: none;
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  line-height: inherit;
+  font-weight: 400;
+  white-space: inherit;
+  word-wrap: inherit;
+  word-break: inherit;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 滚动条美化 */
+pre code::-webkit-scrollbar {
+  height: 8px;
+}
+
+pre code::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 4px;
+}
+
+pre code::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 4px;
+}
+
+pre code::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+/* 引用样式 - 只保留左侧竖线边框 */
+blockquote {
+  margin: 0;
+  padding: 2px 4px;
+  background: transparent;
+  color: #000000;
+  border-left: 6px solid #ff1744;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  box-shadow: none;
+  font-style: italic;
+}
+
+.dark blockquote {
+  color: #ffffff;
+  border-left-color: #ff1493;
+}
+
+/* 链接样式 */
+a {
+  color: #ff0000;
+  text-decoration: underline;
+  font-weight: bold;
+}
+
+.dark a {
+  color: #00ffff;
+}
+
+a:hover {
+  color: #9932cc;
+  background: #ffff00;
+  padding: 2px 4px;
+}
+
+.dark a:hover {
+  color: #ff1493;
+  background: rgba(255, 20, 147, 0.2);
+}
+
+/* 分隔线样式 */
+hr {
+  border: none;
+  height: 6px;
+  background: #000000;
+  margin: 30px 0;
+  box-shadow: 0 3px 0px #ff1493;
+}
+
+/* 表格样式 */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 20px 0;
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+}
+
+th {
+  background: #ff1493;
+  color: #ffffff;
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border: 2px solid #000000;
+}
+
+td {
+  background: #ffffff;
+  color: #000000;
+  padding: 10px 12px;
+  border: 1px solid #000000;
+}
+
+.dark td {
+  background: #2a2a2a;
+  color: #ffffff;
+  border-color: #00ffff;
+}
+
+tr:nth-child(even) td {
+  background: #ffff99;
+}
+
+.dark tr:nth-child(even) td {
+  background: #3a3a3a;
+}
+
+/* 自定义列表样式 */
+.list {
+  margin: 15px 0;
+}
+
+.list-item {
+  display: flex;
+  align-items: flex-start;
+  margin: 8px 0;
+  padding: 0;
+  background: transparent;
+}
+
+.list-item .prefix {
+  background: #ff1493;
+  color: #ffffff;
+  min-width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 12px;
+  font-weight: bold;
+  font-size: 12px;
+  border: 2px solid #000000;
+  flex-shrink: 0;
+}
+
+.list-item .content {
+  flex: 1;
+  color: #000000;
+  line-height: 1.6;
+}
+
+.dark .list-item .content {
+  color: #ffffff;
+}
+
+/* 隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+/* 图片样式 */
+img {
+  max-width: 100%;
+  height: auto;
+  border: 4px solid #000000;
+  box-shadow: 4px 4px 0px #ff1493;
+  margin: 15px 0;
+}
+
+.dark img {
+  border-color: #00ffff;
+  box-shadow: 4px 4px 0px #ff1493;
+}
+
+/* 手机端和预览内容容器样式 */
+.mobile-content,
+.preview-content {
+  background: #ffff00;
+  background-image:
+    linear-gradient(rgba(200, 200, 200, 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 200, 200, 0.3) 1px, transparent 1px);
+  background-size: 20px 20px;
+  color: #000000;
+  border: 3px solid #000000;
+  box-shadow: 4px 4px 0px #000000;
+  margin: 10px;
+  padding: 15px;
+}
+
+.dark .mobile-content,
+.dark .preview-content {
+  background: #1a1a1a;
+  background-image:
+    linear-gradient(rgba(255, 20, 147, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 255, 255, 0.2) 1px, transparent 1px);
+  color: #ffffff;
+  border-color: #00ffff;
+  box-shadow: 4px 4px 0px #ff1493;
+}

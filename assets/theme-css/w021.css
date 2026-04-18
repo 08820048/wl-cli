@@ -1,0 +1,501 @@
+/**
+ * MD 主题：朱槿（左侧胶囊二级标题）
+ * 按 Alt/Option + Shift + F 可格式化
+ * 如需使用主题色，请使用 var(--md-primary-color) 代替颜色值
+ */
+
+/* 全局背景：纯色背景（浅色模式） */
+.md-container {
+  background-color: hsl(var(--background));
+}
+
+/* 深色模式背景：纯色背景 */
+.dark .md-container {
+  background-color: hsl(var(--background));
+}
+
+/* 基础排版：清晰易读 */
+p {
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+  font-size: calc(var(--md-font-size) * 1.02);
+  font-weight: 300;
+}
+
+/* ===== 标题系统 ===== */
+/* 一级标题：橙色居中文本 */
+h1 {
+  font-size: calc(var(--md-font-size) * 1.6);
+  font-weight: 500;
+  color: #eefafe;
+  margin: 24px 0 14px;
+  padding: 12px 24px;
+  border: none;
+  text-align: center;
+  display: inline-block;
+  background-color: var(--md-primary-color);
+  border-radius: 20px;
+  width: auto;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.dark h1 {
+  color: rgb(239, 112, 96);
+}
+
+/* 二级标题：顶部贯穿横线 + 中间下垂标签（参考红绡样式），只用真实 DOM 与 background/border 实现 */
+h2 {
+  position: relative;
+  margin: 20px 0 14px;
+  padding: 0;
+  border-bottom: 2px solid var(--md-primary-color);
+  text-align: left;
+  font-size: 22px;
+  font-weight: 400;
+  color: #2d3748;
+  display: flex;
+  align-items: center;
+  background: transparent;
+}
+
+/* 左侧红色矩形标签：通过渲染器注入的 <span class="md-h2-label"> 包裹整个标题文本 */
+h2 .md-h2-label {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  padding: 2px 16px;
+  background-color: var(--md-primary-color);
+  color: #eefafe;
+  border-radius: 8px 8px 0 0;
+  line-height: 1.4;
+  white-space: nowrap;
+  /* gap: 6px; */
+  flex-shrink: 0;
+}
+
+.dark h2 {
+  border-top-color: var(--md-primary-color);
+}
+
+.dark h2 .md-h2-label {
+  background-color: var(--md-primary-color);
+  color: #ffffff;
+}
+
+/* 三级标题：左侧橙红色竖条 */
+h3 {
+  font-size: calc(var(--md-font-size) * 1.15);
+  font-weight: 600;
+  color: #4a5568;
+  margin: 20px 0 12px;
+  padding-left: 2px;
+  border: none;
+}
+
+.dark h3 {
+  color: #e2e8f0;
+  border-left-color: rgb(239, 112, 96);
+}
+
+/* 四~六级标题：文字色区分层级 */
+h4 {
+  font-size: calc(var(--md-font-size) * 1.05);
+  font-weight: 600;
+  color: #2b6cb0;
+  margin: 20px 0 12px;
+}
+
+h5 {
+  font-size: var(--md-font-size);
+  font-weight: 600;
+  color: #2c7a7b;
+  margin: 18px 0 10px;
+}
+
+h6 {
+  font-size: calc(var(--md-font-size) * 0.95);
+  font-weight: 600;
+  color: #805ad5;
+  margin: 16px 0 8px;
+}
+
+/* ===== 引用块：匹配截图效果 */
+blockquote {
+  margin: 0;
+  padding: 0 12px 0 24px;
+  background-color: #f7fafc;
+  border-left: 3px solid #ff6b6b;
+  /* 左侧红色竖条（宽度匹配截图） */
+  border-radius: 0;
+  /* 无圆角 */
+  box-shadow: none;
+  /* 无阴影 */
+}
+
+blockquote p {
+  color: #4a5568;
+  font-size: calc(var(--md-font-size) * 1.02);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* 深色模式引用块 */
+.dark blockquote {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-left-color: #ff8787;
+}
+
+.dark blockquote p {
+  color: #e2e8f0;
+}
+
+/* ===== 列表：简约原生风格 */
+ul,
+ol {
+  margin: 16px 0;
+  padding-left: 2em;
+  background: none;
+  border: none;
+}
+
+ul {
+  list-style: disc;
+  color: #2b6cb0;
+}
+
+ol {
+  list-style: decimal;
+  color: #2c7a7b;
+}
+
+li {
+  margin: 8px 0;
+  color: hsl(var(--foreground));
+}
+
+/* 隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+.dark ul {
+  color: #63b3ed;
+}
+
+.dark ol {
+  color: #48bb78;
+}
+
+/* ===== 链接与强调：弱化装饰，强化交互 */
+a {
+  color: #2b6cb0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(43, 108, 176, 0.3);
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: #2c5282;
+  border-bottom-color: #2c5282;
+}
+
+strong {
+  color: var(--md-primary-color);
+  font-weight: 700;
+}
+
+.dark strong {
+  color: var(--md-primary-color);
+}
+
+em {
+  color: #718096;
+  font-style: italic;
+}
+
+.dark em {
+  color: #a0aec0;
+}
+
+/* ===== 图片与表格：精致边框 */
+img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 16px 0;
+}
+
+/* 分割线：细灰线，留出足够空白 */
+hr {
+  border-style: solid;
+  border-width: 2px 0 0;
+  border-color: rgba(211, 114, 62, 0.5);
+  -webkit-transform-origin: 0 0;
+  -webkit-transform: scale(1, 0.5);
+  transform-origin: 0 0;
+  transform: scale(1, 0.5);
+  height: 0.4em;
+  margin: 1.5em 0;
+}
+
+.dark hr {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+th {
+  background-color: #f7fafc;
+  color: #2d3748;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.dark th {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+td {
+  padding: 12px 16px;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dark td {
+  color: #e2e8f0;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+tr:hover {
+  background-color: rgba(247, 250, 252, 0.5);
+}
+
+.dark tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ===== GFM Alert 警告块：职场场景适配 */
+/* 通用警告块标题样式 */
+.alert-title {
+  padding: 10px 24px;
+  font-weight: 600;
+  font-size: calc(var(--md-font-size) * 1.02);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 内容区域通用样式 */
+.alert-content {
+  padding: 12px 24px 16px;
+  color: #4a5568;
+  line-height: 1.7;
+}
+
+.dark .alert-content {
+  color: #e2e8f0;
+}
+
+/* 招聘公告（匹配主题色） */
+.alert-recruit {
+  border: 1px solid #ffd6d6;
+  border-radius: 8px;
+  margin: 20px 0;
+  overflow: hidden;
+  background-color: #fff8f8;
+}
+
+.dark .alert-recruit {
+  border-color: rgba(255, 107, 107, 0.2);
+  background-color: rgba(255, 107, 107, 0.05);
+}
+
+.alert-title-recruit {
+  color: #ff6b6b;
+}
+
+.dark .alert-title-recruit {
+  color: #ff8787;
+}
+
+/* 注意事项（橙色系） */
+.alert-note {
+  border: 1px solid #ffe0b2;
+  border-radius: 8px;
+  margin: 20px 0;
+  overflow: hidden;
+  background-color: #fffaf0;
+}
+
+.dark .alert-note {
+  border-color: rgba(251, 146, 60, 0.2);
+  background-color: rgba(251, 146, 60, 0.05);
+}
+
+.alert-title-note {
+  color: #fb923c;
+}
+
+.dark .alert-title-note {
+  color: #fdba74;
+}
+
+/* GFM Alert 标题文本颜色（五种类型） */
+.alert-title-tip {
+  color: #2ea043;
+}
+.dark .alert-title-tip {
+  color: #4ac266;
+}
+.alert-title-info {
+  color: #0969da;
+}
+.dark .alert-title-info {
+  color: #42a5ff;
+}
+.alert-title-important {
+  color: #8250df;
+}
+.dark .alert-title-important {
+  color: #a37deb;
+}
+.alert-title-warning {
+  color: #bf8700;
+}
+.dark .alert-title-warning {
+  color: #e0b022;
+}
+.alert-title-caution {
+  color: #cf222e;
+}
+.dark .alert-title-caution {
+  color: #e5555e;
+}
+
+/* GFM Alert 容器左侧边框颜色与标题文本一致 */
+.markdown-alert-note {
+  border-left: 4px solid #fb923c;
+}
+.dark .markdown-alert-note {
+  border-left-color: #fdba74;
+}
+.markdown-alert-tip {
+  border-left: 4px solid #2ea043;
+}
+.dark .markdown-alert-tip {
+  border-left-color: #4ac266;
+}
+.markdown-alert-info {
+  border-left: 4px solid #0969da;
+}
+.dark .markdown-alert-info {
+  border-left-color: #42a5ff;
+}
+.markdown-alert-important {
+  border-left: 4px solid #8250df;
+}
+.dark .markdown-alert-important {
+  border-left-color: #a37deb;
+}
+.markdown-alert-warning {
+  border-left: 4px solid #bf8700;
+}
+.dark .markdown-alert-warning {
+  border-left-color: #e0b022;
+}
+.markdown-alert-caution {
+  border-left: 4px solid #cf222e;
+}
+.dark .markdown-alert-caution {
+  border-left-color: #e5555e;
+}
+
+/* 移除五类提示框左侧竖条（统一覆盖） */
+.markdown-alert-note,
+.markdown-alert-tip,
+.markdown-alert-info,
+.markdown-alert-important,
+.markdown-alert-warning,
+.markdown-alert-caution {
+  border-left: none !important;
+}
+
+.markdown-alert-note {
+  background-color: color-mix(in srgb, #fb923c 12%, transparent);
+}
+.dark .markdown-alert-note {
+  background-color: color-mix(in srgb, #fdba74 12%, transparent);
+}
+
+.markdown-alert-tip {
+  background-color: color-mix(in srgb, #2ea043 12%, transparent);
+}
+.dark .markdown-alert-tip {
+  background-color: color-mix(in srgb, #4ac266 12%, transparent);
+}
+
+.markdown-alert-info {
+  background-color: color-mix(in srgb, #0969da 12%, transparent);
+}
+.dark .markdown-alert-info {
+  background-color: color-mix(in srgb, #42a5ff 12%, transparent);
+}
+
+.markdown-alert-important {
+  background-color: color-mix(in srgb, #8250df 12%, transparent);
+}
+.dark .markdown-alert-important {
+  background-color: color-mix(in srgb, #a37deb 12%, transparent);
+}
+
+.markdown-alert-warning {
+  background-color: color-mix(in srgb, #bf8700 12%, transparent);
+}
+.dark .markdown-alert-warning {
+  background-color: color-mix(in srgb, #e0b022 12%, transparent);
+}
+
+.markdown-alert-caution {
+  background-color: color-mix(in srgb, #cf222e 12%, transparent);
+}
+.dark .markdown-alert-caution {
+  background-color: color-mix(in srgb, #e5555e 12%, transparent);
+}
+
+/* ==================== 标记高亮 ==================== */
+.markup-highlight {
+  background-color: #282c34;
+  padding: 2px 4px;
+  border-radius: 6px;
+  color: #bfa06f;
+}
+
+.markup-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--md-primary-color);
+}
+
+.markup-wavyline {
+  text-decoration: underline wavy;
+  text-decoration-color: var(--md-primary-color);
+  text-decoration-thickness: 2px;
+}
+
+code {
+  font-size: 90%;
+  color: #bfa06f;
+  background-color: #282c34;
+  padding: 3px 5px;
+  border-radius: 6px;
+}

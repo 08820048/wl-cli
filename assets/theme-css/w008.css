@@ -1,0 +1,368 @@
+/**
+ * MD 主题：桂花（锯齿牛皮纸）
+ * 适用于文学作品、历史文档、复古风格内容等
+ * 支持深色模式
+ */
+
+/* 基础样式 */
+body {
+  font-family: 'STXingkai', 'KaiTi', serif;
+  line-height: 1.8;
+  color: #2c1810;
+}
+
+/* 容器背景 - 手撕牛皮纸效果（微信兼容版本） */
+.md-container {
+  background-color: hsl(var(--background));
+
+  /* 右侧撕边（左右镜像） */
+
+  background-position:
+    top left,
+    bottom left,
+    top left,
+    top right;
+
+  background-repeat:
+    repeat-x,
+    /* 上下横向重复 */ repeat-x,
+    repeat-y,
+    /* 左右纵向重复 */ repeat-y;
+
+  background-size:
+    100% 60px,
+    /* 上下撕边高度 */ 100% 60px,
+    60px 100%,
+    /* 左右撕边宽度 */ 60px 100%;
+
+  padding: 60px 60px 70px 60px;
+  /* 必须留出边缘空间 */
+  position: relative;
+  box-shadow:
+    0 10px 30px rgba(0, 0, 0, 0.15),
+    0 0 60px #8a4d0f inset;
+  /* 你原来的内发光保留 */
+  margin: 2em 0;
+}
+
+/* 深色模式下的容器背景 - 深色牛皮纸效果 */
+.dark .md-container {
+  background-color: hsl(var(--background));
+  box-shadow:
+    2px 3px 20px rgba(0, 0, 0, 0.5),
+    0 0 60px #1a1410 inset !important;
+}
+
+/* 一级标题 */
+h1 {
+  font-size: 2.5em;
+  font-weight: 700;
+  line-height: 1.2;
+  padding: 30px 0 20px 0;
+  margin: 0 0 18px 0;
+  text-align: center;
+  color: #2c1810;
+  letter-spacing: 2px;
+  position: relative;
+  /* text-shadow: 1px 1px 2px rgba(139, 77, 15, 0.1); */
+}
+
+.dark h1 {
+  color: #d4c4a8;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* 二级标题 - 仅用常规属性，不用伪元素 */
+h2 {
+  margin: 20px 0 10px 0;
+  padding: 6px 12px 8px 14px;
+  font-size: 1.7em;
+  font-weight: 700;
+  color: #2c1810;
+  border-bottom: 2px dashed var(--md-primary-color);
+  background: linear-gradient(to right, var(--md-primary-color), var(--md-primary-color), transparent);
+}
+
+.dark h2 {
+  color: #d4c4a8;
+  border-left-color: #c4a57b;
+  border-bottom-color: rgba(196, 165, 123, 0.8);
+  background: linear-gradient(to right, rgba(26, 20, 16, 1), rgba(26, 20, 16, 0.85), transparent);
+}
+
+/* 三级标题 */
+h3 {
+  font-size: 1.4em;
+  font-weight: 600;
+  margin: 30px 0 15px 0;
+  color: #2c1810;
+}
+
+.dark h3 {
+  color: #d4c4a8;
+}
+
+/* 四级标题 */
+h4 {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 25px 0 12px 0;
+  color: #2c1810;
+  font-style: italic;
+}
+
+.dark h4 {
+  color: #c4a57b;
+}
+
+/* 五级标题 */
+h5 {
+  font-size: 1.1em;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  color: #2c1810;
+  text-decoration: underline;
+  text-decoration-color: #8a4d0f;
+}
+
+.dark h5 {
+  color: #c4a57b;
+  text-decoration-color: #c4a57b;
+}
+
+/* 六级标题 */
+h6 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 15px 0 8px 0;
+  color: #2c1810;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.dark h6 {
+  color: #c4a57b;
+}
+
+/* 段落（缩进和对齐交给主题面板控制，这里只设置间距和颜色） */
+p {
+  line-height: 1.8;
+  margin-bottom: 15px;
+  /* 兼容写法：先声明基础下划线，再指定为虚线，并控制颜色/粗细/偏移 */
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: rgba(0, 0, 0, 0.4);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+.dark p {
+  color: #d4c4a8;
+}
+
+/* 引用 */
+blockquote {
+  margin: 0;
+  padding: 2px 4px;
+  background: rgba(139, 77, 15, 0.05);
+  border-left: 5px solid #8a4d0f;
+  border-radius: 0 8px 8px 0;
+  font-style: italic;
+  color: #3d2317;
+}
+
+.dark blockquote {
+  background: rgba(196, 165, 123, 0.1);
+  border-left-color: #c4a57b;
+  color: #c4a57b;
+}
+
+/* 列表 */
+ul,
+ol {
+  margin: 16px 0;
+  padding-left: 30px;
+}
+
+li {
+  margin: 8px 0;
+  color: #2c1810;
+}
+
+.dark li {
+  color: #d4c4a8;
+}
+
+/* 隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+ul li::marker {
+  color: #8a4d0f;
+}
+
+.dark ul li::marker {
+  color: #c4a57b;
+}
+
+ol li::marker {
+  color: #8a4d0f;
+  font-weight: 600;
+}
+
+.dark ol li::marker {
+  color: #c4a57b;
+}
+
+/* 代码块 */
+pre {
+  background: #f5f2ed;
+  border: 1px solid #d4c4a8;
+  border-radius: 6px;
+  padding: 20px;
+  margin: 20px 0;
+  overflow-x: auto;
+  box-shadow: inset 0 2px 4px rgba(139, 77, 15, 0.1);
+}
+
+.dark pre {
+  background: #1a1410;
+  border-color: #4a3d2f;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+code {
+  font-family: 'Courier New', 'Monaco', monospace;
+  background: #f5f2ed;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px solid #d4c4a8;
+  color: #2c1810;
+}
+
+.dark code {
+  background: #1a1410;
+  border-color: #4a3d2f;
+  color: #c4a57b;
+}
+
+/* 表格 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  background: #fffef0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(139, 77, 15, 0.1);
+}
+
+.dark table {
+  background: #2a2520;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+th {
+  background: #8a4d0f;
+  color: #fffef0;
+  padding: 12px 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.dark th {
+  background: #4a3d2f;
+  color: #d4c4a8;
+}
+
+td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #d4c4a8;
+  color: #2c1810;
+}
+
+.dark td {
+  border-bottom-color: #4a3d2f;
+  color: #d4c4a8;
+}
+
+tr:nth-child(even) {
+  background: rgba(139, 77, 15, 0.03);
+}
+
+.dark tr:nth-child(even) {
+  background: rgba(196, 165, 123, 0.05);
+}
+
+/* 链接 */
+a {
+  color: #8a4d0f;
+  text-decoration: underline;
+  text-decoration-color: rgba(139, 77, 15, 0.5);
+  transition: all 0.3s ease;
+}
+
+.dark a {
+  color: #c4a57b;
+  text-decoration-color: rgba(196, 165, 123, 0.5);
+}
+
+a:hover {
+  color: #6b3a0c;
+  text-decoration-color: #6b3a0c;
+}
+
+.dark a:hover {
+  color: #d4c4a8;
+  text-decoration-color: #d4c4a8;
+}
+
+/* 强调 */
+strong {
+  font-weight: 700;
+  color: var(--md-primary-color);
+}
+
+.dark strong {
+  color: var(--md-primary-color);
+}
+
+em {
+  font-style: italic;
+  color: #3d2317;
+}
+
+.dark em {
+  color: #c4a57b;
+}
+
+/* 分割线 */
+hr {
+  border: none;
+  height: 2px;
+  background: linear-gradient(to right, transparent, #8a4d0f, transparent);
+  margin: 30px 0;
+  border-radius: 1px;
+}
+
+/* 图片 */
+img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(139, 77, 15, 0.2);
+  margin: 20px 0;
+}
+
+/* 数学公式 */
+.katex {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}

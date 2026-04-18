@@ -1,0 +1,193 @@
+/**
+ * MD 主题：金盏花（便签风格）
+ * 核心：模拟真实手写便签的笔触、排版、肌理特征
+ * 注意：为兼容公众号，所有样式使用内联值，避免 CSS 变量和不兼容属性
+ */
+
+/* ========== 根容器 & 便签肌理 ========== */
+.md-container {
+  width: 100%;
+  min-height: 100%;
+  padding: 32px 24px;
+  box-sizing: border-box;
+  /* 便签纸底色 #fff9c8 */
+  background-color: #fff9c8;
+  /* 简化纹理：仅保留横线效果（公众号兼容） */
+  background-image: linear-gradient(0deg, rgba(97, 68, 46, 0.02) 1px, transparent 1px);
+  background-size: 100% 26px;
+  border-radius: 3px;
+}
+
+.dark .md-container {
+  background-color: #2a2a1a;
+  background-image: linear-gradient(0deg, rgba(97, 68, 46, 0.05) 1px, transparent 1px);
+  background-size: 100% 26px;
+}
+
+/* ========== 手写字体配置（核心！） ========== */
+/* 优先使用系统兼容的手写字体，降级到通用字体 */
+.md-container,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+blockquote,
+strong,
+a {
+  font-family:
+    'Ma Shan Zheng',
+    'ZCOOL KuaiLe',
+    /* 中文手写体 */ 'Comic Sans MS',
+    'Marker Felt',
+    /* 英文手写体 */ 'Microsoft YaHei',
+    sans-serif;
+  /* 降级 */
+  /* 轻微字重调整，模拟手写压力不均 */
+  font-weight: 400;
+}
+
+/* ========== 文本基础排版（手写行感） ========== */
+p {
+  margin: 18px 0;
+  line-height: 1.95;
+  /* 手写主色调（深棕木色）#61442e */
+  color: #61442e;
+  /* 手写字间距（轻微不均） */
+  letter-spacing: 0.04em;
+}
+
+.dark p {
+  color: #d0c0a0;
+  letter-spacing: 0.05em;
+}
+
+/* ========== 各级标题（手写标注风格） ========== */
+/* 一级标题：马克笔粗写感 */
+h1 {
+  margin: 24px 0 14px;
+  padding: 6px 12px 8px;
+  /* 荧光笔高亮色 #ffde59 */
+  background: linear-gradient(120deg, #ffde59 0%, #fff39a 100%);
+  color: #61442e;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  border-radius: 4px;
+}
+
+.dark h1 {
+  background: linear-gradient(120deg, #bbaa33 0%, #ccb044 100%);
+  color: #d0c0a0;
+}
+
+/* 二级标题：荧光笔涂抹感 */
+h2 {
+  margin: 20px 0 12px;
+  color: #61442e;
+}
+
+.dark h2 {
+  color: #d0c0a0;
+}
+
+h2 .md-h2-label {
+  display: inline-block;
+  padding: 3px 8px 4px;
+  /* 荧光笔高亮色 #ffde59 */
+  background: linear-gradient(to bottom, transparent 60%, #ffde59 60%);
+  text-decoration: none;
+}
+
+.dark h2 .md-h2-label {
+  background: linear-gradient(to bottom, transparent 60%, #bbaa33 60%);
+  color: #d0c0a0;
+}
+
+/* 三级标题：铅笔划线标注 */
+h3 {
+  margin: 26px 0 14px;
+  padding-left: 12px;
+  color: #725033;
+  /* 铅笔虚线边框 */
+  border-left: 2px dashed #b99470;
+}
+
+.dark h3 {
+  color: #d0c0a0;
+  border-left-color: #8a7050;
+}
+
+/* 四级~六级标题：随手批注感 */
+h4,
+h5,
+h6 {
+  margin: 20px 0 10px;
+  color: #725033;
+  font-style: italic;
+}
+
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #d0c0a0;
+}
+
+/* ========== 引用块（手写备注框） ========== */
+blockquote {
+  margin: 0;
+  padding: 12px 16px;
+  border-left: 3px solid #e0b888;
+  /* 使用实色背景，公众号兼容性更好 */
+  background-color: #fffbe0;
+  color: #725033;
+  border-radius: 0 4px 4px 0;
+}
+
+.dark blockquote {
+  background-color: #3a3525;
+  color: #d0c0a0;
+  border-left-color: #b09060;
+}
+
+/* ========== 强调 & 链接（手写标注） ========== */
+strong {
+  font-weight: 500;
+  color: #8b4513;
+  /* 模拟马克笔加粗的笔触晕染 - 使用实色 */
+  background: linear-gradient(180deg, transparent 50%, #ffde59 50%);
+  padding: 0 5px;
+  border-radius: 2px;
+}
+
+.dark strong {
+  color: #d0b080;
+  background: linear-gradient(180deg, transparent 50%, #bbaa33 50%);
+}
+
+/* 手写链接：虚线样式 */
+a {
+  color: #8b4513;
+  text-decoration: none;
+  border-bottom: 1px dashed #e0b888;
+}
+
+.dark a {
+  color: #d0b080;
+  border-bottom-color: #b09060;
+}
+
+code {
+  color: #8b4513;
+  background: #fff39a;
+  padding: 2px 4px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: 'Courier New', 'Monaco', 'Consolas', monospace;
+}
+
+.dark code {
+  color: #d0b080;
+  background: #554c20;
+}

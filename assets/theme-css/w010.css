@@ -1,0 +1,345 @@
+/**
+ * MD 主题：铃兰（轻氧职场 / oxygen-pro）
+ * 严格匹配参考截图的二级标题样式，保留职场简约风格，支持深色模式
+ */
+
+/* 全局背景：纯色背景（浅色模式） */
+.md-container {
+  background-color: hsl(var(--background));
+}
+
+/* 深色模式背景：纯色背景 */
+.dark .md-container {
+  background-color: hsl(var(--background));
+}
+
+/* 基础排版：清晰易读 */
+p {
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+  font-size: calc(var(--md-font-size) * 1.02);
+}
+
+/* ===== 标题系统 ===== */
+/* 一级标题：橙色居中文本 */
+h1 {
+  font-size: calc(var(--md-font-size) * 1.6);
+  font-weight: 700;
+  color: rgb(239, 112, 96);
+  margin: 24px 0 14px;
+  padding: 0;
+  border: none;
+  text-align: center;
+  display: block;
+  width: 100%;
+}
+
+.dark h1 {
+  color: rgb(239, 112, 96);
+}
+
+/* 二级标题：顶部贯穿横线 + 中间下垂标签（参考红绡样式），只用真实 DOM 与 background/border 实现 */
+h2 {
+  position: relative;
+  margin: 20px 0 14px;
+  padding-top: 16px; /* 为“横线 + 吊牌”留出空间 */
+  border-top: 2px solid var(--md-primary-color); /* 贯穿整行的细线 */
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: inherit; /* 实际文字颜色由内部 md-h2-label 控制 */
+  display: block; /* 覆盖 w001 的 display: table，确保横线贯穿整行 */
+  background: transparent; /* 干掉 w001 的背景色，由内部标签自己上背景 */
+}
+
+/* 中间的下垂标签：通过渲染器注入的 <span class="md-h2-label"> 包裹整个标题文本 */
+h2 .md-h2-label {
+  display: inline-block;
+  position: relative;
+  top: -0.8em; /* 注意：这里必须用 em，复制到公众号时会被转换成 transform: translateY(...)，避免 top 在公众号被吃掉 */
+  padding: 6px 32px 4px;
+  background-color: var(--md-primary-color);
+  color: #ffffff;
+  border-radius: 0 0 16px 16px; /* 只在下方做圆角 */
+  line-height: 1.6;
+}
+
+.dark h2 {
+  border-top-color: var(--md-primary-color);
+}
+
+.dark h2 .md-h2-label {
+  background-color: var(--md-primary-color);
+  color: #ffffff;
+}
+
+/* 三级标题：左侧橙红色竖条 */
+h3 {
+  font-size: calc(var(--md-font-size) * 1.15);
+  font-weight: 600;
+  color: #4a5568;
+  margin: 25px 0 15px;
+  padding-left: 12px;
+  border-left: 4px solid rgb(239, 112, 96);
+}
+
+.dark h3 {
+  color: #e2e8f0;
+  border-left-color: rgb(239, 112, 96);
+}
+
+/* 四~六级标题：文字色区分层级 */
+h4 {
+  font-size: calc(var(--md-font-size) * 1.05);
+  font-weight: 600;
+  color: #2b6cb0;
+  margin: 20px 0 12px;
+}
+
+h5 {
+  font-size: var(--md-font-size);
+  font-weight: 600;
+  color: #2c7a7b;
+  margin: 18px 0 10px;
+}
+
+h6 {
+  font-size: calc(var(--md-font-size) * 0.95);
+  font-weight: 600;
+  color: #805ad5;
+  margin: 16px 0 8px;
+}
+
+/* ===== 引用块：匹配截图效果 */
+blockquote {
+  margin: 0;
+  padding: 2px 4px;
+  background-color: #f7fafc;
+  border-left: 3px solid #ff6b6b;
+  /* 左侧红色竖条（宽度匹配截图） */
+  border-radius: 0;
+  /* 无圆角 */
+  box-shadow: none;
+  /* 无阴影 */
+}
+
+blockquote p {
+  color: #4a5568;
+  font-size: calc(var(--md-font-size) * 1.02);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* 深色模式引用块 */
+.dark blockquote {
+  background-color: rgba(255, 255, 255, 0.03);
+  border-left-color: #ff8787;
+}
+
+.dark blockquote p {
+  color: #e2e8f0;
+}
+
+/* ===== 列表：简约原生风格 */
+ul,
+ol {
+  margin: 16px 0;
+  padding-left: 2em;
+  background: none;
+  border: none;
+}
+
+ul {
+  list-style: disc;
+  color: #2b6cb0;
+}
+
+ol {
+  list-style: decimal;
+  color: #2c7a7b;
+}
+
+li {
+  margin: 8px 0;
+  color: hsl(var(--foreground));
+}
+
+/* 隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+.dark ul {
+  color: #63b3ed;
+}
+
+.dark ol {
+  color: #48bb78;
+}
+
+/* ===== 链接与强调：弱化装饰，强化交互 */
+a {
+  color: #2b6cb0;
+  text-decoration: none;
+  border-bottom: 1px solid rgba(43, 108, 176, 0.3);
+  transition: all 0.2s ease;
+}
+
+a:hover {
+  color: #2c5282;
+  border-bottom-color: #2c5282;
+}
+
+strong {
+  color: var(--md-primary-color);
+  font-weight: 700;
+}
+
+.dark strong {
+  color: var(--md-primary-color);
+}
+
+em {
+  color: #718096;
+  font-style: italic;
+}
+
+.dark em {
+  color: #a0aec0;
+}
+
+/* ===== 图片与表格：精致边框 */
+img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 16px 0;
+}
+
+/* 分割线：细灰线，留出足够空白 */
+hr {
+  border-style: solid;
+  border-width: 2px 0 0;
+  border-color: rgba(211, 114, 62, 0.5);
+  -webkit-transform-origin: 0 0;
+  -webkit-transform: scale(1, 0.5);
+  transform-origin: 0 0;
+  transform: scale(1, 0.5);
+  height: 0.4em;
+  margin: 1.5em 0;
+}
+
+.dark hr {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+}
+
+th {
+  background-color: #f7fafc;
+  color: #2d3748;
+  padding: 12px 16px;
+  text-align: left;
+  font-weight: 600;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.dark th {
+  background-color: rgba(255, 255, 255, 0.05);
+  color: #f8fafc;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+td {
+  padding: 12px 16px;
+  color: #4a5568;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.dark td {
+  color: #e2e8f0;
+  border-bottom-color: rgba(255, 255, 255, 0.1);
+}
+
+tr:hover {
+  background-color: rgba(247, 250, 252, 0.5);
+}
+
+.dark tr:hover {
+  background-color: rgba(255, 255, 255, 0.03);
+}
+
+/* ===== GFM Alert 警告块：职场场景适配 */
+/* 通用警告块标题样式 */
+.alert-title {
+  padding: 10px 16px;
+  font-weight: 600;
+  font-size: calc(var(--md-font-size) * 1.02);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 内容区域通用样式 */
+.alert-content {
+  padding: 12px 16px 16px;
+  color: #4a5568;
+  line-height: 1.7;
+}
+
+.dark .alert-content {
+  color: #e2e8f0;
+}
+
+/* 招聘公告（匹配主题色） */
+.alert-recruit {
+  border: 1px solid #ffd6d6;
+  border-radius: 8px;
+  margin: 20px 0;
+  overflow: hidden;
+  background-color: #fff8f8;
+}
+
+.dark .alert-recruit {
+  border-color: rgba(255, 107, 107, 0.2);
+  background-color: rgba(255, 107, 107, 0.05);
+}
+
+.alert-title-recruit {
+  background-color: #fff2f2;
+  color: #ff6b6b;
+  border-left: 4px solid #ff6b6b;
+}
+
+.dark .alert-title-recruit {
+  background-color: rgba(255, 107, 107, 0.1);
+  color: #ff8787;
+}
+
+/* 注意事项（橙色系） */
+.alert-note {
+  border: 1px solid #ffe0b2;
+  border-radius: 8px;
+  margin: 20px 0;
+  overflow: hidden;
+  background-color: #fffaf0;
+}
+
+.dark .alert-note {
+  border-color: rgba(251, 146, 60, 0.2);
+  background-color: rgba(251, 146, 60, 0.05);
+}
+
+.alert-title-note {
+  color: #fb923c;
+}
+
+.dark .alert-title-note {
+  color: #fdba74;
+}

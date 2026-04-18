@@ -1,0 +1,546 @@
+/**
+ * MD 主题：白百合（学术报告）
+ * 基于黑白简约风格设计，适合学术论文、研究报告等正式文档
+ */
+
+/* 基础样式 */
+body {
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+  line-height: 1.8;
+  color: #2c2c2c;
+}
+
+/* 容器背景 */
+.md-container {
+  background: #f5f5f5;
+  padding: 5px 2px;
+}
+
+.dark .md-container {
+  background: #2c2c2c;
+}
+
+/* 一级标题 */
+h1 {
+  font-size: 1.75em;
+  font-weight: 600;
+  text-align: center;
+  line-height: 1.5;
+  padding: 30px 20px;
+  margin: 0 0 20px 0;
+  border: 2px solid #1a1a1a;
+  background: #fafafa;
+  letter-spacing: 2px;
+  color: #1a1a1a;
+  display: block;
+}
+
+.dark h1 {
+  border: 2px solid #e0e0e0;
+  background: #3a3a3a;
+  color: #e0e0e0;
+}
+
+/* 二级标题 */
+h2 {
+  font-size: 3em;
+  font-weight: 200;
+  text-align: center;
+  margin: 28px 0 16px 0;
+  padding: 20px 0;
+  letter-spacing: 8px;
+  /* 文本保持中性颜色，装饰线条使用主题色 */
+  color: #1a1a1a;
+  position: relative;
+  /* border-top: 3px solid var(--md-primary-color); */
+  padding-top: 50px;
+  display: block;
+  background: transparent;
+}
+
+.dark h2 {
+  color: #e0e0e0;
+}
+
+/* 三级标题 */
+h3 {
+  font-size: 1.25em;
+  font-weight: 600;
+  margin: 35px 0 20px 0;
+  padding-bottom: 10px;
+  border-bottom: 2px solid #1a1a1a;
+  border-left: none;
+  color: #1a1a1a;
+}
+
+.dark h3 {
+  border-bottom: 2px solid #e0e0e0;
+  color: #e0e0e0;
+}
+
+/* 四级标题 */
+h4 {
+  font-size: 1.125em;
+  font-weight: 600;
+  margin: 30px 0 15px 0;
+  color: #4a4a4a;
+}
+
+.dark h4 {
+  color: #b0b0b0;
+}
+
+/* 五级标题 */
+h5 {
+  font-size: 1em;
+  font-weight: 600;
+  margin: 25px 0 12px 0;
+  color: #4a4a4a;
+}
+
+.dark h5 {
+  color: #b0b0b0;
+}
+
+/* 六级标题 */
+h6 {
+  font-size: 0.875em;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  color: #4a4a4a;
+}
+
+.dark h6 {
+  color: #b0b0b0;
+}
+
+/* 段落 */
+p {
+  line-height: 1.8;
+  color: hsl(var(--foreground));
+  font-size: calc(var(--md-font-size) * 1.02);
+
+  padding: 1.2em;
+  border: 1px solid #eee;
+  /* 浅灰色，几乎所有公众号都支持 */
+  border-radius: 2px;
+  /* 圆角也基本都支持 */
+  background: #f3f3f3;
+  /* 浅底色，让边框更明显 */
+}
+
+.dark p {
+  border: 1px solid #444;
+  background: #3a3a3a;
+  color: #e0e0e0;
+}
+
+/* 引用 */
+blockquote {
+  margin: 0;
+  padding: 2px 4px;
+  background: #fafafa;
+  border-left: 4px solid #1a1a1a;
+  color: #4a4a4a;
+  font-style: italic;
+  border-right: none;
+  border-top: none;
+  border-bottom: none;
+  border-radius: 0;
+}
+
+.dark blockquote {
+  background: #3a3a3a;
+  border-left: 4px solid #e0e0e0;
+  color: #b0b0b0;
+}
+
+/* 引用段落 */
+blockquote p {
+  margin: 8px 0;
+  display: block;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  color: #4a4a4a;
+}
+
+.dark blockquote p {
+  color: #b0b0b0;
+}
+
+/* 行内代码 */
+code {
+  padding: 3px 8px;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 3px;
+  color: #4a4a4a;
+  font-size: 90%;
+  font-family:
+    Menlo,
+    Operator Mono,
+    Consolas,
+    Monaco,
+    monospace;
+  margin: 0;
+  white-space: nowrap;
+}
+
+.dark code {
+  background: #3a3a3a;
+  border: 1px solid #555;
+  color: #e0e0e0;
+}
+
+/* 图片 */
+img {
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  margin: 25px auto;
+  display: block;
+  border: none;
+  max-width: 100%;
+}
+
+.dark img {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 有序列表 */
+ol {
+  padding-left: 30px;
+  margin: 20px 0;
+  margin-left: 0;
+  list-style-type: decimal;
+  color: hsl(var(--foreground));
+}
+
+.dark ol {
+  color: #e0e0e0;
+}
+
+/* 无序列表 */
+ul {
+  padding-left: 30px;
+  margin: 20px 0;
+  list-style-type: disc;
+  margin-left: 0;
+  color: hsl(var(--foreground));
+}
+
+.dark ul {
+  color: #e0e0e0;
+}
+
+/* 列表项 */
+li {
+  margin: 12px 0;
+  line-height: 1.8;
+  color: #2c2c2c;
+  display: list-item;
+}
+
+.dark li {
+  color: #e0e0e0;
+}
+
+/* 隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+/* 链接 */
+a {
+  color: var(--md-primary-color);
+  text-decoration: none;
+}
+
+.dark a {
+  color: var(--md-primary-color);
+}
+
+/* 加粗 */
+strong {
+  font-weight: 600;
+  color: var(--md-primary-color);
+  font-size: inherit;
+}
+
+.dark strong {
+  color: var(--md-primary-color);
+}
+
+/* 斜体 */
+em {
+  font-style: italic;
+  color: #4a4a4a;
+  font-size: inherit;
+}
+
+.dark em {
+  color: #b0b0b0;
+}
+
+/* 表格 */
+table {
+  width: 100%;
+  margin: 30px 0;
+  border-collapse: collapse;
+  background: #fafafa;
+  color: hsl(var(--foreground));
+}
+
+.dark table {
+  background: #3a3a3a;
+  color: #e0e0e0;
+}
+
+/* 表头 */
+thead {
+  background: #1a1a1a;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+.dark thead {
+  background: #e0e0e0;
+  color: #1a1a1a;
+}
+
+/* 表头单元格 */
+th {
+  padding: 15px 12px;
+  text-align: left;
+  font-weight: 600;
+  border: 1px solid #e0e0e0;
+  color: #ffffff;
+  word-break: keep-all;
+}
+
+.dark th {
+  border: 1px solid #555;
+  color: #1a1a1a;
+}
+
+/* 表格单元格 */
+td {
+  padding: 12px;
+  border: 1px solid #e0e0e0;
+  color: #2c2c2c;
+  word-break: keep-all;
+}
+
+.dark td {
+  border: 1px solid #555;
+  color: #e0e0e0;
+}
+
+/* 图片说明 */
+figcaption {
+  margin-top: 12px;
+  font-size: 0.875em;
+  color: #4a4a4a;
+  font-style: italic;
+  text-align: center;
+}
+
+.dark figcaption {
+  color: #b0b0b0;
+}
+
+/* 分割线 */
+hr {
+  border: none;
+  border-top: 2px solid #e0e0e0;
+  margin: 40px 0;
+  height: 0;
+  background: none;
+}
+
+.dark hr {
+  border-top: 2px solid #555;
+}
+
+/* GFM 警告块样式 */
+blockquote[data-type='note'] {
+  border-left-color: #1976d2;
+}
+
+.dark blockquote[data-type='note'] {
+  border-left-color: #64b5f6;
+}
+
+blockquote[data-type='tip'] {
+  border-left-color: #388e3c;
+}
+
+.dark blockquote[data-type='tip'] {
+  border-left-color: #81c784;
+}
+
+blockquote[data-type='info'] {
+  border-left-color: #0288d1;
+}
+
+.dark blockquote[data-type='info'] {
+  border-left-color: #4fc3f7;
+}
+
+blockquote[data-type='important'] {
+  border-left-color: #7b1fa2;
+}
+
+.dark blockquote[data-type='important'] {
+  border-left-color: #ba68c8;
+}
+
+blockquote[data-type='warning'] {
+  border-left-color: #f57c00;
+}
+
+.dark blockquote[data-type='warning'] {
+  border-left-color: #ffb74d;
+}
+
+blockquote[data-type='caution'] {
+  border-left-color: #d32f2f;
+}
+
+.dark blockquote[data-type='caution'] {
+  border-left-color: #e57373;
+}
+
+/* 警告块标题 */
+.blockquote-title {
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.blockquote-title[data-type='note'] {
+  color: #1976d2;
+}
+
+.dark .blockquote-title[data-type='note'] {
+  color: #64b5f6;
+}
+
+.blockquote-title[data-type='tip'] {
+  color: #388e3c;
+}
+
+.dark .blockquote-title[data-type='tip'] {
+  color: #81c784;
+}
+
+.blockquote-title[data-type='info'] {
+  color: #0288d1;
+}
+
+.dark .blockquote-title[data-type='info'] {
+  color: #4fc3f7;
+}
+
+.blockquote-title[data-type='important'] {
+  color: #7b1fa2;
+}
+
+.dark .blockquote-title[data-type='important'] {
+  color: #ba68c8;
+}
+
+.blockquote-title[data-type='warning'] {
+  color: #f57c00;
+}
+
+.dark .blockquote-title[data-type='warning'] {
+  color: #ffb74d;
+}
+
+.blockquote-title[data-type='caution'] {
+  color: #d32f2f;
+}
+
+.dark .blockquote-title[data-type='caution'] {
+  color: #e57373;
+}
+
+/* 脚注 */
+.footnotes {
+  margin: 0.5em 8px;
+  font-size: 80%;
+  color: hsl(var(--foreground));
+}
+
+.dark .footnotes {
+  color: #e0e0e0;
+}
+
+.footnote {
+  font-size: 12px;
+  color: hsl(var(--foreground));
+}
+
+.dark .footnote {
+  color: #e0e0e0;
+}
+
+/* 图表 */
+figure {
+  margin: 30px 0;
+  text-align: center;
+  color: hsl(var(--foreground));
+}
+
+.dark figure {
+  color: #e0e0e0;
+}
+
+/* 数学公式 */
+.katex {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5em 0;
+}
+
+/* 标记高亮 */
+mark {
+  background-color: var(--md-primary-color);
+  padding: 2px 4px;
+  border-radius: 2px;
+  color: #fff;
+}
+
+.dark mark {
+  color: #000;
+}
+
+/* 下划线 */
+u {
+  text-decoration: underline;
+  text-decoration-color: var(--md-primary-color);
+}
+
+.dark u {
+  color: #e0e0e0;
+}
+
+/* 波浪线 */
+.wavy {
+  text-decoration: underline wavy;
+  text-decoration-color: var(--md-primary-color);
+  text-decoration-thickness: 2px;
+}
+
+.dark .wavy {
+  color: #e0e0e0;
+}

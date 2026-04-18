@@ -1,0 +1,316 @@
+/**
+ * MD 主题：梅花（诗意简约）
+ * 灵感来源于极简诗篇，注重内容的清晰呈现和优雅的排版
+ */
+
+/* 容器背景：柔和浅色背景，突出内容区域，并留出左右内边距 */
+.md-container {
+  background-color: #f8f7f5;
+  padding: 20px 15px;
+}
+
+.dark .md-container {
+  background-color: hsl(var(--background));
+  padding: 20px 15px;
+}
+
+/* 段落：舒适行距，轻量字重（首行缩进交给面板控制） */
+p {
+  margin: 20px 0;
+  line-height: 1.8;
+  font-weight: 300;
+  color: #2c3e50;
+  letter-spacing: 0.3px;
+}
+
+/* 段落首字放大：通过渲染器注入的 <span class="md-p-first"> 实现，仅 W013 写样式 */
+p .md-p-first {
+  display: inline-block;
+  font-size: 1.3em;
+  font-weight: 800;
+  margin-right: 1px;
+}
+
+.dark p .md-p-first {
+  font-size: 1.3em;
+  font-weight: 800;
+  color: var(--md-primary-color);
+}
+
+.dark p {
+  color: #e5e7eb;
+}
+
+/* 一级标题：极简细字重，左对齐 */
+h1 {
+  display: block;
+  padding: 0;
+  border: none;
+  background: transparent;
+
+  font-size: 32px;
+  font-weight: 300;
+  color: #24313e;
+  margin: 24px 0 18px;
+  text-align: left;
+  letter-spacing: 2px;
+  line-height: 1.4;
+}
+
+.dark h1 {
+  color: #f9fafb;
+}
+
+/* 二级标题：简洁统一，用主题色作为主色 */
+h2 {
+  display: block;
+  padding: 0;
+  margin: 22px 0 12px;
+  background: transparent;
+  border: none;
+
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 1px;
+  color: var(--md-primary-color);
+}
+
+.dark h2 {
+  color: var(--md-primary-color);
+}
+
+/* 二级标题首字放大：通过渲染器注入的 <span class="md-h2-first"> 实现，避免使用 :: 伪元素 */
+/* h2 .md-h2-first {
+  display: inline-block;
+  font-size: 1.8em;
+  font-weight: 700;
+  margin-right: 2px;
+} */
+
+/* .dark h2 .md-h2-first {
+  font-size: 1.6em;
+  font-weight: 700;
+} */
+
+/* 三级及以下标题：层级递减，保持统一色调 */
+h3 {
+  font-size: 20px;
+  font-weight: 500;
+  color: #24313e;
+  margin: 28px 0 16px;
+  padding: 0;
+  letter-spacing: 0.5px;
+  border-left: none;
+}
+
+h4 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #24313e;
+  margin: 24px 0 14px;
+  padding: 0;
+  letter-spacing: 0.3px;
+}
+
+h5 {
+  font-size: 16px;
+  font-weight: 600;
+  color: #24313e;
+  margin: 20px 0 12px;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+h6 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #24313e;
+  margin: 18px 0 10px;
+  padding: 0;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #f9fafb;
+}
+
+/* 引用：浅灰背景 + 左侧高亮竖线 */
+blockquote {
+  background: #f8f9fa;
+  border: none;
+  border-left: 4px solid #c1d1db;
+  margin: 0;
+  /* 外部不额外留白，由上下段落控制 */
+  padding: 2px 4px;
+  /* 收紧上下内边距，避免“空壳子”太高 */
+  position: relative;
+  font-style: italic;
+  color: #34495e;
+  border-radius: 0 8px 8px 0;
+}
+
+blockquote p {
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.dark blockquote {
+  background: rgba(15, 23, 42, 0.7);
+  border-left-color: rgba(148, 163, 184, 0.9);
+  color: #e5e7eb;
+}
+
+.dark blockquote p {
+  color: inherit;
+}
+
+/* 列表：保留标准圆点 / 数字，增强行距 */
+ul {
+  list-style-type: disc;
+  padding-left: 25px;
+  margin: 20px 0;
+}
+
+ol {
+  padding-left: 25px;
+  margin: 20px 0;
+}
+
+ul li,
+ol li {
+  margin: 12px 0;
+  line-height: 1.7;
+  color: #2c3e50;
+}
+
+.dark ul li,
+.dark ol li {
+  color: #e5e7eb;
+}
+
+/* 代码块：不改颜色，由高亮主题控制，只加边框和阴影 */
+pre.code__pre,
+.hljs.code__pre {
+  position: relative;
+  border-radius: 8px;
+  margin: 25px 0;
+  padding: 25px;
+  border: 1px solid #bdc3c7;
+  box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+  font-family: 'SF Mono', 'Monaco', 'Consolas', 'Liberation Mono', Menlo, monospace;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+/* 行内代码：浅灰底 + 红色文字 */
+code {
+  background-color: #ecf0f1;
+  color: #e74c3c;
+  padding: 3px 6px;
+  border-radius: 4px;
+  font-family: 'SF Mono', 'Monaco', 'Consolas', monospace;
+  font-size: 0.9em;
+  font-weight: 500;
+}
+
+/* 表格：白底圆角 + 轻微阴影 */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 30px 0;
+  background-color: #ffffff;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(44, 62, 80, 0.1);
+}
+
+th {
+  background: #34495e;
+  color: #ffffff;
+  padding: 15px 20px;
+  text-align: left;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 15px 20px;
+  border-bottom: 1px solid #ecf0f1;
+  color: #2c3e50;
+}
+
+tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+tr:hover {
+  background-color: #ecf0f1;
+}
+
+/* 强调与斜体 */
+strong {
+  color: var(--md-primary-color);
+  font-weight: 600;
+}
+
+.dark strong {
+  color: var(--md-primary-color);
+}
+
+em {
+  color: #7f8c8d;
+  font-style: italic;
+}
+
+.dark em {
+  color: #9ca3af;
+}
+
+/* 链接：蓝色主色，下划线 hover 动画 */
+a {
+  color: #3498db;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+a:hover {
+  border-bottom-color: #3498db;
+}
+
+/* 分割线：细灰线，留出足够空白 */
+hr {
+  border-style: solid;
+  border-width: 2px 0 0;
+  border-color: rgba(225, 13, 13, 0.5);
+  -webkit-transform-origin: 0 0;
+  -webkit-transform: scale(1, 0.5);
+  transform-origin: 0 0;
+  transform: scale(1, 0.5);
+  height: 0.4em;
+  margin: 1.5em 0;
+}
+
+/* 简单的移动端调整 */
+@media (max-width: 768px) {
+  h1 {
+    font-size: 28px;
+    margin: 20px 0 14px;
+  }
+
+  h2 {
+    font-size: 22px;
+    margin: 18px 0 10px;
+  }
+
+  h3 {
+    font-size: 18px;
+    margin: 24px 0 14px;
+  }
+}

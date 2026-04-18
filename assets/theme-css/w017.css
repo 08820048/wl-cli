@@ -1,0 +1,472 @@
+/**
+ * MD 主题：黑郁金香（极客黑）
+ * 按 Alt/Option + Shift + F 可格式化
+ * 如需使用主题色，请使用 var(--md-primary-color) 代替颜色值
+ * 如：color: var(--md-primary-color);
+ * 新主题系统已全面支持 CSS 写法，你可以 F12 打开控制台查看具体的类名及标签
+ */
+
+/* 全局变量定义 */
+:root {
+  --md-primary: #000000;
+  /* 纯黑主色调 */
+  --md-text-color: #333333;
+  /* 正文文本色 */
+  --md-light-text: #666666;
+  /* 次要文本色 */
+  --md-border-color: #e5e5e5;
+  /* 边框色 */
+  --md-code-bg: #f5f5f5;
+  /* 代码背景色 */
+  --md-blockquote-bg: #f2f2f2;
+  /* 引用块背景 */
+  --md-table-row-hover: #f9f9f9;
+  /* 表格行悬停色 */
+}
+
+/* 深色模式变量定义 */
+.dark {
+  --md-primary: #ffffff;
+  /* 纯白主色调 */
+  --md-text-color: #f0f0f0;
+  /* 正文文本色 */
+  --md-light-text: #aaa;
+  /* 次要文本色 */
+  --md-border-color: #444;
+  /* 边框色 */
+  --md-code-bg: #2d2d2d;
+  /* 代码背景色 */
+  --md-blockquote-bg: #222;
+  /* 引用块背景 */
+  --md-table-row-hover: #2a2a2a;
+  /* 表格行悬停色 */
+}
+
+/* 根容器 */
+.md-container {
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 20px 15px;
+  background-color: #ffffff;
+  color: var(--md-text-color);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.7;
+  font-size: 16px;
+}
+
+.dark .md-container {
+  background-color: #1a1a1a;
+  color: var(--md-text-color);
+}
+
+/* 标题样式 */
+h1 {
+  color: var(--md-primary);
+  font-size: 28px;
+  font-weight: 700;
+  margin: 20px 0 12px;
+  line-height: 1.3;
+  text-align: center;
+  margin: 20px auto 16px;
+  border: none;
+}
+
+h1 ~ p:not(h2 ~ p) {
+  line-height: 1.8;
+  margin-bottom: 15px;
+  /* 兼容写法：先声明基础下划线，再指定为虚线，并控制颜色/粗细/偏移 */
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  text-decoration-color: var(--md-primary-color);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.16em;
+}
+
+/* 标题样式（替换原h2样式） */
+h2 {
+  color: #ffffff;
+  /* 文字白色 */
+  font-size: 24px;
+  font-weight: 700;
+  margin: 16px 0 10px;
+  line-height: 1.3;
+  /* 黑色背景+右侧圆角 */
+  background-color: #000000;
+  border-radius: 0 8px 90px 0;
+  /* 仅右侧圆角 */
+  padding: 10px 20px;
+  /* 内边距撑开背景 */
+  display: inline-block;
+  /* 背景宽度跟随文字 */
+}
+
+.dark h2 {
+  color: #000000;
+  background-color: #ffffff;
+}
+
+h3 {
+  font-size: 1.8em;
+  font-weight: 600;
+  margin: 40px 0 20px 0;
+  padding: 15px 0 15px 0;
+  text-align: left;
+  color: #0a0a0a;
+  position: relative;
+  letter-spacing: 0.3px;
+  background:
+    linear-gradient(var(--md-primary), var(--md-primary)) no-repeat,
+    linear-gradient(
+        color-mix(in srgb, var(--md-primary) 30%, transparent),
+        color-mix(in srgb, var(--md-primary) 30%, transparent)
+      )
+      no-repeat;
+  background-size:
+    60% 4px,
+    100% 2px;
+  background-position:
+    left bottom,
+    left bottom;
+  padding-bottom: 12px;
+  border: none;
+}
+
+.dark h3 {
+  color: #f0f0f0;
+  background:
+    linear-gradient(var(--md-primary), var(--md-primary)) no-repeat,
+    linear-gradient(
+        color-mix(in srgb, var(--md-primary) 30%, transparent),
+        color-mix(in srgb, var(--md-primary) 30%, transparent)
+      )
+      no-repeat;
+}
+
+h4 {
+  color: var(--md-primary);
+  font-size: 18px;
+  font-weight: 600;
+  margin: 18px 0 8px;
+  line-height: 1.3;
+}
+
+h5 {
+  color: var(--md-primary);
+  font-size: 16px;
+  font-weight: 600;
+  margin: 15px 0 8px;
+  line-height: 1.3;
+}
+
+h6 {
+  color: var(--md-primary);
+  font-size: 14px;
+  font-weight: 600;
+  margin: 12px 0 8px;
+  line-height: 1.3;
+}
+
+/* 段落和文本 */
+p {
+  margin: 12px 0;
+  text-align: justify;
+  font-weight: 300;
+}
+
+strong {
+  color: var(--md-primary);
+  font-weight: 800;
+}
+
+em {
+  color: var(--md-light-text);
+  font-style: italic;
+}
+
+/* 引用块 */
+blockquote {
+  margin: 15px 0;
+  padding: 15px 20px;
+  background-color: var(--md-blockquote-bg);
+  border-left: 2px solid var(--md-primary);
+  border-radius: 0;
+}
+
+.dark blockquote {
+  background-color: var(--md-blockquote-bg);
+  border-left-color: var(--md-primary);
+}
+
+blockquote > p {
+  margin: 0;
+  color: var(--md-light-text);
+  font-size: 15px;
+}
+
+/* 代码 */
+/* 行内代码 */
+code {
+  padding: 2px 6px;
+  background-color: var(--md-primary);
+  color: #ffffff;
+  font-size: 14px;
+  border-radius: 4px;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+.dark code {
+  background-color: var(--md-primary);
+  color: #000000;
+}
+
+/* 列表 */
+ol {
+  margin: 12px 0 12px 25px;
+  padding-left: 10px;
+}
+
+.dark ol {
+  color: var(--md-text-color);
+}
+
+ul {
+  margin: 12px 0 12px 25px;
+  padding-left: 10px;
+  list-style-type: square;
+  /* 核心修改：将默认disc（圆点）改为square（正方形） */
+  list-style-position: outside;
+  /* 正方形在列表项外，保持原有阅读排版习惯 */
+  color: var(--md-primary-color);
+  /* 正方形颜色继承纯黑主色调（可选，默认继承文字色） */
+}
+
+.dark ul {
+  color: var(--md-primary-color);
+}
+
+li {
+  margin: 8px 0;
+  /* 若需单独区分列表文字颜色（与正方形不同），可添加：
+  color: var(--md-text-color); */
+}
+
+.dark li {
+  color: var(--md-text-color);
+}
+
+li > ol,
+li > ul {
+  margin: 5px 0 5px 20px;
+  /* 嵌套列表继承正方形样式，无需额外修改，保持层级一致 */
+}
+
+/* 表格 */
+table {
+  width: 100%;
+  /* 表格宽度占满容器，适配公众号移动端排版 */
+  border-collapse: collapse;
+  /* 合并单元格边框，避免双边框视觉杂乱（需保证border变量名一致） */
+  margin: 20px 0;
+  /* 上下外边距，与其他内容拉开间距，提升阅读呼吸感 */
+}
+
+.dark table {
+  color: var(--md-text-color);
+}
+
+thead {
+  background-color: var(--md-code-bg);
+  /* 表头复用代码块背景色，保持全局样式统一 */
+}
+
+.dark thead {
+  background-color: var(--md-code-bg);
+}
+
+th {
+  padding: 12px 15px;
+  /* 表头内边距，避免文字紧贴边框 */
+  text-align: left;
+  /* 左对齐符合技术文章数据阅读习惯 */
+  font-weight: 600;
+  /* 加粗表头，强化视觉层级 */
+  color: var(--md-primary);
+  /* 修正：原变量名--md-primary可能未定义，改为全局主色--md-primary-color */
+  border: 1px solid var(--md-border-color);
+  /* 修正：变量名从--md-border改为正确的--md-border-color，保证边框色生效 */
+}
+
+.dark th {
+  background-color: var(--md-code-bg);
+  border-color: var(--md-border-color);
+  color: var(--md-primary);
+}
+
+td {
+  padding: 10px 15px;
+  /* 表体内边距略小于表头，细微区分层级 */
+  border: 1px solid var(--md-border-color);
+  /* 与表头边框样式统一，变量名正确 */
+  vertical-align: middle;
+  /* 垂直居中，适配不同行高内容 */
+}
+
+.dark td {
+  border-color: var(--md-border-color);
+  color: var(--md-text-color);
+}
+
+/* 偶数行背景色（第二、四、六行...）- 浅灰底色，实现交叉变色 */
+tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+  /* 浅灰色，与白色行形成柔和对比，不刺眼 */
+}
+
+.dark tbody tr:nth-child(even) {
+  background-color: #252525;
+}
+
+/* 奇数行背景色（第一、三、五行...）- 纯白色，作为基础色 */
+tbody tr:nth-child(odd) {
+  background-color: #ffffff;
+  /* 与容器背景一致，保证视觉统一 */
+}
+
+.dark tbody tr:nth-child(odd) {
+  background-color: #1a1a1a;
+}
+
+/* 行悬停效果 - 覆盖交叉色，提升交互体验 */
+tr:hover td,
+tr:hover th {
+  /* 新增：tr:hover th 让表头行悬停也有背景色，保持视觉统一 */
+  background-color: var(--md-table-row-hover);
+  /* 悬停底色，优先级高于奇偶行色 */
+  transition: background-color 0.2s ease;
+  /* 过渡效果，公众号兼容 */
+}
+
+/* 其他元素 */
+img {
+  max-width: 100%;
+  height: auto;
+  margin: 15px 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid var(--md-border-color);
+  margin: 25px 0;
+}
+
+.dark hr {
+  border-top-color: var(--md-border-color);
+}
+
+figure {
+  margin: 20px 0;
+}
+
+.dark figure {
+  color: var(--md-text-color);
+}
+
+figcaption {
+  text-align: center;
+  font-size: 14px;
+  color: var(--md-light-text);
+  margin-top: 8px;
+}
+
+.dark figcaption {
+  color: var(--md-light-text);
+}
+
+/* KaTeX 公式 */
+.katex-inline {
+  font-size: 1em;
+  margin: 0 4px;
+}
+
+.katex-block {
+  margin: 15px 0;
+  overflow-x: auto;
+}
+
+/* Markup 标记 */
+/* 高亮 ==文本== */
+.markup-highlight {
+  background-color: #fff8e1;
+  padding: 2px 4px;
+  border-radius: 3px;
+  color: var(--md-primary-color);
+}
+
+.dark .markup-highlight {
+  background-color: #554c20;
+  color: var(--md-text-color);
+}
+
+/* 下划线 ++文本++ */
+.markup-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--md-primary-color);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 2px;
+}
+
+/* 波浪线 ~文本~ */
+.markup-wavyline {
+  text-decoration: wavy underline;
+  text-decoration-color: var(--md-light-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 2px;
+}
+
+/* GFM Alert 警告块 */
+/* Alert 标题 */
+.alert-title-note,
+.alert-title-tip,
+.alert-title-info,
+.alert-title-important,
+.alert-title-warning,
+.alert-title-caution {
+  color: var(--md-primary-color);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.dark .alert-title-note,
+.dark .alert-title-tip,
+.dark .alert-title-info,
+.dark .alert-title-important,
+.dark .alert-title-warning,
+.dark .alert-title-caution {
+  color: var(--md-primary-color);
+}
+
+/* Alert SVG 图标 */
+.alert-icon-note,
+.alert-icon-tip,
+.alert-icon-info,
+.alert-icon-important,
+.alert-icon-warning,
+.alert-icon-caution {
+  width: 18px;
+  height: 18px;
+  margin-right: 8px;
+  vertical-align: middle;
+  fill: var(--md-primary-color);
+}
+
+.dark .alert-icon-note,
+.dark .alert-icon-tip,
+.dark .alert-icon-info,
+.dark .alert-icon-important,
+.dark .alert-icon-warning,
+.dark .alert-icon-caution {
+  fill: var(--md-primary-color);
+}

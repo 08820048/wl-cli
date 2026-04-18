@@ -1,0 +1,438 @@
+/**
+ * MD 主题：樱花
+ * 按 Alt/Option + Shift + F 可格式化
+ * 如需使用主题色，请使用 var(--md-primary-color) 代替颜色值
+ */
+
+/* ==================== 标题样式 ==================== */
+h1 {
+  padding: 0.5em 1em;
+  border: none;
+  font-size: calc(var(--md-font-size) * 1.4);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--md-primary-color); /* 原 h2 的红色 */
+  text-align: center;
+  background: none;
+  margin: 18px 0 10px;
+  line-height: 1.35;
+}
+
+h2 {
+  padding: 1px 1px;
+  border: none;
+  font-size: calc(var(--md-font-size) * 1.4);
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  color: var(--md-primary-color); /* 原 h2 的红色 */
+  text-align: center;
+  background: none;
+  margin: 20px auto 16px;
+  line-height: 1.35;
+}
+
+h3,
+h4,
+h5,
+h6 {
+  text-align: left;
+  margin-left: 0;
+  padding: 0;
+  border: none;
+  background: none;
+  color: #000000;
+  line-height: 1.35;
+}
+
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+  color: #e5e5e5;
+}
+
+/* 字号大小逐级递减，保持清晰层级感 */
+h3 {
+  font-size: calc(var(--md-font-size) * 1.2);
+  margin: 18px 0 10px;
+}
+
+h4 {
+  font-size: calc(var(--md-font-size) * 1.1);
+  margin: 16px 0 8px;
+}
+
+h5 {
+  font-size: calc(var(--md-font-size) * 1);
+  margin: 14px 0 8px;
+}
+
+h6 {
+  font-size: calc(var(--md-font-size) * 0.9);
+  margin: 12px 0 6px;
+}
+
+/* ==================== 列表 ==================== */
+ol {
+  list-style: decimal;
+  padding-left: 1.5em;
+}
+
+/* 无序列表：将默认黑圆点改为黑方块 */
+ul {
+  list-style: square; /* 改为方块 */
+  padding-left: 1.5em;
+}
+
+/* 更深层嵌套的无序列表也可以保持方块（可选增强） */
+ul ul {
+  list-style: square;
+}
+
+/* 隐藏渲染器注入的前缀，统一使用原生 marker */
+.md-list-prefix {
+  display: none;
+}
+
+li {
+  margin: 0.5em 8px;
+}
+
+/* 例外：紧跟在一级标题后的第一个段落恢复正常黑色和字重 */
+h1 ~ p {
+  color: #292727; /* 恢复默认文本色（通常是深色） */
+  font-weight: normal;
+}
+
+/* ==================== 段落文本 ==================== */
+/* 默认段落文本：浅灰色 + 字重 300 */
+p {
+  color: #292727; /* 浅灰色 */
+  font-weight: 300;
+  line-height: 1.7;
+}
+
+/* 深色模式下的段落文本颜色 */
+.dark p {
+  color: #e5e5e5;
+}
+
+/* 深色模式下：紧跟在一级标题后的第一个段落 */
+.dark h1 ~ p {
+  color: #e5e5e5;
+}
+
+/* ==================== 引用块 ==================== */
+blockquote {
+  font-style: normal;
+  padding: 1em;
+  border-left: 4px solid #ea4764;
+  border-radius: 1px;
+  color: hsl(var(--foreground));
+  background: var(--blockquote-background);
+  margin-bottom: 1em;
+}
+
+blockquote > p {
+  display: block;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+  color: var(--text-color);
+  font-weight: 300;
+  margin: 0;
+  background: none;
+}
+
+/* 不同类型提示框的边框颜色 */
+.markdown-alert-note {
+  border-left-color: #478be6;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+.markdown-alert-tip {
+  border-left-color: #57ab5a;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+.markdown-alert-info {
+  border-left-color: #93c5fd;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+.markdown-alert-important {
+  border-left-color: #986ee2;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+.markdown-alert-warning {
+  border-left-color: #c69026;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+.markdown-alert-caution {
+  border-left-color: #e5534b;
+  border-radius: 1px;
+  background-color: #ffffff;
+}
+
+/* 深色模式下的提示框背景色 */
+.dark .markdown-alert-note {
+  background-color: rgba(71, 139, 230, 0.1);
+}
+
+.dark .markdown-alert-tip {
+  background-color: rgba(87, 171, 90, 0.1);
+}
+
+.dark .markdown-alert-info {
+  background-color: rgba(147, 197, 253, 0.1);
+}
+
+.dark .markdown-alert-important {
+  background-color: rgba(152, 110, 226, 0.1);
+}
+
+.dark .markdown-alert-warning {
+  background-color: rgba(198, 144, 38, 0.1);
+}
+
+.dark .markdown-alert-caution {
+  background-color: rgba(229, 83, 75, 0.1);
+}
+
+/* 深色模式下提示框内的文本颜色 */
+.dark .markdown-alert-note p,
+.dark .markdown-alert-tip p,
+.dark .markdown-alert-info p,
+.dark .markdown-alert-important p,
+.dark .markdown-alert-warning p,
+.dark .markdown-alert-caution p {
+  color: #e5e5e5;
+}
+
+/* ==================== GFM 警告块 ==================== */
+.alert-title-note,
+.alert-title-tip,
+.alert-title-info,
+.alert-title-important,
+.alert-title-warning,
+.alert-title-caution {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin-bottom: 0.5em;
+}
+
+.alert-title-note {
+  color: #478be6;
+}
+
+.alert-title-tip {
+  color: #57ab5a;
+}
+
+.alert-title-info {
+  color: #93c5fd;
+}
+
+.alert-title-important {
+  color: #986ee2;
+}
+
+.alert-title-warning {
+  color: #c69026;
+}
+
+.alert-title-caution {
+  color: #e5534b;
+}
+
+/* GFM Alert SVG 图标颜色 */
+.alert-icon-note {
+  fill: #478be6;
+}
+
+.alert-icon-tip {
+  fill: #57ab5a;
+}
+
+.alert-icon-info {
+  fill: #93c5fd;
+}
+
+.alert-icon-important {
+  fill: #986ee2;
+}
+
+.alert-icon-warning {
+  fill: #c69026;
+}
+
+.alert-icon-caution {
+  fill: #e5534b;
+}
+
+/* ==================== 图片 ==================== */
+img {
+  display: block;
+  max-width: 100%;
+  margin: 0.1em auto 0.5em;
+  border-radius: 4px;
+}
+
+/* ==================== 列表 ==================== */
+ol {
+  list-style: decimal;
+  padding-left: 1em;
+  margin-left: 0;
+  color: var(--text-color);
+  font-weight: 300;
+}
+
+ul {
+  list-style: square;
+  padding-left: 1em;
+  margin-left: 0;
+  color: var(--text-color);
+  font-weight: 300;
+}
+
+/* 默认主题隐藏渲染器注入的前缀，避免与原生 marker 重复 */
+.md-list-prefix {
+  display: none;
+}
+
+li {
+  display: list-item;
+  margin: 0.2em 8px;
+  color: var(--text-color);
+  font-weight: 300;
+}
+
+/* 深色模式下的列表文本颜色 */
+.dark li {
+  color: #e5e5e5;
+}
+
+/* ==================== 脚注 ==================== */
+/* footnotes 在 buildFootnotes() 中渲染为 <p> 标签 */
+p.footnotes {
+  margin: 0.5em 8px;
+  font-size: 80%;
+  color: hsl(var(--foreground));
+}
+
+/* ==================== 图表 ==================== */
+figure {
+  margin: 1.5em 8px;
+  color: hsl(var(--foreground));
+}
+
+figcaption,
+.md-figcaption {
+  text-align: center;
+  color: #888;
+  font-size: 0.8em;
+}
+
+/* ==================== 分隔线 ==================== */
+hr {
+  border-style: solid;
+  border-width: 2px 0 0;
+  border-color: rgba(0, 0, 0, 0.1);
+  -webkit-transform-origin: 0 0;
+  -webkit-transform: scale(1, 0.5);
+  transform-origin: 0 0;
+  transform: scale(1, 0.5);
+  height: 0.4em;
+  margin: 1.5em 0;
+}
+
+/* ==================== 行内代码 ==================== */
+code {
+  font-size: 90%;
+  color: #d14;
+  background: rgba(27, 31, 35, 0.05);
+  padding: 3px 5px;
+  border-radius: 4px;
+}
+
+/* ==================== 强调 ==================== */
+em {
+  font-style: italic;
+  font-size: inherit;
+}
+
+/* ==================== 链接 ==================== */
+a {
+  color: #576b95;
+  text-decoration: none;
+}
+
+/* ==================== 粗体 ==================== */
+strong {
+  color: #ea4764;
+  font-weight: bold;
+  font-size: inherit;
+}
+
+/* ==================== 表格 ==================== */
+table {
+  color: hsl(var(--foreground));
+}
+
+thead {
+  font-weight: bold;
+  color: hsl(var(--foreground));
+}
+
+th {
+  border: 1px solid #ea4764;
+  padding: 0.25em 0.5em;
+  color: hsl(var(--foreground));
+  word-break: keep-all;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+td {
+  border: 1px solid #ea4764;
+  padding: 0.25em 0.5em;
+  color: hsl(var(--foreground));
+  word-break: keep-all;
+}
+
+/* ==================== KaTeX 公式 ==================== */
+.katex-inline {
+  max-width: 100%;
+  overflow-x: auto;
+}
+
+.katex-block {
+  max-width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 0.5em 0;
+  text-align: center;
+}
+
+/* ==================== 标记高亮 ==================== */
+.markup-highlight {
+  background-color: var(--md-primary-color);
+  padding: 2px 4px;
+  border-radius: 2px;
+  color: #fff;
+}
+
+.markup-underline {
+  text-decoration: underline;
+  text-decoration-color: var(--md-primary-color);
+}
+
+.markup-wavyline {
+  text-decoration: underline wavy;
+  text-decoration-color: var(--md-primary-color);
+  text-decoration-thickness: 2px;
+}

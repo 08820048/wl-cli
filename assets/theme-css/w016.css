@@ -1,0 +1,411 @@
+/**
+ * MD 主题：海棠
+ */
+
+:root {
+  --md-primary: #07c662;
+  /* 灵动蓝（非传统微信蓝） */
+  --md-secondary: #f08080;
+  /* 柔粉（提升辨识度） */
+  --md-tertiary: #67c23a;
+  /* 清新绿 */
+  --md-text-main: #303133;
+  --md-text-light: #606266;
+  --md-bg-base: #fff;
+  --md-bg-light: #f9fafc;
+
+  /* 主色（示例） */
+
+  --md-primary-rgb: 45, 140, 240;
+  /* 主色RGB值，用于透明度渐变 */
+  --md-text-main: #333;
+}
+
+/* 深色模式变量定义 */
+.dark {
+  --md-primary: #07c662;
+  --md-secondary: #f08080;
+  --md-tertiary: #67c23a;
+  --md-text-main: #f0f0f0;
+  --md-text-light: #ccc;
+  --md-bg-base: #1a1a1a;
+  --md-bg-light: #222;
+  --md-primary-rgb: 45, 140, 240;
+}
+
+/* 根容器基础适配 */
+.md-container {
+  max-width: 750px;
+  margin: 0 auto;
+  padding: 16px;
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  color: var(--md-text-main);
+  line-height: 1.7;
+  font-size: 16px;
+  background: var(--md-bg-base);
+}
+
+.dark .md-container {
+  background: var(--md-bg-base);
+}
+
+/* 标题创意修饰 - 完全差异化设计 */
+/* h1：渐变文字（用背景裁剪实现，无伪元素）+ 字间距 + 居中 */
+h1 {
+  font-size: 28px;
+  font-weight: 800;
+  margin: 20px auto 12px;
+  line-height: 1.3;
+  text-align: center;
+  /* 创意核心：渐变文字（公众号兼容的轻量化渐变） */
+  background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: 2px;
+  border: none;
+  /* 增加呼吸感 */
+}
+
+.dark h1 {
+  background: linear-gradient(90deg, var(--md-primary), var(--md-secondary));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* h2：文字描边（阴影叠加）+ 镂空背景 + 虚线边框 */
+h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 16px auto 8px;
+  line-height: 1.4;
+  color: var(--md-primary);
+  /* 创意核心：多层阴影模拟描边，替代传统边框 */
+  text-shadow:
+    1px 1px 0 #fff,
+    -1px -1px 0 #fff,
+    1px -1px 0 #fff,
+    -1px 1px 0 #fff;
+  /* 镂空背景 + 虚线边框，轻量又独特 */
+  background: var(--md-bg-light);
+  padding: 8px 16px;
+  border: 2px dashed var(--md-primary-color);
+  /* border-radius: 8px; */
+}
+
+.dark h2 {
+  background: var(--md-bg-light);
+  border-color: var(--md-primary-color);
+  text-shadow:
+    1px 1px 0 #000,
+    -1px -1px 0 #000,
+    1px -1px 0 #000,
+    -1px 1px 0 #000;
+  color: var(--md-text-main);
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 18px 0 10px;
+  line-height: 1.4;
+  color: var(--md-text-main);
+  padding: 4px 12px 8px;
+  display: inline-block;
+  /* 底部加padding，给虚线留空间 */
+  /* 清空原有背景/阴影/边框 */
+  background: none;
+  box-shadow: none;
+  border-radius: 0;
+  border: none;
+  /* 核心：文本下方渐隐虚线（用背景实现，无伪元素） */
+  background: linear-gradient(to right, var(--md-primary-color), rgba(var(--md-primary-rgb), 0) /* 渐隐效果 */) bottom
+    left / 80% 1px no-repeat;
+  /* 宽度80%、高度1px，贴底靠左 */
+  background-image:
+    linear-gradient(to right, var(--md-primary-color), rgba(var(--md-primary-rgb), 0)),
+    repeating-linear-gradient(
+      90deg,
+      var(--md-primary-color) 0px,
+      var(--md-primary-color) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  /* 虚线+渐隐叠加 */
+  background-size:
+    100% 1px,
+    80% 1px;
+  /* 渐隐层100%宽，虚线层80%宽 */
+  background-position:
+    bottom left,
+    bottom left;
+  background-repeat: no-repeat;
+}
+
+.dark h3 {
+  color: var(--md-text-main);
+  background-image:
+    linear-gradient(to right, var(--md-primary-color), rgba(var(--md-primary-rgb), 0)),
+    repeating-linear-gradient(
+      90deg,
+      var(--md-primary-color) 0px,
+      var(--md-primary-color) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+}
+
+/* h4：颜色渐变背景（窄条）+ 文字悬浮感 + 圆角 */
+h4 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 18px 0 10px;
+  line-height: 1.4;
+  color: var(--md-text-main);
+  /* 创意核心：左侧窄条渐变背景，替代常规边框 */
+  padding: 4px 12px;
+  background: linear-gradient(to right, var(--md-primary) 0%, var(--md-primary) 8px, transparent 8px);
+  /* 轻微阴影营造悬浮感 */
+  box-shadow: 0 2px 4px rgba(45, 140, 240, 0.1);
+  border-radius: 4px;
+}
+
+.dark h4 {
+  color: var(--md-text-main);
+  background: linear-gradient(to right, var(--md-primary) 0%, var(--md-primary) 8px, transparent 8px);
+  box-shadow: 0 2px 4px rgba(45, 140, 240, 0.2);
+}
+
+/* h5：文字标色 + 角标装饰（用背景图实现） */
+h5 {
+  font-size: 17px;
+  font-weight: 600;
+  margin: 16px 0 8px;
+  line-height: 1.4;
+  color: var(--md-secondary);
+  padding-right: 20px;
+}
+
+.dark h5 {
+  color: var(--md-secondary);
+}
+
+/* h6：复古打字机风格（字母间距 + 轻微模糊 + 颜色做旧） */
+h6 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 14px 0 8px;
+  line-height: 1.4;
+  /* 创意核心：复古做旧效果，区别常规浅灰色 */
+  color: #888;
+  letter-spacing: 1px;
+  opacity: 0.85;
+  filter: blur(0.3px);
+  /* 轻微模糊，营造复古感 */
+}
+
+.dark h6 {
+  color: #aaa;
+}
+
+/* 基础文本样式（极简，突出标题） */
+p {
+  margin: 12px 0;
+  text-align: justify;
+  color: var(--md-text-main);
+  font-weight: 300;
+}
+
+.dark p {
+  color: var(--md-text-main);
+}
+
+strong {
+  color: var(--md-primary);
+  font-weight: 700;
+}
+
+em {
+  color: var(--md-text-light);
+}
+
+.dark em {
+  color: var(--md-text-light);
+}
+
+/* 其他元素极简适配（不抢标题风头） */
+/* blockquote {
+  background: var(--md-bg-light);
+  padding: 12px 16px;
+  margin: 16px 0;
+  border-radius: 2px;
+  border-color: var(--md-primary);
+} */
+blockquote {
+  background: var(--md-bg-light);
+  padding: 20px 16px 20px 24px;
+  margin: 20px 0;
+  border-radius: 2px;
+  /* 更大圆角更柔和 */
+  border-left: 4px solid;
+  border-image: linear-gradient(to bottom, var(--md-primary-color), var(--md-primary-color)) 1;
+  /* 渐变侧边 */
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  color: var(--md-text-main);
+}
+
+.dark blockquote {
+  background: var(--md-bg-light);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  color: var(--md-text-main);
+}
+
+/* 响应式：小屏取消旋转，避免错位 */
+@media (max-width: 768px) {
+  blockquote {
+    transform: none;
+  }
+}
+
+code {
+  background: #f5f5f5;
+  padding: 2px 6px;
+  border-radius: 2px;
+  font-size: 14px;
+  color: var(--md-primary);
+}
+
+.dark code {
+  background: #2d2d2d;
+  color: var(--md-primary);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  margin: 16px 0;
+  border-radius: 8px;
+}
+
+/* 列表样式 */
+ol {
+  color: var(--md-text-main);
+}
+
+.dark ol {
+  color: var(--md-text-main);
+}
+
+ul {
+  color: var(--md-text-main);
+}
+
+.dark ul {
+  color: var(--md-text-main);
+}
+
+li {
+  color: var(--md-text-main);
+}
+
+.dark li {
+  color: var(--md-text-main);
+}
+
+/* 表格样式 */
+table {
+  color: var(--md-text-main);
+}
+
+.dark table {
+  color: var(--md-text-main);
+}
+
+th {
+  color: var(--md-text-main);
+}
+
+.dark th {
+  color: var(--md-text-main);
+}
+
+td {
+  color: var(--md-text-main);
+}
+
+.dark td {
+  color: var(--md-text-main);
+}
+
+/* 其他元素 */
+hr {
+  border-color: var(--md-text-main);
+}
+
+.dark hr {
+  border-color: var(--md-text-main);
+}
+
+figure {
+  color: var(--md-text-main);
+}
+
+.dark figure {
+  color: var(--md-text-main);
+}
+
+figcaption {
+  color: var(--md-text-light);
+}
+
+.dark figcaption {
+  color: var(--md-text-light);
+}
+
+/* KaTeX 公式 */
+.katex-inline {
+  color: var(--md-text-main);
+}
+
+.dark .katex-inline {
+  color: var(--md-text-main);
+}
+
+.katex-block {
+  color: var(--md-text-main);
+}
+
+.dark .katex-block {
+  color: var(--md-text-main);
+}
+
+/* Markup 标记 */
+/* 高亮 ==文本== */
+.markup-highlight {
+  background-color: #ffffcc;
+  color: #333;
+}
+
+.dark .markup-highlight {
+  background-color: #555500;
+  color: var(--md-text-main);
+}
+
+/* 下划线 ++文本++ */
+.markup-underline {
+  color: var(--md-text-main);
+}
+
+.dark .markup-underline {
+  color: var(--md-text-main);
+}
+
+/* 波浪线 ~文本~ */
+.markup-wavyline {
+  color: var(--md-text-main);
+}
+
+.dark .markup-wavyline {
+  color: var(--md-text-main);
+}

@@ -1,0 +1,455 @@
+/**
+ * MD 主题：紫罗兰（newsprint）
+ */
+
+/* 全局变量定义 */
+:root {
+  --bg-color: #f3f2ee;
+  --text-color: #1f0909;
+  --border-color: #c5c5c5;
+  --code-bg-color: #dadada;
+  --blockquote-color: #656565;
+  --blockquote-border-color: #bababa;
+}
+
+/* 深色模式变量定义 */
+.dark {
+  --bg-color: #1e1e1c;
+  --text-color: #f0f0f0;
+  --border-color: #444;
+  --code-bg-color: #2d2d2d;
+  --blockquote-color: #aaa;
+  --blockquote-border-color: #777;
+}
+
+/* 根容器 */
+.md-container {
+  max-width: 40em;
+  background-color: var(--bg-color);
+  font-family: 'PT Serif', 'Times New Roman', Times, serif;
+  color: var(--text-color);
+  line-height: 1.5em;
+  font-size: 16px;
+}
+
+.dark .md-container {
+  background-color: var(--bg-color);
+}
+
+/* 标题样式 */
+h1 {
+  font-size: 1.875em;
+  line-height: 1.3em;
+  font-weight: normal;
+  margin-top: 1.4em;
+  margin-bottom: 0.35em;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.8125em;
+  color: var(--text-color);
+}
+
+.dark h1 {
+  border-bottom-color: var(--border-color);
+  color: var(--text-color);
+}
+
+h2 {
+  display: block;
+  font-size: 1.3125em;
+  line-height: 1.15;
+  font-weight: bold;
+  margin-top: 1.6em;
+  margin-bottom: 0.5em;
+  margin-left: 8px;
+  margin-right: 8px;
+  padding: 0;
+  color: var(--text-color);
+  background: none;
+  text-align: left;
+}
+
+h3 {
+  display: block;
+  font-size: 1.3125em;
+  line-height: 1.15;
+  font-weight: normal;
+  margin-top: 2.285714em;
+  margin-bottom: 0.75em;
+  margin-left: 8px;
+  margin-right: 8px;
+  padding: 0;
+  color: var(--text-color);
+  background: none;
+  text-align: left;
+  border: none;
+}
+
+h4 {
+  font-size: 1.125em;
+  font-weight: bold;
+  margin-top: 2.67em;
+  margin-bottom: 1.5em;
+  color: var(--text-color);
+}
+
+h5 {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 1.5em;
+  color: var(--text-color);
+}
+
+h6 {
+  font-size: 1em;
+  font-weight: bold;
+  margin-bottom: 1.5em;
+  color: var(--text-color);
+}
+
+/* 段落和文本 */
+p {
+  margin-bottom: 1.5em;
+  line-height: 1.5em;
+  color: var(--text-color);
+}
+
+.dark p {
+  color: var(--text-color);
+}
+
+strong {
+  font-weight: bold;
+  color: var(--md-primary-color);
+}
+
+em {
+  font-style: italic;
+  color: var(--text-color);
+}
+
+.dark em {
+  color: var(--text-color);
+}
+
+/* 引用块 */
+blockquote {
+  font-style: italic;
+  border: none;
+  border-left: 5px solid var(--blockquote-border-color);
+  border-radius: 0;
+  background: none;
+  margin-left: 2em;
+  margin-bottom: 1.5em;
+  padding: 0;
+  padding-left: 1em;
+  color: var(--blockquote-color);
+}
+
+.dark blockquote {
+  border-left-color: var(--blockquote-border-color);
+  background-color: rgba(255, 255, 255, 0.05);
+  color: var(--blockquote-color);
+}
+
+blockquote > p {
+  margin-bottom: 1.5em;
+  color: var(--blockquote-color);
+}
+
+.dark blockquote > p {
+  color: var(--blockquote-color);
+}
+
+/* 代码 */
+/* 行内代码 */
+code {
+  background-color: var(--code-bg-color);
+  color: #656565;
+  padding-left: 2px;
+  padding-right: 2px;
+  font-size: 0.875em;
+  line-height: 1.714285em;
+}
+
+.dark code {
+  background-color: var(--code-bg-color);
+  color: #ccc;
+}
+
+/* 列表 */
+ol {
+  margin: 0 0 1.5em 1.5em;
+  color: var(--text-color);
+}
+
+.dark ol {
+  color: var(--text-color);
+}
+
+ul {
+  margin: 0 0 1.5em 1.5em;
+  color: var(--text-color);
+}
+
+.dark ul {
+  color: var(--text-color);
+}
+
+li {
+  line-height: 1.5em;
+  color: var(--text-color);
+}
+
+.dark li {
+  color: var(--text-color);
+}
+
+/* 表格 */
+table {
+  margin-bottom: 1.5em;
+  font-size: 1em;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: var(--text-color);
+}
+
+.dark table {
+  color: var(--text-color);
+}
+
+thead {
+  background-color: var(--code-bg-color);
+}
+
+.dark thead {
+  background-color: var(--code-bg-color);
+}
+
+th {
+  padding: 0.25em 0.25em 0.25em 0.4em;
+  text-transform: uppercase;
+  text-align: left;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+.dark th {
+  background-color: var(--code-bg-color);
+  color: var(--text-color);
+}
+
+td {
+  vertical-align: top;
+  padding: 0.25em 0.25em 0.25em 0.4em;
+  color: var(--text-color);
+}
+
+.dark td {
+  color: var(--text-color);
+}
+
+/* 其他元素 */
+img {
+  max-width: 100%;
+}
+
+hr {
+  border-top: none;
+  border-right: none;
+  border-bottom: 1px solid var(--border-color);
+  border-left: none;
+  margin: 1.5em 0;
+}
+
+.dark hr {
+  border-bottom-color: var(--border-color);
+}
+
+figure {
+  margin-bottom: 1.5em;
+  color: var(--text-color);
+}
+
+.dark figure {
+  color: var(--text-color);
+}
+
+figcaption {
+  font-size: 0.875em;
+  color: #555;
+}
+
+.dark figcaption {
+  color: #aaa;
+}
+
+/* 链接 */
+a {
+  text-decoration: none;
+  color: var(--md-primary-color);
+}
+
+.dark a {
+  color: var(--md-primary-color);
+}
+
+a:hover,
+a:active {
+  text-decoration: underline;
+}
+
+/* KaTeX 公式 */
+.katex-inline {
+  font-size: 1em;
+  color: var(--text-color);
+}
+
+.dark .katex-inline {
+  color: var(--text-color);
+}
+
+.katex-block {
+  margin-bottom: 1.5em;
+  color: var(--text-color);
+}
+
+.dark .katex-block {
+  color: var(--text-color);
+}
+
+/* Markup 标记 */
+/* 高亮 ==文本== */
+.markup-highlight {
+  background-color: #ffffcc;
+  color: #333;
+}
+
+.dark .markup-highlight {
+  background-color: #555500;
+  color: var(--text-color);
+}
+
+/* 下划线 ++文本++ */
+.markup-underline {
+  text-decoration: underline;
+  color: var(--text-color);
+}
+
+.dark .markup-underline {
+  color: var(--text-color);
+}
+
+/* 波浪线 ~文本~ */
+.markup-wavyline {
+  text-decoration: wavy underline;
+  color: var(--text-color);
+}
+
+.dark .markup-wavyline {
+  color: var(--text-color);
+}
+
+/* GFM Alert 警告块 */
+/* Alert 标题 */
+.alert-title-note {
+  color: var(--md-primary-color);
+  font-weight: bold;
+}
+
+.dark .alert-title-note {
+  color: var(--md-primary-color);
+}
+
+.alert-title-tip {
+  color: #2ea043;
+  font-weight: bold;
+}
+
+.dark .alert-title-tip {
+  color: #4ac266;
+}
+
+.alert-title-info {
+  color: #0969da;
+  font-weight: bold;
+}
+
+.dark .alert-title-info {
+  color: #42a5ff;
+}
+
+.alert-title-important {
+  color: #8250df;
+  font-weight: bold;
+}
+
+.dark .alert-title-important {
+  color: #a37deb;
+}
+
+.alert-title-warning {
+  color: #bf8700;
+  font-weight: bold;
+}
+
+.dark .alert-title-warning {
+  color: #e0b022;
+}
+
+.alert-title-caution {
+  color: #cf222e;
+  font-weight: bold;
+}
+
+.dark .alert-title-caution {
+  color: #e5555e;
+}
+
+/* Alert SVG 图标 */
+.alert-icon-note {
+  color: var(--md-primary-color);
+}
+
+.dark .alert-icon-note {
+  color: var(--md-primary-color);
+}
+
+.alert-icon-tip {
+  color: #2ea043;
+}
+
+.dark .alert-icon-tip {
+  color: #4ac266;
+}
+
+.alert-icon-info {
+  color: #0969da;
+}
+
+.dark .alert-icon-info {
+  color: #42a5ff;
+}
+
+.alert-icon-important {
+  color: #8250df;
+}
+
+.dark .alert-icon-important {
+  color: #a37deb;
+}
+
+.alert-icon-warning {
+  color: #bf8700;
+}
+
+.dark .alert-icon-warning {
+  color: #e0b022;
+}
+
+.alert-icon-caution {
+  color: #cf222e;
+}
+
+.dark .alert-icon-caution {
+  color: #e5555e;
+}
