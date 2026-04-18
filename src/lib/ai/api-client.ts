@@ -41,6 +41,20 @@ interface ResolvedModelConfig {
   provider: string
 }
 
+interface OllamaStreamPayload {
+  message?: {content?: string}
+  response?: string
+}
+
+interface OpenAiLikeStreamPayload {
+  choices?: Array<{
+    delta?: {content?: string}
+    message?: {
+      content?: Array<string | {text?: string}> | string
+    }
+  }>
+}
+
 function normalizeBaseUrl(url: string): string {
   return url.replace(/\/+$/, '')
 }
@@ -50,6 +64,10 @@ function isOllamaIdentifier(identifier: string): boolean {
     || (identifier.startsWith('llama') && !identifier.includes('qwen'))
     || identifier.startsWith('mistral')
     || (identifier.includes(':') && !identifier.startsWith('http'))
+}
+
+export function modelRequiresApiKey(identifier: string): boolean {
+  return !isOllamaIdentifier(identifier)
 }
 
 function mapIdentifierToApiModel(identifier: string): string {
@@ -127,6 +145,29 @@ async function validateModel(identifier: string): Promise<ModelValidationRespons
   return payload.data
 }
 
+export async function validateAiModelIdentifier(identifier: string): Promise<{identifier: string; provider: string}> {
+  if (isOllamaIdentifier(identifier)) {
+    return {
+      identifier,
+      provider: 'OLLAMA',
+    }
+  }
+
+  const [serverModel, validation] = await Promise.all([
+    getServerModel(identifier),
+    validateModel(identifier),
+  ])
+
+  if (!validation.valid) {
+    throw new Error(validation.errorMessage || `模型 ${identifier} 当前不可用`)
+  }
+
+  return {
+    identifier: serverModel.identifier,
+    provider: serverModel.provider.toUpperCase(),
+  }
+}
+
 async function resolveModelConfig(identifier: string, localApiKey?: string): Promise<ResolvedModelConfig> {
   if (isOllamaIdentifier(identifier)) {
     const endpoint = process.env.WL_OLLAMA_BASE_URL || 'http://localhost:11434'
@@ -182,11 +223,11 @@ function buildApiUrl(config: ResolvedModelConfig): string {
     : `${baseUrl}/chat/completions`
 }
 
-function buildRequestBody(config: ResolvedModelConfig, messages: ChatMessage[], webSearch: boolean) {
+function buildRequestBody(config: ResolvedModelConfig, messages: ChatMessage[], webSearch: boolean, stream: boolean) {
   const baseBody: Record<string, unknown> = {
     messages,
     model: config.apiModel,
-    stream: false,
+    stream,
     temperature: 0.7,
   }
   Object.assign(baseBody, {'max_tokens': config.maxTokens})
@@ -226,7 +267,7 @@ function buildRequestBody(config: ResolvedModelConfig, messages: ChatMessage[], 
     return {
       messages,
       model: config.apiModel,
-      stream: false,
+      stream,
     }
   }
 
@@ -280,13 +321,165 @@ function parseOllamaText(payload: unknown): string {
   throw new Error('Ollama 响应中没有可用内容')
 }
 
+function parseOpenAiLikeDelta(payload: OpenAiLikeStreamPayload): string {
+  const choice = payload.choices?.[0]
+  const content = choice?.delta?.content ?? choice?.message?.content
+
+  if (typeof content === 'string') {
+    return content
+  }
+
+  if (Array.isArray(content)) {
+    return content
+      .map(part => {
+        if (typeof part === 'string') return part
+        if (typeof part?.text === 'string') return part.text
+        return ''
+      })
+      .join('')
+  }
+
+  return ''
+}
+
+function parseOllamaDelta(payload: OllamaStreamPayload): string {
+  return String(payload.message?.content ?? payload.response ?? '')
+}
+
+async function streamOpenAiLikeResponse(input: {
+  onToken?: (token: string) => void
+  response: Response
+}): Promise<string> {
+  if (!input.response.body) {
+    throw new Error('AI 流式响应为空')
+  }
+
+  const decoder = new TextDecoder()
+  const reader = input.response.body.getReader()
+  let buffer = ''
+  let fullText = ''
+
+  while (true) {
+    // eslint-disable-next-line no-await-in-loop
+    const {done, value} = await reader.read()
+    if (done) break
+
+    buffer += decoder.decode(value, {stream: true})
+    const events = buffer.split('\n\n')
+    buffer = events.pop() || ''
+
+    for (const event of events) {
+      const dataLines = event
+        .split('\n')
+        .filter(line => line.startsWith('data:'))
+        .map(line => line.slice(5).trim())
+
+      for (const line of dataLines) {
+        if (!line || line === '[DONE]') continue
+
+        let payload: OpenAiLikeStreamPayload
+
+        try {
+          payload = JSON.parse(line) as OpenAiLikeStreamPayload
+        } catch {
+          continue
+        }
+
+        const token = parseOpenAiLikeDelta(payload)
+        if (!token) continue
+        fullText += token
+        input.onToken?.(token)
+      }
+    }
+  }
+
+  if (buffer.trim()) {
+    const lines = buffer.split('\n').filter(line => line.startsWith('data:'))
+    for (const rawLine of lines) {
+      const line = rawLine.slice(5).trim()
+      if (!line || line === '[DONE]') continue
+      try {
+        const payload = JSON.parse(line) as OpenAiLikeStreamPayload
+        const token = parseOpenAiLikeDelta(payload)
+        if (!token) continue
+        fullText += token
+        input.onToken?.(token)
+      } catch {
+        continue
+      }
+    }
+  }
+
+  return fullText.trim()
+}
+
+async function streamOllamaResponse(input: {
+  onToken?: (token: string) => void
+  response: Response
+}): Promise<string> {
+  if (!input.response.body) {
+    throw new Error('Ollama 流式响应为空')
+  }
+
+  const decoder = new TextDecoder()
+  const reader = input.response.body.getReader()
+  let buffer = ''
+  let fullText = ''
+
+  while (true) {
+    // eslint-disable-next-line no-await-in-loop
+    const {done, value} = await reader.read()
+    if (done) break
+
+    buffer += decoder.decode(value, {stream: true})
+    const lines = buffer.split('\n')
+    buffer = lines.pop() || ''
+
+    for (const line of lines) {
+      const trimmed = line.trim()
+      if (!trimmed) continue
+
+      let payload: OllamaStreamPayload
+
+      try {
+        payload = JSON.parse(trimmed) as OllamaStreamPayload
+      } catch {
+        continue
+      }
+
+      const token = parseOllamaDelta(payload)
+      if (!token) continue
+      fullText += token
+      input.onToken?.(token)
+    }
+  }
+
+  if (buffer.trim()) {
+    try {
+      const payload = JSON.parse(buffer.trim()) as OllamaStreamPayload
+      const token = parseOllamaDelta(payload)
+      if (token) {
+        fullText += token
+        input.onToken?.(token)
+      }
+    } catch {
+      // ignore trailing partial chunk
+    }
+  }
+
+  return fullText.trim()
+}
+
 export async function runAiChat(input: {
   localApiKey?: string
   messages: ChatMessage[]
   model: string
+  onToken?: (token: string) => void
+  stream?: boolean
   webSearch?: boolean
 }): Promise<string> {
   const config = await resolveModelConfig(input.model, input.localApiKey)
+  const useStream = Boolean(input.stream && input.onToken)
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
@@ -296,16 +489,24 @@ export async function runAiChat(input: {
   }
 
   const response = await fetch(buildApiUrl(config), {
-    body: JSON.stringify(buildRequestBody(config, input.messages, Boolean(input.webSearch))),
+    body: JSON.stringify(buildRequestBody(config, input.messages, Boolean(input.webSearch), useStream)),
     headers,
     method: 'POST',
     signal: AbortSignal.timeout(180_000),
   })
 
-  const text = await response.text()
   if (!response.ok) {
+    const text = await response.text()
     throw new Error(text || `AI 请求失败 (${response.status})`)
   }
+
+  if (useStream) {
+    return config.provider === 'OLLAMA'
+      ? streamOllamaResponse({onToken: input.onToken, response})
+      : streamOpenAiLikeResponse({onToken: input.onToken, response})
+  }
+
+  const text = await response.text()
 
   let payload: unknown
 

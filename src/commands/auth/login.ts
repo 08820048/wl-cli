@@ -17,6 +17,7 @@ export default class AuthLogin extends BaseCommand {
     licenseKey: Flags.string({description: '许可证密钥'}),
   }
   static requiresAuth = false
+  static requiresSetup = false
 
   async run(): Promise<void> {
     const {flags} = await this.parse(AuthLogin)

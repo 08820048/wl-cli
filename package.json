@@ -1,7 +1,7 @@
 {
   "name": "wl-cli",
   "description": "Welight CLI for WeChat article production",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "xuyi",
   "bin": {
     "wl": "./bin/run.js"
@@ -12,7 +12,6 @@
     "@mozilla/readability": "^0.6.0",
     "@oclif/core": "^4",
     "@oclif/plugin-help": "^6",
-    "@oclif/plugin-plugins": "^5",
     "boxen": "^8.0.1",
     "chalk": "^5.6.2",
     "front-matter": "^4.0.2",
@@ -70,8 +69,7 @@
     "commands": "./dist/commands",
     "helpClass": "./dist/help.js",
     "plugins": [
-      "@oclif/plugin-help",
-      "@oclif/plugin-plugins"
+      "@oclif/plugin-help"
     ],
     "theme": "./theme.json",
     "topicSeparator": " ",
@@ -81,6 +79,9 @@
       },
       "article": {
         "description": "公众号文章工作流"
+      },
+      "cover": {
+        "description": "封面图检查与生成"
       },
       "copy": {
         "description": "复制公众号兼容内容到剪贴板"

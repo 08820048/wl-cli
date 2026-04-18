@@ -13,6 +13,7 @@ export default class AuthStatus extends BaseCommand {
     verbose: Flags.boolean({char: 'v', description: '显示更多细节'}),
   }
   static requiresAuth = false
+  static requiresSetup = false
 
   async run(): Promise<Record<string, unknown> | void> {
     const {flags} = await this.parse(AuthStatus)

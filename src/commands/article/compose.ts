@@ -12,8 +12,11 @@ import BaseCommand from '../../base-command.js'
 import {createArticleMarkdown, layoutArticleMarkdown} from '../../lib/ai/service.js'
 import {createDefaultHtmlOutputPath, resolveHtmlOutputPath} from '../../lib/article/output.js'
 import {createIdeaMarkdownTemplate, resolveArticleSource} from '../../lib/article/source.js'
+import {loadSavedAppConfig} from '../../lib/config/store.js'
+import {generateCoverImage, inspectCover} from '../../lib/cover/service.js'
 import {buildThemedHtmlDocument} from '../../lib/render/document.js'
 import {findTheme, formatThemeLabel, THEMES} from '../../lib/theme/catalog.js'
+import {MarkdownStreamRenderer} from '../../lib/ui/markdown-stream.js'
 import {DEFAULT_PROXY_ORIGIN} from '../../lib/wechat/api.js'
 import {writeWechatHtmlToClipboard} from '../../lib/wechat/clipboard.js'
 import {convertHtmlDocumentToWechatInline} from '../../lib/wechat/html.js'
@@ -29,6 +32,7 @@ export default class ArticleCompose extends BaseCommand {
     appId: Flags.string({description: '发布到公众号时使用的 AppID'}),
     appSecret: Flags.string({description: '发布到公众号时使用的 AppSecret'}),
     author: Flags.string({description: '可选：发布时的文章作者'}),
+    autoCover: Flags.boolean({description: '缺少封面时自动生成一张 AI 封面图'}),
     contentSourceUrl: Flags.string({description: '可选：发布时的原文地址'}),
     coverImage: Flags.string({description: '可选：发布时的封面图片路径或 URL'}),
     digest: Flags.string({description: '可选：发布时的文章摘要'}),
@@ -38,13 +42,12 @@ export default class ArticleCompose extends BaseCommand {
       description: '排版模式',
       options: ['smart', 'simple', 'minimal'],
     }),
-    model: Flags.string({default: 'qwen3-max', description: 'AI 模型标识'}),
+    model: Flags.string({description: 'AI 模型标识'}),
     openComment: Flags.boolean({description: '发布时启用评论'}),
     output: Flags.string({char: 'o', description: '输出 HTML 文件路径'}),
     primaryColor: Flags.string({default: '#2a9d8f', description: '主题主色'}),
     prompt: Flags.string({char: 'p', description: '文章创意或创作提示词'}),
     proxyOrigin: Flags.string({
-      default: DEFAULT_PROXY_ORIGIN,
       description: '微信 API 代理地址',
     }),
     theme: Flags.string({char: 't', description: '主题 ID，如 w022'}),
@@ -57,32 +60,46 @@ export default class ArticleCompose extends BaseCommand {
   // eslint-disable-next-line complexity
   async run(): Promise<void> {
     const {flags} = await this.parse(ArticleCompose)
+    const appConfig = this.appConfig || await loadSavedAppConfig(this.config.configDir)
+    const localApiKey = appConfig?.ai.apiKey
+    const model = String(flags.model || appConfig?.ai.defaultModel || 'qwen3-max').trim()
+    const proxyOrigin = String(flags.proxyOrigin || appConfig?.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN).trim()
     const sourceMode = await this.resolveSourceMode(flags)
     const layoutMode = await this.resolveLayoutMode(flags)
     const theme = await this.resolveTheme(flags)
     const action = await this.resolveAction(flags)
     const useAi = flags.yes ? true : await confirm({default: true, message: '是否在流程中启用 AI 创作/改写步骤？'})
     const sourceDetail = await this.resolveSourceDetail(sourceMode, flags)
+    const resolvedInputPath = sourceMode === 'markdown-file' ? sourceDetail : flags.input
+    const resolvedPrompt = sourceMode === 'idea' ? sourceDetail : flags.prompt
+    const resolvedUrl = sourceMode === 'url' ? sourceDetail : flags.url
     const spinner = ora('正在准备文章输入').start()
+    const streamRenderer = new MarkdownStreamRenderer()
 
     try {
       const source = await resolveArticleSource({
-        inputPath: flags.input,
-        prompt: sourceMode === 'idea' ? sourceDetail : flags.prompt,
+        inputPath: resolvedInputPath,
+        prompt: resolvedPrompt,
         title: flags.title,
-        url: flags.url,
+        url: resolvedUrl,
       })
 
       let markdownText = source.markdown
 
       if (source.mode === 'idea') {
         if (useAi) {
-          spinner.text = '正在使用 AI 创作文章'
+          spinner.stop()
+          this.writeStreamHeader('AI 正在创作文章...')
           markdownText = await createArticleMarkdown({
-            model: flags.model,
+            localApiKey,
+            model,
+            onToken: token => streamRenderer.append(token),
             prompt: source.ideaPrompt || source.title,
+            stream: true,
             webSearch: flags.webSearch,
           })
+          streamRenderer.finish()
+          spinner.start('正在处理文章内容')
         }
         else {
           markdownText = createIdeaMarkdownTemplate(source.ideaPrompt || source.title, source.title)
@@ -90,12 +107,18 @@ export default class ArticleCompose extends BaseCommand {
       }
 
       if (useAi && markdownText.trim()) {
-        spinner.text = `正在应用 ${layoutMode} 排版`
+        spinner.stop()
+        this.writeStreamHeader(`AI 正在应用 ${layoutMode} 排版...`)
         markdownText = await layoutArticleMarkdown({
+          localApiKey,
           markdown: markdownText,
           mode: layoutMode,
-          model: flags.model,
+          model,
+          onToken: token => streamRenderer.append(token),
+          stream: true,
         })
+        streamRenderer.finish()
+        spinner.start('正在渲染带主题的 HTML')
       }
 
       spinner.text = '正在渲染带主题的 HTML'
@@ -108,7 +131,7 @@ export default class ArticleCompose extends BaseCommand {
       })
 
       const outputPath = resolveHtmlOutputPath(flags.output, {
-        inputPath: flags.input,
+        inputPath: resolvedInputPath,
         title,
       })
 
@@ -125,11 +148,50 @@ export default class ArticleCompose extends BaseCommand {
       }
 
       if (action === 'draft' || action === 'publish') {
+        spinner.text = '正在检查封面图'
+        const inspectedCover = await inspectCover({
+          explicitCoverImage: flags.coverImage,
+          fileText: html,
+          inputPath: outputPath,
+        })
+        let {coverImage} = flags
+
+        if (inspectedCover.status === 'missing') {
+          let shouldAutoCover = flags.autoCover
+
+          if (!shouldAutoCover && !flags.yes) {
+            spinner.stop()
+            shouldAutoCover = await confirm({
+              default: true,
+              message: '当前文章没有可用封面图，是否自动生成一张 AI 封面？',
+            })
+            spinner.start('正在继续发布流程')
+          }
+
+          if (shouldAutoCover) {
+            spinner.text = '正在生成 AI 封面图'
+            const {outputPath: generatedCoverPath} = await generateCoverImage({
+              apiKey: appConfig?.ai.image?.apiKey,
+              endpoint: appConfig?.ai.image?.endpoint,
+              model: appConfig?.ai.image?.defaultModel,
+              outputPath: path.join(path.dirname(outputPath), `${path.parse(outputPath).name}.cover.png`),
+              size: appConfig?.ai.image?.defaultSize,
+              style: 'editorial',
+              summary: inspectedCover.summary,
+              title: flags.title || title,
+            })
+            coverImage = generatedCoverPath
+            notices.push(`cover: ${coverImage}`)
+          }
+        }
+
         const publishSettings = await this.resolveWechatPublishSettings({
+          appConfig: appConfig || undefined,
           appId: flags.appId,
           appSecret: flags.appSecret,
           yes: flags.yes,
         })
+        spinner.text = '正在准备发布参数'
         spinner.text = action === 'publish' ? '正在提交公众号发布' : '正在推送到公众号草稿箱'
         const result = await publishWechatArticle({
           appId: publishSettings.appId,
@@ -137,7 +199,7 @@ export default class ArticleCompose extends BaseCommand {
           assetBaseDir: resolveWechatAssetBaseDir(outputPath),
           author: flags.author,
           contentSourceUrl: flags.contentSourceUrl || source.url,
-          coverImage: flags.coverImage,
+          coverImage,
           digest: flags.digest,
           fansCommentOnly: flags.fansCommentOnly,
           htmlDocument: html,
@@ -146,7 +208,7 @@ export default class ArticleCompose extends BaseCommand {
           },
           mode: action,
           openComment: flags.openComment,
-          proxyOrigin: flags.proxyOrigin,
+          proxyOrigin,
           title: flags.title || title,
         })
 
@@ -236,10 +298,13 @@ export default class ArticleCompose extends BaseCommand {
 
   private async resolveRequiredValue(
     rawValue: string | undefined,
-    inputValue: {flagName: string; message: string; yes?: boolean},
+    inputValue: {fallbackValue?: string; flagName: string; message: string; yes?: boolean},
   ): Promise<string> {
     const directValue = String(rawValue || '').trim()
     if (directValue) return directValue
+
+    const fallbackValue = String(inputValue.fallbackValue || '').trim()
+    if (fallbackValue) return fallbackValue
 
     if (inputValue.yes) {
       this.error(`缺少必要参数 --${inputValue.flagName}`)
@@ -256,11 +321,29 @@ export default class ArticleCompose extends BaseCommand {
     flags: {input?: string; prompt?: string; url?: string; yes?: boolean},
   ): Promise<string> {
     if (sourceMode === 'markdown-file') {
-      return String(flags.input || '').trim()
+      const directValue = String(flags.input || '').trim()
+      if (directValue) return directValue
+      if (flags.yes) {
+        this.error('缺少必要参数 --input')
+      }
+
+      const prompted = String(await input({message: '输入本地 Markdown 文件路径'})).trim()
+      if (prompted) return prompted
+
+      this.error('缺少必要参数 --input')
     }
 
     if (sourceMode === 'url') {
-      return String(flags.url || '').trim()
+      const directValue = String(flags.url || '').trim()
+      if (directValue) return directValue
+      if (flags.yes) {
+        this.error('缺少必要参数 --url')
+      }
+
+      const prompted = String(await input({message: '输入文章来源 URL'})).trim()
+      if (prompted) return prompted
+
+      this.error('缺少必要参数 --url')
     }
 
     if (flags.prompt) {
@@ -308,21 +391,28 @@ export default class ArticleCompose extends BaseCommand {
   }
 
   private async resolveWechatPublishSettings(input: {
+    appConfig?: {wechat?: {appId?: string; appSecret?: string}}
     appId?: string
     appSecret?: string
     yes?: boolean
   }): Promise<{appId: string; appSecret: string}> {
     const appId = await this.resolveRequiredValue(input.appId, {
+      fallbackValue: input.appConfig?.wechat?.appId,
       flagName: 'appId',
       message: '请输入公众号 AppID',
       yes: input.yes,
     })
     const appSecret = await this.resolveRequiredValue(input.appSecret, {
+      fallbackValue: input.appConfig?.wechat?.appSecret,
       flagName: 'appSecret',
       message: '请输入公众号 AppSecret',
       yes: input.yes,
     })
 
     return {appId, appSecret}
+  }
+
+  private writeStreamHeader(title: string): void {
+    this.log(chalk.cyan(`\n${title}\n`))
   }
 }

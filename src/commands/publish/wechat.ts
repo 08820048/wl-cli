@@ -1,4 +1,4 @@
-import {input as promptInput} from '@inquirer/prompts'
+import {confirm, input as promptInput} from '@inquirer/prompts'
 import {Args, Flags} from '@oclif/core'
 import boxen from 'boxen'
 import chalk from 'chalk'
@@ -7,6 +7,8 @@ import path from 'node:path'
 import ora from 'ora'
 
 import BaseCommand from '../../base-command.js'
+import {loadSavedAppConfig} from '../../lib/config/store.js'
+import {generateCoverImage, inspectCover} from '../../lib/cover/service.js'
 import {DEFAULT_PROXY_ORIGIN} from '../../lib/wechat/api.js'
 import {publishWechatArticle, resolveWechatAssetBaseDir} from '../../lib/wechat/publish.js'
 
@@ -24,6 +26,7 @@ export default class PublishWechat extends BaseCommand {
     appId: Flags.string({description: '公众号 AppID'}),
     appSecret: Flags.string({description: '公众号 AppSecret'}),
     author: Flags.string({description: '可选：文章作者'}),
+    autoCover: Flags.boolean({description: '缺少封面时自动生成一张 AI 封面图'}),
     contentSourceUrl: Flags.string({description: '可选：原文地址'}),
     coverImage: Flags.string({description: '可选：封面图片路径、URL 或 data URI'}),
     digest: Flags.string({description: '可选：文章摘要'}),
@@ -35,7 +38,6 @@ export default class PublishWechat extends BaseCommand {
     }),
     openComment: Flags.boolean({description: '启用评论'}),
     proxyOrigin: Flags.string({
-      default: DEFAULT_PROXY_ORIGIN,
       description: '微信 API 代理地址',
     }),
     title: Flags.string({description: '可选：覆盖 HTML 中解析出的标题'}),
@@ -45,27 +47,67 @@ export default class PublishWechat extends BaseCommand {
   async run(): Promise<Record<string, unknown> | void> {
     const {args, flags} = await this.parse(PublishWechat)
     const inputPath = path.resolve(args.input)
+    const appConfig = this.appConfig || await loadSavedAppConfig(this.config.configDir)
     const appId = await this.resolveRequiredValue(flags.appId, {
+      fallbackValue: appConfig?.wechat.appId,
       flagName: 'appId',
       message: '请输入公众号 AppID',
       yes: flags.yes,
     })
     const appSecret = await this.resolveRequiredValue(flags.appSecret, {
+      fallbackValue: appConfig?.wechat.appSecret,
       flagName: 'appSecret',
       message: '请输入公众号 AppSecret',
       yes: flags.yes,
     })
+    const proxyOrigin = String(flags.proxyOrigin || appConfig?.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN).trim()
     const spinner = ora(flags.mode === 'publish' ? '正在发布到微信公众号' : '正在推送到公众号草稿箱').start()
 
     try {
       const htmlDocument = await fs.readFile(inputPath, 'utf8')
+      spinner.text = '正在检查封面图'
+      const inspectedCover = await inspectCover({
+        explicitCoverImage: flags.coverImage,
+        fileText: htmlDocument,
+        inputPath,
+      })
+      let {coverImage} = flags
+
+      if (inspectedCover.status === 'missing') {
+        let shouldAutoCover = flags.autoCover
+
+        if (!shouldAutoCover && !flags.yes) {
+          spinner.stop()
+          shouldAutoCover = await confirm({
+            default: true,
+            message: '当前文章没有可用封面图，是否自动生成一张 AI 封面？',
+          })
+          spinner.start('正在继续发布流程')
+        }
+
+        if (shouldAutoCover) {
+          spinner.text = '正在生成 AI 封面图'
+          const {outputPath} = await generateCoverImage({
+            apiKey: appConfig?.ai.image?.apiKey,
+            endpoint: appConfig?.ai.image?.endpoint,
+            model: appConfig?.ai.image?.defaultModel,
+            outputPath: path.join(path.dirname(inputPath), `${path.parse(inputPath).name}.cover.png`),
+            size: appConfig?.ai.image?.defaultSize,
+            style: 'editorial',
+            summary: inspectedCover.summary,
+            title: flags.title || inspectedCover.title || path.parse(inputPath).name,
+          })
+          coverImage = outputPath
+        }
+      }
+
       const result = await publishWechatArticle({
         appId,
         appSecret,
         assetBaseDir: resolveWechatAssetBaseDir(inputPath),
         author: flags.author,
         contentSourceUrl: flags.contentSourceUrl,
-        coverImage: flags.coverImage,
+        coverImage,
         digest: flags.digest,
         fansCommentOnly: flags.fansCommentOnly,
         htmlDocument,
@@ -74,7 +116,7 @@ export default class PublishWechat extends BaseCommand {
         },
         mode: flags.mode as 'draft' | 'publish',
         openComment: flags.openComment,
-        proxyOrigin: flags.proxyOrigin,
+        proxyOrigin,
         title: flags.title,
       })
 
@@ -92,6 +134,7 @@ export default class PublishWechat extends BaseCommand {
         '',
         `${chalk.bold('title')}        ${result.title}`,
         `${chalk.bold('input')}        ${inputPath}`,
+        `${chalk.bold('cover')}        ${coverImage || inspectedCover.source || 'body-first-image'}`,
         `${chalk.bold('draftMediaId')} ${result.draftMediaId}`,
       ]
 
@@ -121,10 +164,13 @@ export default class PublishWechat extends BaseCommand {
 
   private async resolveRequiredValue(
     rawValue: string | undefined,
-    input: {flagName: string; message: string; yes?: boolean},
+    input: {fallbackValue?: string; flagName: string; message: string; yes?: boolean},
   ): Promise<string> {
     const directValue = String(rawValue || '').trim()
     if (directValue) return directValue
+
+    const fallbackValue = String(input.fallbackValue || '').trim()
+    if (fallbackValue) return fallbackValue
 
     if (input.yes) {
       this.error(`缺少必要参数 --${input.flagName}`)
