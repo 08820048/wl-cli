@@ -8,8 +8,12 @@
 /node_modules
 oclif.manifest.json
 *.tsbuildinfo
+/*.html
+/*.png
+/*.jpg
+/*.jpeg
+/*.webp
 
 
 yarn.lock
 package-lock.json
-

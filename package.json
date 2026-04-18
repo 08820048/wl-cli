@@ -1,12 +1,12 @@
 {
-  "name": "wl-cli",
+  "name": "welight-cli",
   "description": "Welight CLI for WeChat article production",
   "version": "0.0.1",
   "author": "xuyi",
   "bin": {
-    "wl": "./bin/run.js"
+    "wl": "bin/run.js"
   },
-  "bugs": "https://github.com/wl-cli/wl-cli/issues",
+  "bugs": "https://github.com/08820048/wl-cli/issues",
   "dependencies": {
     "@inquirer/prompts": "^8.4.1",
     "@mozilla/readability": "^0.6.0",
@@ -53,7 +53,7 @@
     "./dist",
     "./oclif.manifest.json"
   ],
-  "homepage": "https://github.com/wl-cli/wl-cli",
+  "homepage": "https://github.com/08820048/wl-cli",
   "keywords": [
     "welight",
     "wechat",
@@ -62,6 +62,9 @@
   ],
   "license": "MIT",
   "main": "dist/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "oclif": {
     "bin": "wl",
@@ -97,7 +100,10 @@
       }
     }
   },
-  "repository": "wl-cli/wl-cli",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/08820048/wl-cli.git"
+  },
   "scripts": {
     "build": "shx rm -rf dist && tsc -b",
     "lint": "eslint",

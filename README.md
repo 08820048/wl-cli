@@ -3,6 +3,19 @@ Welight CLI
 
 基于 `oclif` 的独立 Welight CLI 仓库。
 
+安装：
+
+```bash
+npm i -g welight-cli
+```
+
+安装后直接运行：
+
+```bash
+wl
+wl --help
+```
+
 当前已落地的第一批能力：
 
 - 首次运行 `wl` 自动进入初始化配置向导
@@ -30,3 +43,10 @@ Welight CLI
 1. 直接运行 `wl`
 2. 按引导完成许可证、默认 AI 模型、公众号 AppID / AppSecret 配置
 3. 配置完成后再使用 `wl article compose` 或 `wl ai create`
+
+发布：
+
+```bash
+pnpm build
+npm publish
+```
