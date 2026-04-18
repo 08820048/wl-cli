@@ -50,3 +50,30 @@ wl --help
 pnpm build
 npm publish
 ```
+
+自动发布
+--------
+
+仓库已经配置好 GitHub Actions 自动发布流程。
+
+前置条件：
+
+- 在 GitHub 仓库 `Settings -> Secrets and variables -> Actions` 中添加 `NPM_TOKEN`
+- `NPM_TOKEN` 需要是有 npm 发布权限的 token
+
+维护者发布步骤：
+
+1. 修改 `package.json` 中的版本号
+2. 提交并推送到 `main`
+3. GitHub Actions 会自动执行：
+   - 安装依赖
+   - 构建与测试
+   - 创建 `vX.Y.Z` tag
+   - 发布 `welight-cli` 到 npm
+   - 创建同版本 GitHub Release
+
+用户安装：
+
+```bash
+npm i -g welight-cli
+```
