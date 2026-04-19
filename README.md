@@ -118,3 +118,13 @@ npm i -g welight-cli
 wl
 wl --help
 ```
+
+## Open source
+
+If this repository is published as an open-source project, the core community files are included:
+
+- [LICENSE](./LICENSE)
+- [CONTRIBUTING.md](./CONTRIBUTING.md)
+- [CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)
+- [SECURITY.md](./SECURITY.md)
+- [CHANGELOG.md](./CHANGELOG.md)
