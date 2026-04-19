@@ -87,16 +87,18 @@ wl doctor
 
 维护者发布新版本时只需要：
 
-1. 修改 `package.json` 中的版本号
-2. 提交并推送到 `main`
+1. 在 `CHANGELOG.md` 中补充对应版本的发布说明
+2. 修改 `package.json` 中的版本号
+3. 提交并推送到 `main`
 
 GitHub Actions 会自动执行：
 
 - 安装依赖
 - 构建与测试
+- 校验 `CHANGELOG.md` 是否包含当前版本条目
 - 创建 `vX.Y.Z` tag
 - 发布 `welight-cli` 到 npm
-- 创建同版本 GitHub Release
+- 用 `CHANGELOG.md` 中的对应版本内容创建 GitHub Release
 
 发布前需要在 GitHub 仓库 `Settings -> Secrets and variables -> Actions` 中配置：
 

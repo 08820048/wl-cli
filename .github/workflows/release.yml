@@ -67,6 +67,10 @@ jobs:
             exit 1
           fi
 
+      - name: Validate changelog entry
+        if: steps.tag.outputs.exists == 'false'
+        run: node ./scripts/changelog.mjs check "${{ steps.version.outputs.value }}"
+
       - name: Install dependencies
         if: steps.tag.outputs.exists == 'false'
         run: pnpm install --frozen-lockfile
@@ -85,6 +89,10 @@ jobs:
           git tag "${{ steps.tag.outputs.value }}"
           git push origin "${{ steps.tag.outputs.value }}"
 
+      - name: Prepare release notes
+        if: steps.tag.outputs.exists == 'false'
+        run: node ./scripts/changelog.mjs release-notes "${{ steps.version.outputs.value }}" > .release-notes.md
+
       - name: Publish package to npm
         if: steps.tag.outputs.exists == 'false'
         env:
@@ -98,4 +106,4 @@ jobs:
         run: |
           gh release create "${{ steps.tag.outputs.value }}" \
             --title "${{ steps.tag.outputs.value }}" \
-            --generate-notes
+            --notes-file .release-notes.md
