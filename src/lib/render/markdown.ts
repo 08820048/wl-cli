@@ -49,7 +49,7 @@ function decorateRenderedHtml(html: string, title: string, readingSummary: strin
   const root = document.querySelector('#wl-render-root')
 
   if (!root) {
-    throw new Error('Markdown 渲染失败')
+    throw new Error('Markdown rendering failed')
   }
 
   if (!root.querySelector('h1') && title) {
@@ -87,7 +87,7 @@ export function renderMarkdownArticle(input: {countStatus?: boolean; fallbackTit
   const resolvedTitle = extractDocumentTitle(parsed.attributes?.title, input.fallbackTitle)
   const reading = readingTime(markdownBody)
   const readingSummary = input.countStatus && reading.words > 0
-    ? `字数 ${reading.words}，阅读大约需 ${Math.max(1, Math.ceil(reading.minutes))} 分钟`
+    ? `${reading.words} words · about ${Math.max(1, Math.ceil(reading.minutes))} min read`
     : ''
 
   const renderedHtml = markdown.parse(markdownBody) as string

@@ -46,7 +46,7 @@ describe('wechat html', () => {
 
   it('throws when the html document is missing #output', () => {
     expect(() => convertHtmlDocumentToWechatInline('<html><body><main>missing</main></body></html>')).to.throw(
-      'HTML 中缺少 #output，无法生成公众号兼容内容',
+      'The HTML document is missing #output, so WeChat-compatible content cannot be generated',
     )
   })
 })

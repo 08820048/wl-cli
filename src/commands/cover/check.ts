@@ -7,16 +7,16 @@ import {inspectCover} from '../../lib/cover/service.js'
 
 export default class CoverCheck extends BaseCommand {
   static args = {
-    input: Args.string({description: '文章 HTML 或 Markdown 文件路径', required: true}),
+    input: Args.string({description: 'Article HTML or Markdown file path', required: true}),
   }
-  static description = '检查文章当前是否具备可用封面'
+  static description = 'Check whether an article currently has a usable cover'
   static enableJsonFlag = true
   static examples = [
     '<%= config.bin %> <%= command.id %> ./article.html',
     '<%= config.bin %> <%= command.id %> ./article.md --coverImage ./cover.png',
   ]
   static flags = {
-    coverImage: Flags.string({description: '显式指定封面图路径或 URL'}),
+    coverImage: Flags.string({description: 'Explicit cover image path or URL'}),
   }
   static requiresSetup = false
 
@@ -44,8 +44,8 @@ export default class CoverCheck extends BaseCommand {
           '',
           `${chalk.bold('status')}  ${result.status}`,
           `${chalk.bold('source')}  ${result.source || 'none'}`,
-          `${chalk.bold('title')}   ${result.title || '未解析到标题'}`,
-          `${chalk.bold('summary')} ${result.summary || '未解析到摘要'}`,
+          `${chalk.bold('title')}   ${result.title || 'no title detected'}`,
+          `${chalk.bold('summary')} ${result.summary || 'no summary detected'}`,
         ].join('\n'),
         {
           borderColor: result.status === 'missing' ? '#e76f51' : '#2a9d8f',

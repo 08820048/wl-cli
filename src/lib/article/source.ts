@@ -22,7 +22,7 @@ function normalizeMarkdown(markdown: string): string {
 
 function fallbackTitle(value: string): string {
   const trimmed = String(value || '').trim()
-  return trimmed || '未命名文章'
+  return trimmed || 'Untitled Article'
 }
 
 function extractFirstMarkdownHeading(markdown: string): string | undefined {
@@ -39,7 +39,7 @@ async function fetchReadableArticle(url: string): Promise<{markdown: string; tit
   })
 
   if (!response.ok) {
-    throw new Error(`抓取 URL 失败 (${response.status})`)
+    throw new Error(`Failed to fetch the URL (${response.status})`)
   }
 
   const html = await response.text()
@@ -47,12 +47,12 @@ async function fetchReadableArticle(url: string): Promise<{markdown: string; tit
   const article = new Readability(dom.window.document).parse()
 
   if (!article?.content) {
-    throw new Error('无法从该 URL 提取正文内容')
+    throw new Error('Unable to extract readable article content from this URL')
   }
 
   const markdownBody = normalizeMarkdown(turndown.turndown(article.content))
   const title = fallbackTitle(article.title || dom.window.document.title || url)
-  const markdown = normalizeMarkdown(`# ${title}\n\n${markdownBody}\n\n> 原文链接：${url}`)
+  const markdown = normalizeMarkdown(`# ${title}\n\n${markdownBody}\n\n> Source URL: ${url}`)
 
   return {markdown, title}
 }
@@ -119,7 +119,7 @@ export async function resolveArticleSource(input: {
 
   const prompt = String(input.prompt || '').trim()
   if (!prompt) {
-    throw new Error('缺少文章输入。请提供 --input、--url 或 --prompt。')
+    throw new Error('Missing article input. Provide --input, --url, or --prompt.')
   }
 
   return {

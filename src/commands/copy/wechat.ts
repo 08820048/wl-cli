@@ -11,27 +11,27 @@ import {convertHtmlDocumentToWechatInline} from '../../lib/wechat/html.js'
 
 export default class CopyWechat extends BaseCommand {
   static args = {
-    input: Args.string({description: '待复制的 HTML 文件路径', required: true}),
+    input: Args.string({description: 'HTML file path to copy', required: true}),
   }
-  static description = '将 HTML 文档转换为公众号兼容内容并复制到剪贴板'
+  static description = 'Convert an HTML document into WeChat-compatible content and copy it to the clipboard'
   static enableJsonFlag = true
   static examples = [
     '<%= config.bin %> <%= command.id %> ./article.html',
     '<%= config.bin %> <%= command.id %> ./article.html --output wechat-inline.html',
   ]
   static flags = {
-    output: Flags.string({char: 'o', description: '可选：同时将公众号兼容 HTML 片段写入文件'}),
-    printHtml: Flags.boolean({description: '额外将转换后的 HTML 片段输出到 stdout'}),
+    output: Flags.string({char: 'o', description: 'Optional file path to also save the converted WeChat HTML fragment'}),
+    printHtml: Flags.boolean({description: 'Also print the converted HTML fragment to stdout'}),
   }
 
   async run(): Promise<Record<string, unknown> | void> {
     const {args, flags} = await this.parse(CopyWechat)
     const inputPath = path.resolve(args.input)
-    const spinner = ora('正在读取 HTML 文档').start()
+    const spinner = ora('Reading HTML document').start()
 
     try {
       const htmlDocument = await fs.readFile(inputPath, 'utf8')
-      spinner.text = '正在转换为公众号兼容内容'
+      spinner.text = 'Converting to WeChat-compatible content'
       const payload = convertHtmlDocumentToWechatInline(htmlDocument)
       let outputPath = ''
 
@@ -41,9 +41,9 @@ export default class CopyWechat extends BaseCommand {
         await fs.writeFile(outputPath, `${payload.html}\n`, 'utf8')
       }
 
-      spinner.text = '正在写入系统剪贴板'
+      spinner.text = 'Writing to the system clipboard'
       await writeWechatHtmlToClipboard(payload)
-      spinner.succeed('公众号兼容内容已复制到剪贴板')
+      spinner.succeed('WeChat-compatible content copied to the clipboard')
 
       if (flags.printHtml) {
         this.log(payload.html)
@@ -75,7 +75,7 @@ export default class CopyWechat extends BaseCommand {
         ),
       )
     } catch (error) {
-      spinner.fail('复制到公众号失败')
+      spinner.fail('Copy to WeChat failed')
       this.error(error instanceof Error ? error.message : String(error))
     }
   }

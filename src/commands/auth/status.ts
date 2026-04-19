@@ -7,10 +7,10 @@ import {formatLicenseClientError, PURCHASE_URL, validateLicenseStatus} from '../
 import {getAuthFilePath} from '../../lib/config/paths.js'
 
 export default class AuthStatus extends BaseCommand {
-  static description = '查看当前保存的许可证状态'
+  static description = 'Show the currently saved license status'
   static enableJsonFlag = true
   static flags = {
-    verbose: Flags.boolean({char: 'v', description: '显示更多细节'}),
+    verbose: Flags.boolean({char: 'v', description: 'Show more details'}),
   }
   static requiresAuth = false
   static requiresSetup = false
@@ -21,12 +21,12 @@ export default class AuthStatus extends BaseCommand {
     const credentials = await loadSavedCredentials(this.config.configDir)
 
     if (!credentials) {
-      const result = {authFile, loggedIn: false, message: '未登录许可证'}
+      const result = {authFile, loggedIn: false, message: 'No saved license'}
 
       if (this.jsonEnabled()) return result
 
-      this.log('未登录许可证。')
-      this.log(`先运行 ${chalk.cyan('wl auth login')}，如未购买请访问 ${PURCHASE_URL}`)
+      this.log('No saved license.')
+      this.log(`Run ${chalk.cyan('wl auth login')} first. If you do not have a license yet, visit ${PURCHASE_URL}`)
       return
     }
 
@@ -51,16 +51,16 @@ export default class AuthStatus extends BaseCommand {
 
     if (this.jsonEnabled()) return result
 
-    this.log(`许可证文件：${authFile}`)
-    this.log(`登录邮箱：${credentials.customerEmail}`)
-    this.log(`当前状态：${check.state === 'active' ? chalk.green('可用') : check.state === 'inactive' ? chalk.yellow('待桌面版激活') : chalk.red('不可用')}`)
-    this.log(`设备指纹：${check.details.deviceFingerprint}`)
+    this.log(`License file: ${authFile}`)
+    this.log(`Email: ${credentials.customerEmail}`)
+    this.log(`State: ${check.state === 'active' ? chalk.green('active') : check.state === 'inactive' ? chalk.yellow('needs desktop activation') : chalk.red('invalid')}`)
+    this.log(`Device fingerprint: ${check.details.deviceFingerprint}`)
 
     if (flags.verbose) {
-      this.log(`许可证状态：${check.details.status}`)
-      if (check.details.expiredAt) this.log(`到期时间：${check.details.expiredAt}`)
+      this.log(`License status: ${check.details.status}`)
+      if (check.details.expiredAt) this.log(`Expires at: ${check.details.expiredAt}`)
       if (typeof check.details.currentActivations === 'number' && typeof check.details.maxActivations === 'number') {
-        this.log(`激活设备：${check.details.currentActivations}/${check.details.maxActivations}`)
+        this.log(`Activations: ${check.details.currentActivations}/${check.details.maxActivations}`)
       }
     }
 

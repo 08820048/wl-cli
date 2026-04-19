@@ -104,8 +104,8 @@ async function uploadContentImages(input: {
     if (!src) continue
     if (src.includes('qpic.cn') || src.includes('qlogo.cn')) continue
 
-    input.log?.(`上传正文图片 ${index + 1}/${images.length}`)
-    // 顺序上传可以保持正文图片引用和日志进度一致。
+    input.log?.(`Uploading body image ${index + 1}/${images.length}`)
+    // Upload sequentially so body-image references stay aligned with progress logs.
     // eslint-disable-next-line no-await-in-loop
     const asset = await resolveWechatImageAsset({
       assetBaseDir: input.assetBaseDir,
@@ -140,10 +140,10 @@ async function resolveCoverMediaId(input: {
   }
 
   if (!source) {
-    throw new Error('必须提供封面图，或正文中至少包含一张图片')
+    throw new Error('A cover image is required, or the article body must contain at least one image')
   }
 
-  input.log?.('上传封面图')
+  input.log?.('Uploading cover image')
   const asset = await resolveWechatImageAsset({
     assetBaseDir: input.assetBaseDir,
     source,
@@ -173,7 +173,7 @@ async function pollPublishResult(input: {
     const status = (payload as {publish_status?: number})?.publish_status
 
     if (status === 1) {
-      input.log?.(`发布中... (${attempt}/30)`)
+      input.log?.(`Publishing... (${attempt}/30)`)
       // eslint-disable-next-line no-await-in-loop
       await sleep(2000)
       continue
@@ -183,10 +183,10 @@ async function pollPublishResult(input: {
       return extractArticleUrls(payload)
     }
 
-    throw new Error(`发布失败: ${JSON.stringify(payload)}`)
+    throw new Error(`Publishing failed: ${JSON.stringify(payload)}`)
   }
 
-  throw new Error('发布超时：请稍后在公众号后台确认结果')
+  throw new Error('Publishing timed out. Please check the WeChat dashboard for the final result.')
 }
 
 export async function publishWechatArticle(input: PublishWechatOptions & {log?: (message: string) => void}) {
@@ -194,10 +194,10 @@ export async function publishWechatArticle(input: PublishWechatOptions & {log?: 
   const {html, title: detectedTitle} = convertHtmlDocumentToWechatInline(input.htmlDocument)
   const title = String(input.title || detectedTitle || '').trim()
   if (!title) {
-    throw new Error('无法确定文章标题，请使用 --title 指定')
+    throw new Error('Unable to determine the article title. Use --title to specify one explicitly.')
   }
 
-  input.log?.('获取 Access Token')
+  input.log?.('Fetching access token')
   const accessToken = await getWechatAccessToken({
     appId: input.appId,
     appSecret: input.appSecret,
@@ -221,7 +221,7 @@ export async function publishWechatArticle(input: PublishWechatOptions & {log?: 
     proxyOrigin,
   })
 
-  input.log?.('创建公众号草稿')
+  input.log?.('Creating WeChat draft')
   const {mediaId} = await addWechatDraft({
     accessToken,
     articles: buildDraftPayload({
@@ -254,7 +254,7 @@ export async function publishWechatArticle(input: PublishWechatOptions & {log?: 
     }
   }
 
-  input.log?.('提交一键发布')
+  input.log?.('Submitting one-click publish')
   const {publishId} = await submitWechatFreePublish({
     accessToken,
     mediaId,

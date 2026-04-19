@@ -27,7 +27,7 @@ function run(argv) {
 
 export async function writeWechatHtmlToClipboard(input: {html: string; plainText: string}): Promise<void> {
   if (process.platform !== 'darwin') {
-    throw new Error('当前版本的 wl copy wechat 仅支持 macOS')
+    throw new Error('The current version of `wl copy wechat` only supports macOS')
   }
 
   const tmpRoot = await fs.mkdtemp(path.join(os.tmpdir(), 'wl-wechat-clipboard-'))

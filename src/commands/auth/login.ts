@@ -7,14 +7,14 @@ import {saveCredentials} from '../../lib/auth/auth-store.js'
 import {formatLicenseClientError, validateLicenseStatus} from '../../lib/auth/license-client.js'
 
 export default class AuthLogin extends BaseCommand {
-  static description = '录入许可证并检查当前设备是否可用于 CLI'
+  static description = 'Save a license and check whether this device can use the CLI'
   static examples = [
     '<%= config.bin %> <%= command.id %>',
     '<%= config.bin %> <%= command.id %> --licenseKey WL-XXXX --customerEmail me@example.com',
   ]
   static flags = {
-    customerEmail: Flags.string({description: '购买许可证时使用的邮箱'}),
-    licenseKey: Flags.string({description: '许可证密钥'}),
+    customerEmail: Flags.string({description: 'Email used when purchasing the license'}),
+    licenseKey: Flags.string({description: 'License key'}),
   }
   static requiresAuth = false
   static requiresSetup = false
@@ -22,8 +22,8 @@ export default class AuthLogin extends BaseCommand {
   async run(): Promise<void> {
     const {flags} = await this.parse(AuthLogin)
 
-    const licenseKey = String(flags.licenseKey || await input({message: '许可证密钥'})).trim()
-    const customerEmail = String(flags.customerEmail || await input({message: '购买邮箱'})).trim()
+    const licenseKey = String(flags.licenseKey || await input({message: 'License key'})).trim()
+    const customerEmail = String(flags.customerEmail || await input({message: 'Purchase email'})).trim()
 
     let result
 
@@ -46,14 +46,14 @@ export default class AuthLogin extends BaseCommand {
     })
 
     if (result.state === 'active') {
-      this.log(chalk.green('许可证检查通过，当前设备已可使用 CLI。'))
+      this.log(chalk.green('License check passed. This device is ready to use the CLI.'))
       return
     }
 
     this.warn(
       [
-        '许可证信息已保存，但当前设备还没有在桌面版中激活。',
-        '请先打开 Welight 桌面版完成激活，然后再使用 CLI 命令。',
+        'Your license has been saved, but this device is not activated in the desktop app yet.',
+        'Open the Welight desktop app, activate this device, then come back to the CLI.',
       ].join('\n'),
     )
   }

@@ -14,34 +14,34 @@ import {publishWechatArticle, resolveWechatAssetBaseDir} from '../../lib/wechat/
 
 export default class PublishWechat extends BaseCommand {
   static args = {
-    input: Args.string({description: '待发布的 HTML 文件路径', required: true}),
+    input: Args.string({description: 'HTML file path to publish', required: true}),
   }
-  static description = '将 HTML 文档发布到微信公众号草稿箱或正式发布'
+  static description = 'Publish an HTML document to WeChat drafts or live publishing'
   static enableJsonFlag = true
   static examples = [
     '<%= config.bin %> <%= command.id %> ./article.html --mode draft',
     '<%= config.bin %> <%= command.id %> ./article.html --mode publish --appId wx123 --appSecret secret',
   ]
   static flags = {
-    appId: Flags.string({description: '公众号 AppID'}),
-    appSecret: Flags.string({description: '公众号 AppSecret'}),
-    author: Flags.string({description: '可选：文章作者'}),
-    autoCover: Flags.boolean({description: '缺少封面时自动生成一张 AI 封面图'}),
-    contentSourceUrl: Flags.string({description: '可选：原文地址'}),
-    coverImage: Flags.string({description: '可选：封面图片路径、URL 或 data URI'}),
-    digest: Flags.string({description: '可选：文章摘要'}),
-    fansCommentOnly: Flags.boolean({description: '仅粉丝可评论'}),
+    appId: Flags.string({description: 'WeChat AppID'}),
+    appSecret: Flags.string({description: 'WeChat AppSecret'}),
+    author: Flags.string({description: 'Optional article author'}),
+    autoCover: Flags.boolean({description: 'Generate an AI cover image when none is available'}),
+    contentSourceUrl: Flags.string({description: 'Optional original article URL'}),
+    coverImage: Flags.string({description: 'Optional cover image path, URL, or data URI'}),
+    digest: Flags.string({description: 'Optional article summary'}),
+    fansCommentOnly: Flags.boolean({description: 'Allow comments from followers only'}),
     mode: Flags.string({
       default: 'draft',
-      description: '发布模式',
+      description: 'Publishing mode',
       options: ['draft', 'publish'],
     }),
-    openComment: Flags.boolean({description: '启用评论'}),
+    openComment: Flags.boolean({description: 'Enable comments'}),
     proxyOrigin: Flags.string({
-      description: '微信 API 代理地址',
+      description: 'WeChat API proxy origin',
     }),
-    title: Flags.string({description: '可选：覆盖 HTML 中解析出的标题'}),
-    yes: Flags.boolean({char: 'y', description: '非交互模式；缺少必要参数时直接报错'}),
+    title: Flags.string({description: 'Optional title override parsed from HTML'}),
+    yes: Flags.boolean({char: 'y', description: 'Non-interactive mode; fail immediately when required values are missing'}),
   }
 
   async run(): Promise<Record<string, unknown> | void> {
@@ -51,21 +51,21 @@ export default class PublishWechat extends BaseCommand {
     const appId = await this.resolveRequiredValue(flags.appId, {
       fallbackValue: appConfig?.wechat.appId,
       flagName: 'appId',
-      message: '请输入公众号 AppID',
+      message: 'Enter the WeChat AppID',
       yes: flags.yes,
     })
     const appSecret = await this.resolveRequiredValue(flags.appSecret, {
       fallbackValue: appConfig?.wechat.appSecret,
       flagName: 'appSecret',
-      message: '请输入公众号 AppSecret',
+      message: 'Enter the WeChat AppSecret',
       yes: flags.yes,
     })
     const proxyOrigin = String(flags.proxyOrigin || appConfig?.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN).trim()
-    const spinner = ora(flags.mode === 'publish' ? '正在发布到微信公众号' : '正在推送到公众号草稿箱').start()
+    const spinner = ora(flags.mode === 'publish' ? 'Publishing to WeChat' : 'Pushing to WeChat drafts').start()
 
     try {
       const htmlDocument = await fs.readFile(inputPath, 'utf8')
-      spinner.text = '正在检查封面图'
+      spinner.text = 'Checking cover image'
       const inspectedCover = await inspectCover({
         explicitCoverImage: flags.coverImage,
         fileText: htmlDocument,
@@ -80,13 +80,13 @@ export default class PublishWechat extends BaseCommand {
           spinner.stop()
           shouldAutoCover = await confirm({
             default: true,
-            message: '当前文章没有可用封面图，是否自动生成一张 AI 封面？',
+            message: 'No usable cover image was found. Generate one with AI?',
           })
-          spinner.start('正在继续发布流程')
+          spinner.start('Continuing the publishing flow')
         }
 
         if (shouldAutoCover) {
-          spinner.text = '正在生成 AI 封面图'
+          spinner.text = 'Generating AI cover image'
           const {outputPath} = await generateCoverImage({
             apiKey: appConfig?.ai.image?.apiKey,
             endpoint: appConfig?.ai.image?.endpoint,
@@ -120,7 +120,7 @@ export default class PublishWechat extends BaseCommand {
         title: flags.title,
       })
 
-      spinner.succeed(flags.mode === 'publish' ? '公众号文章已提交发布' : '公众号草稿已创建')
+      spinner.succeed(flags.mode === 'publish' ? 'WeChat publish request submitted' : 'WeChat draft created')
       const payload = {
         ...result,
         inputPath,
@@ -157,7 +157,7 @@ export default class PublishWechat extends BaseCommand {
         }),
       )
     } catch (error) {
-      spinner.fail(flags.mode === 'publish' ? '公众号发布失败' : '公众号草稿创建失败')
+      spinner.fail(flags.mode === 'publish' ? 'WeChat publish failed' : 'WeChat draft creation failed')
       this.error(error instanceof Error ? error.message : String(error))
     }
   }
@@ -173,12 +173,12 @@ export default class PublishWechat extends BaseCommand {
     if (fallbackValue) return fallbackValue
 
     if (input.yes) {
-      this.error(`缺少必要参数 --${input.flagName}`)
+      this.error(`Missing required flag --${input.flagName}`)
     }
 
     const prompted = String(await promptInput({message: input.message})).trim()
     if (prompted) return prompted
 
-    this.error(`缺少必要参数 --${input.flagName}`)
+    this.error(`Missing required flag --${input.flagName}`)
   }
 }

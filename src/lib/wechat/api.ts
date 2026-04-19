@@ -54,7 +54,7 @@ async function readResponseText(response: Response): Promise<string> {
   try {
     return await response.text()
   } catch (error) {
-    throw new Error(error instanceof Error ? `读取响应失败: ${error.message}` : '读取响应失败')
+    throw new Error(error instanceof Error ? `Failed to read the response: ${error.message}` : 'Failed to read the response')
   }
 }
 
@@ -64,7 +64,7 @@ async function parseJsonResponse(response: Response): Promise<unknown> {
   try {
     return JSON.parse(text) as unknown
   } catch (error) {
-    throw new Error(error instanceof Error ? `JSON 解析失败: ${error.message}` : `JSON 解析失败: ${text}`)
+    throw new Error(error instanceof Error ? `Failed to parse JSON: ${error.message}` : `Failed to parse JSON: ${text}`)
   }
 }
 
@@ -105,7 +105,7 @@ async function requestJsonWithOptionalProxy(input: {
 
   if (!response.ok) {
     const text = await readResponseText(response)
-    throw new Error(`HTTP 状态错误: ${response.status}，响应: ${text}`)
+    throw new Error(`HTTP status error: ${response.status}, response: ${text}`)
   }
 
   return parseJsonResponse(response)
@@ -145,7 +145,7 @@ async function requestMultipartWithOptionalProxy(input: {
 
   if (!response.ok) {
     const text = await readResponseText(response)
-    throw new Error(`HTTP 状态错误: ${response.status}，响应: ${text}`)
+    throw new Error(`HTTP status error: ${response.status}, response: ${text}`)
   }
 
   return parseJsonResponse(response)
@@ -154,7 +154,7 @@ async function requestMultipartWithOptionalProxy(input: {
 function ensureWechatBusinessSuccess(payload: unknown): void {
   const errcode = (payload as {errcode?: number})?.errcode
   if (typeof errcode === 'number' && errcode !== 0) {
-    throw new Error(`微信API错误: ${JSON.stringify(payload)}`)
+    throw new Error(`WeChat API error: ${JSON.stringify(payload)}`)
   }
 }
 
@@ -175,7 +175,7 @@ export async function getWechatAccessToken(input: {appId: string; appSecret: str
     const directPayload = await requestJsonWithOptionalProxy({
       body,
       directUrl,
-      errorContext: '请求 access_token 失败',
+      errorContext: 'Failed to request access_token',
       method: 'POST',
     })
     const token = (directPayload as {access_token?: string})?.access_token
@@ -184,7 +184,7 @@ export async function getWechatAccessToken(input: {appId: string; appSecret: str
     }
 
     if (!proxyUrl) {
-      throw new Error(`微信返回异常: ${JSON.stringify(directPayload)}`)
+      throw new Error(`Unexpected response from WeChat: ${JSON.stringify(directPayload)}`)
     }
   } catch (error) {
     if (!proxyUrl) {
@@ -195,12 +195,12 @@ export async function getWechatAccessToken(input: {appId: string; appSecret: str
   const proxyPayload = await requestJsonWithOptionalProxy({
     body,
     directUrl: proxyUrl,
-    errorContext: '请求 access_token 失败',
+    errorContext: 'Failed to request access_token',
     method: 'POST',
   })
   const token = (proxyPayload as {access_token?: string})?.access_token
   if (typeof token !== 'string' || !token.trim()) {
-    throw new Error(`代理响应未包含 access_token: ${JSON.stringify(proxyPayload)}`)
+    throw new Error(`The proxy response did not contain access_token: ${JSON.stringify(proxyPayload)}`)
   }
 
   return token
@@ -219,7 +219,7 @@ export async function uploadWechatMaterial(input: {
 
   const payload = await requestMultipartWithOptionalProxy({
     directUrl,
-    errorContext: '上传永久素材失败',
+    errorContext: 'Failed to upload permanent media',
     file: input.file,
     proxyUrl,
   })
@@ -227,7 +227,7 @@ export async function uploadWechatMaterial(input: {
 
   const mediaId = (payload as {'media_id'?: string}).media_id
   if (typeof mediaId !== 'string' || !mediaId.trim()) {
-    throw new Error(`上传成功但未返回 media_id: ${JSON.stringify(payload)}`)
+    throw new Error(`Upload succeeded but media_id was not returned: ${JSON.stringify(payload)}`)
   }
 
   return {mediaId}
@@ -254,7 +254,7 @@ export async function uploadWechatContentImage(input: {
 
   const payload = await requestMultipartWithOptionalProxy({
     directUrl,
-    errorContext: '上传正文图片失败',
+    errorContext: 'Failed to upload body image',
     file: input.file,
     proxyUrl,
   })
@@ -262,7 +262,7 @@ export async function uploadWechatContentImage(input: {
 
   const rawUrl = (payload as {url?: string})?.url
   if (typeof rawUrl !== 'string' || !rawUrl.trim()) {
-    throw new Error(`上传成功但未返回图片 URL: ${JSON.stringify(payload)}`)
+    throw new Error(`Upload succeeded but no image URL was returned: ${JSON.stringify(payload)}`)
   }
 
   return {
@@ -284,7 +284,7 @@ export async function addWechatDraft(input: {
   const payload = await requestJsonWithOptionalProxy({
     body: input.articles,
     directUrl,
-    errorContext: '创建草稿失败',
+    errorContext: 'Failed to create draft',
     method: 'POST',
     proxyUrl,
   })
@@ -292,7 +292,7 @@ export async function addWechatDraft(input: {
 
   const mediaId = (payload as {'media_id'?: string}).media_id
   if (typeof mediaId !== 'string' || !mediaId.trim()) {
-    throw new Error(`创建草稿成功但未返回 media_id: ${JSON.stringify(payload)}`)
+    throw new Error(`Draft creation succeeded but media_id was not returned: ${JSON.stringify(payload)}`)
   }
 
   return {mediaId}
@@ -312,7 +312,7 @@ export async function getWechatDraft(input: {
   const payload = await requestJsonWithOptionalProxy({
     body: {'media_id': input.mediaId},
     directUrl,
-    errorContext: '获取草稿详情失败',
+    errorContext: 'Failed to fetch draft details',
     method: 'POST',
     proxyUrl,
   })
@@ -334,7 +334,7 @@ export async function submitWechatFreePublish(input: {
   const payload = await requestJsonWithOptionalProxy({
     body: {'media_id': input.mediaId},
     directUrl,
-    errorContext: '提交发布失败',
+    errorContext: 'Failed to submit publish request',
     method: 'POST',
     proxyUrl,
   })
@@ -344,7 +344,7 @@ export async function submitWechatFreePublish(input: {
   const publishIdValue = (payload as {'publish_id'?: number | string})['publish_id']
   const publishId = typeof publishIdValue === 'number' ? String(publishIdValue) : publishIdValue
   if (typeof publishId !== 'string' || !publishId.trim()) {
-    throw new Error(`提交发布成功但未返回 publish_id: ${JSON.stringify(payload)}`)
+    throw new Error(`Publish request succeeded but publish_id was not returned: ${JSON.stringify(payload)}`)
   }
 
   return {publishId}
@@ -364,7 +364,7 @@ export async function getWechatFreePublishStatus(input: {
   const payload = await requestJsonWithOptionalProxy({
     body: {'publish_id': input.publishId},
     directUrl,
-    errorContext: '查询发布状态失败',
+    errorContext: 'Failed to query publish status',
     method: 'POST',
     proxyUrl,
   })
@@ -375,7 +375,7 @@ export async function getWechatFreePublishStatus(input: {
 function decodeDataUri(uri: string): WechatImageAsset {
   const match = uri.match(/^data:(.*?);base64,(.*)$/)
   if (!match) {
-    throw new Error('不支持的 data URI 图片格式')
+    throw new Error('Unsupported data URI image format')
   }
 
   const mimeType = match[1] || 'application/octet-stream'
@@ -392,7 +392,7 @@ function decodeDataUri(uri: string): WechatImageAsset {
 export async function resolveWechatImageAsset(input: {assetBaseDir?: string; source: string}): Promise<WechatImageAsset> {
   const source = String(input.source || '').trim()
   if (!source) {
-    throw new Error('图片地址不能为空')
+    throw new Error('Image source cannot be empty')
   }
 
   if (source.startsWith('data:image')) {
@@ -405,7 +405,7 @@ export async function resolveWechatImageAsset(input: {assetBaseDir?: string; sou
       signal: AbortSignal.timeout(60_000),
     })
     if (!response.ok) {
-      throw new Error(`下载远程图片失败 (${response.status})`)
+      throw new Error(`Failed to download the remote image (${response.status})`)
     }
 
     const arrayBuffer = await response.arrayBuffer()

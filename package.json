@@ -1,7 +1,7 @@
 {
   "name": "welight-cli",
   "description": "Welight CLI for WeChat article production",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "xuyi",
   "bin": {
     "wl": "bin/run.js"
@@ -78,25 +78,25 @@
     "topicSeparator": " ",
     "topics": {
       "ai": {
-        "description": "AI 创作与排版能力"
+        "description": "AI writing and layout tools"
       },
       "article": {
-        "description": "公众号文章工作流"
+        "description": "WeChat article workflow"
       },
       "cover": {
-        "description": "封面图检查与生成"
+        "description": "Cover image inspection and generation"
       },
       "copy": {
-        "description": "复制公众号兼容内容到剪贴板"
+        "description": "Copy WeChat-compatible content to the clipboard"
       },
       "auth": {
-        "description": "许可证登录与状态检查"
+        "description": "License login and status checks"
       },
       "publish": {
-        "description": "发布到微信公众号"
+        "description": "Publish to WeChat Official Accounts"
       },
       "theme": {
-        "description": "查看主题目录"
+        "description": "Browse the built-in themes"
       }
     }
   },

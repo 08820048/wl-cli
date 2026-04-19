@@ -8,7 +8,7 @@ const LICENSE_API_BASE_URL = 'https://ilikexff.cn/api'
 const CLIENT_INFO = 'WeLight CLI'
 
 export const PURCHASE_URL = 'https://waer.ltd'
-export const LICENSE_SERVICE_UNAVAILABLE_MESSAGE = '无法连接许可证服务，请检查网络后重试。'
+export const LICENSE_SERVICE_UNAVAILABLE_MESSAGE = 'Unable to reach the license service. Please check your network connection and try again.'
 
 interface LicenseApiResponse {
   code?: number
@@ -47,7 +47,7 @@ async function postJson<T>(url: string, payload: unknown): Promise<T> {
   try {
     return JSON.parse(text) as T
   } catch {
-    throw new Error(text || `License API 请求失败 (${response.status})`)
+    throw new Error(text || `License API request failed (${response.status})`)
   }
 }
 
@@ -61,14 +61,14 @@ export function formatLicenseClientError(error: unknown): string {
 
 function normalizeFailureMessage(message?: string): string {
   const text = String(message || '').trim()
-  if (!text) return '许可证校验失败'
+  if (!text) return 'License validation failed'
 
   if (
     text.includes('新设备需要激活')
     || text.includes('当前设备未激活')
     || text.includes('设备已被停用')
   ) {
-    return '许可证有效，但当前设备未激活。请先打开 Welight 桌面版完成激活。'
+    return 'Your license is valid, but this device is not activated. Please activate it in the Welight desktop app first.'
   }
 
   if (
@@ -79,7 +79,7 @@ function normalizeFailureMessage(message?: string): string {
     || text.includes('过期')
     || text.includes('撤销')
   ) {
-    return `${text}\n\n如果你还没有购买许可证，请访问 ${PURCHASE_URL}`
+    return `${text}\n\nIf you do not have a license yet, visit ${PURCHASE_URL}`
   }
 
   return text
@@ -115,7 +115,7 @@ export async function validateLicenseStatus(credentials: Omit<SavedCredentials, 
         message: String(data.message || '').trim(),
         status: 'INACTIVE',
       },
-      message: '许可证有效，但当前设备未激活。请先打开 Welight 桌面版完成激活。',
+      message: 'Your license is valid, but this device is not activated. Please activate it in the Welight desktop app first.',
       state: 'inactive',
     }
   }
@@ -142,8 +142,8 @@ export async function validateLicenseStatus(credentials: Omit<SavedCredentials, 
         status: active ? 'ACTIVE' : 'INACTIVE',
       },
       message: active
-        ? '许可证正常，当前设备已激活。'
-        : '许可证有效，但当前设备未激活。请先打开 Welight 桌面版完成激活。',
+        ? 'Your license is valid and this device is activated.'
+        : 'Your license is valid, but this device is not activated. Please activate it in the Welight desktop app first.',
       state: active ? 'active' : 'inactive',
     }
   }

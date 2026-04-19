@@ -62,19 +62,19 @@ export function getDeviceFingerprint(): string {
 export function getDeviceName(): string {
   switch (process.platform) {
     case 'darwin': {
-      return '用户的 Mac 设备'
+      return 'User Mac device'
     }
 
     case 'linux': {
-      return '用户的 Linux 设备'
+      return 'User Linux device'
     }
 
     case 'win32': {
-      return '用户的 Windows 设备'
+      return 'User Windows device'
     }
 
     default: {
-      return `用户的 ${process.platform} 设备`
+      return `User ${process.platform} device`
     }
   }
 }

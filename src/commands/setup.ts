@@ -4,13 +4,13 @@ import BaseCommand from '../base-command.js'
 import {runSetupWizard} from '../lib/setup/wizard.js'
 
 export default class Setup extends BaseCommand {
-  static description = '通过引导完成或重新执行 CLI 初始化配置'
+  static description = 'Complete or re-run the interactive CLI setup'
   static examples = [
     '<%= config.bin %> <%= command.id %>',
   ]
   static flags = {
     section: Flags.string({
-      description: '只重新配置某个阶段',
+      description: 'Reconfigure only one specific setup section',
       options: ['all', 'ai', 'license', 'wechat'],
     }),
   }
@@ -31,7 +31,7 @@ export default class Setup extends BaseCommand {
         : ''
 
       if (errorName === 'ExitPromptError') {
-        this.log('已取消初始化向导。')
+        this.log('Setup wizard cancelled.')
         return
       }
 

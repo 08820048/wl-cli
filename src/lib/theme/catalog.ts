@@ -23,7 +23,6 @@ export const THEMES: ThemeInfo[] = [
   {description: '图案背景', id: 'w018', name: '金盏花'},
   {description: '天秀鹰文', id: 'w019', name: '山茶'},
   {description: '自定义主题', id: 'w020', name: '茉莉'},
-  {description: '左侧胶囊二级标题', id: 'w021', name: '朱槿'},
   {description: '柔和留白', id: 'w022', name: '月见草'},
   {description: '轻盈明快', id: 'w023', name: '樱花'},
 ]

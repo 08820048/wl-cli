@@ -108,7 +108,7 @@ async function readApiResponse<T>(response: Response): Promise<ApiResponse<T>> {
   try {
     return JSON.parse(text) as ApiResponse<T>
   } catch {
-    throw new Error(text || `AI 服务请求失败 (${response.status})`)
+    throw new Error(text || `AI service request failed (${response.status})`)
   }
 }
 
@@ -119,7 +119,7 @@ async function getServerModel(identifier: string): Promise<AIModel> {
   const payload = await readApiResponse<AIModel>(response)
 
   if (payload.code !== 200 || !payload.data) {
-    throw new Error(payload.message || `无法获取模型 ${identifier} 的配置`)
+    throw new Error(payload.message || `Unable to fetch the configuration for model ${identifier}`)
   }
 
   return payload.data
@@ -139,7 +139,7 @@ async function validateModel(identifier: string): Promise<ModelValidationRespons
   const payload = await readApiResponse<ModelValidationResponse>(response)
 
   if (payload.code !== 200 || !payload.data) {
-    throw new Error(payload.message || `模型 ${identifier} 校验失败`)
+    throw new Error(payload.message || `Validation failed for model ${identifier}`)
   }
 
   return payload.data
@@ -159,7 +159,7 @@ export async function validateAiModelIdentifier(identifier: string): Promise<{id
   ])
 
   if (!validation.valid) {
-    throw new Error(validation.errorMessage || `模型 ${identifier} 当前不可用`)
+    throw new Error(validation.errorMessage || `Model ${identifier} is currently unavailable`)
   }
 
   return {
@@ -192,12 +192,12 @@ async function resolveModelConfig(identifier: string, localApiKey?: string): Pro
   ])
 
   if (!validation.valid) {
-    throw new Error(validation.errorMessage || `模型 ${identifier} 当前不可用`)
+    throw new Error(validation.errorMessage || `Model ${identifier} is currently unavailable`)
   }
 
   const apiKey = String(localApiKey || validation.apiKey || '').trim()
   if (!apiKey) {
-    throw new Error(`模型 ${identifier} 未返回可用的 API Key`)
+    throw new Error(`Model ${identifier} did not return a usable API key`)
   }
 
   return {
@@ -236,7 +236,7 @@ function buildRequestBody(config: ResolvedModelConfig, messages: ChatMessage[], 
     baseBody.tools = [
       {
         function: {
-          description: '用于联网搜索最新信息',
+          description: 'Search the web for the latest information',
           name: '$web_search',
           parameters: {properties: {}, required: [], type: 'object'},
         },
@@ -305,7 +305,7 @@ function parseOpenAiLikeText(payload: unknown): string {
     }
   }
 
-  throw new Error('AI 响应中没有可用内容')
+  throw new Error('The AI response did not contain usable content')
 }
 
 function parseOllamaText(payload: unknown): string {
@@ -318,7 +318,7 @@ function parseOllamaText(payload: unknown): string {
     return content.trim()
   }
 
-  throw new Error('Ollama 响应中没有可用内容')
+  throw new Error('The Ollama response did not contain usable content')
 }
 
 function parseOpenAiLikeDelta(payload: OpenAiLikeStreamPayload): string {
@@ -351,7 +351,7 @@ async function streamOpenAiLikeResponse(input: {
   response: Response
 }): Promise<string> {
   if (!input.response.body) {
-    throw new Error('AI 流式响应为空')
+    throw new Error('The AI streaming response was empty')
   }
 
   const decoder = new TextDecoder()
@@ -418,7 +418,7 @@ async function streamOllamaResponse(input: {
   response: Response
 }): Promise<string> {
   if (!input.response.body) {
-    throw new Error('Ollama 流式响应为空')
+    throw new Error('The Ollama streaming response was empty')
   }
 
   const decoder = new TextDecoder()
@@ -497,7 +497,7 @@ export async function runAiChat(input: {
 
   if (!response.ok) {
     const text = await response.text()
-    throw new Error(text || `AI 请求失败 (${response.status})`)
+    throw new Error(text || `AI request failed (${response.status})`)
   }
 
   if (useStream) {
@@ -513,7 +513,7 @@ export async function runAiChat(input: {
   try {
     payload = JSON.parse(text)
   } catch {
-    throw new Error(text || 'AI 响应解析失败')
+    throw new Error(text || 'Failed to parse the AI response')
   }
 
   return config.provider === 'OLLAMA'

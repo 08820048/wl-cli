@@ -11,27 +11,27 @@ import {createDefaultCoverOutputPath, generateCoverImage, inspectCover} from '..
 
 export default class CoverGenerate extends BaseCommand {
   static args = {
-    input: Args.string({description: '可选：文章 HTML 或 Markdown 文件路径'}),
+    input: Args.string({description: 'Optional article HTML or Markdown file path'}),
   }
-  static description = '使用 AI 生成公众号封面图'
+  static description = 'Generate a WeChat cover image with AI'
   static enableJsonFlag = true
   static examples = [
-    '<%= config.bin %> <%= command.id %> --title "2026 年 AI 产品趋势"',
+    '<%= config.bin %> <%= command.id %> --title "AI product trends in 2026"',
     '<%= config.bin %> <%= command.id %> ./article.html --output ./cover.png',
   ]
   static flags = {
-    apiKey: Flags.string({description: '图片模型 API Key'}),
-    endpoint: Flags.string({description: '图片模型接口地址'}),
-    model: Flags.string({description: '图片模型标识'}),
-    output: Flags.string({char: 'o', description: '输出图片路径'}),
-    prompt: Flags.string({description: '手动覆盖自动生成的图片提示词'}),
-    size: Flags.string({description: '图片尺寸，如 1536x1024'}),
+    apiKey: Flags.string({description: 'Image model API key'}),
+    endpoint: Flags.string({description: 'Image model endpoint'}),
+    model: Flags.string({description: 'Image model identifier'}),
+    output: Flags.string({char: 'o', description: 'Output image path'}),
+    prompt: Flags.string({description: 'Manually override the generated image prompt'}),
+    size: Flags.string({description: 'Image size, for example 1536x1024'}),
     style: Flags.string({
-      description: '封面风格',
+      description: 'Cover style',
       options: ['business', 'editorial', 'magazine', 'minimal'],
     }),
-    summary: Flags.string({description: '文章摘要'}),
-    title: Flags.string({description: '文章标题'}),
+    summary: Flags.string({description: 'Article summary'}),
+    title: Flags.string({description: 'Article title'}),
   }
   static requiresSetup = false
 
@@ -41,7 +41,7 @@ export default class CoverGenerate extends BaseCommand {
     const coverState = args.input
       ? await inspectCover({inputPath: args.input})
       : {source: undefined, status: 'missing' as const, summary: '', title: ''}
-    const title = String(flags.title || coverState.title || await promptInput({message: '请输入文章标题'})).trim()
+    const title = String(flags.title || coverState.title || await promptInput({message: 'Enter the article title'})).trim()
     const summary = String(flags.summary || coverState.summary).trim()
     const outputPath = flags.output
       ? path.resolve(flags.output)
@@ -49,11 +49,11 @@ export default class CoverGenerate extends BaseCommand {
           directory: args.input ? path.dirname(path.resolve(args.input)) : process.cwd(),
           title,
         })
-    const spinner = ora('正在生成封面图').start()
+    const spinner = ora('Generating cover image').start()
 
     try {
       const result = await generateCoverImage({
-        apiKey: String(flags.apiKey || appConfig?.ai.image?.apiKey || await password({mask: '*', message: '请输入图片模型 API Key'})).trim(),
+        apiKey: String(flags.apiKey || appConfig?.ai.image?.apiKey || await password({mask: '*', message: 'Enter the image model API key'})).trim(),
         endpoint: flags.endpoint || appConfig?.ai.image?.endpoint,
         model: flags.model || appConfig?.ai.image?.defaultModel,
         outputPath,
@@ -64,7 +64,7 @@ export default class CoverGenerate extends BaseCommand {
         title,
       })
 
-      spinner.succeed('封面图生成完成')
+      spinner.succeed('Cover image generated')
 
       const payload = {
         ...result,
@@ -92,7 +92,7 @@ export default class CoverGenerate extends BaseCommand {
         ),
       )
     } catch (error) {
-      spinner.fail('封面图生成失败')
+      spinner.fail('Cover generation failed')
       this.error(error instanceof Error ? error.message : String(error))
     }
   }

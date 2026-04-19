@@ -23,38 +23,38 @@ import {convertHtmlDocumentToWechatInline} from '../../lib/wechat/html.js'
 import {publishWechatArticle, resolveWechatAssetBaseDir} from '../../lib/wechat/publish.js'
 
 export default class ArticleCompose extends BaseCommand {
-  static description = '运行公众号文章创作工作流向导'
+  static description = 'Run the WeChat article creation workflow'
   static flags = {
     action: Flags.string({
-      description: '最终动作',
+      description: 'Final action',
       options: ['copy', 'draft', 'publish', 'export-html'],
     }),
-    appId: Flags.string({description: '发布到公众号时使用的 AppID'}),
-    appSecret: Flags.string({description: '发布到公众号时使用的 AppSecret'}),
-    author: Flags.string({description: '可选：发布时的文章作者'}),
-    autoCover: Flags.boolean({description: '缺少封面时自动生成一张 AI 封面图'}),
-    contentSourceUrl: Flags.string({description: '可选：发布时的原文地址'}),
-    coverImage: Flags.string({description: '可选：发布时的封面图片路径或 URL'}),
-    digest: Flags.string({description: '可选：发布时的文章摘要'}),
-    fansCommentOnly: Flags.boolean({description: '发布时仅粉丝可评论'}),
-    input: Flags.string({char: 'i', description: '本地 Markdown 文件路径'}),
+    appId: Flags.string({description: 'AppID used for WeChat publishing'}),
+    appSecret: Flags.string({description: 'AppSecret used for WeChat publishing'}),
+    author: Flags.string({description: 'Optional article author for publishing'}),
+    autoCover: Flags.boolean({description: 'Automatically generate an AI cover if none is available'}),
+    contentSourceUrl: Flags.string({description: 'Optional original article URL for publishing'}),
+    coverImage: Flags.string({description: 'Optional cover image path or URL for publishing'}),
+    digest: Flags.string({description: 'Optional article summary for publishing'}),
+    fansCommentOnly: Flags.boolean({description: 'Allow comments from followers only'}),
+    input: Flags.string({char: 'i', description: 'Local Markdown file path'}),
     mode: Flags.string({
-      description: '排版模式',
+      description: 'Layout mode',
       options: ['smart', 'simple', 'minimal'],
     }),
-    model: Flags.string({description: 'AI 模型标识'}),
-    openComment: Flags.boolean({description: '发布时启用评论'}),
-    output: Flags.string({char: 'o', description: '输出 HTML 文件路径'}),
-    primaryColor: Flags.string({default: '#2a9d8f', description: '主题主色'}),
-    prompt: Flags.string({char: 'p', description: '文章创意或创作提示词'}),
+    model: Flags.string({description: 'AI model identifier'}),
+    openComment: Flags.boolean({description: 'Enable comments when publishing'}),
+    output: Flags.string({char: 'o', description: 'Output HTML file path'}),
+    primaryColor: Flags.string({default: '#2a9d8f', description: 'Theme primary color'}),
+    prompt: Flags.string({char: 'p', description: 'Article idea or writing prompt'}),
     proxyOrigin: Flags.string({
-      description: '微信 API 代理地址',
+      description: 'WeChat API proxy origin',
     }),
-    theme: Flags.string({char: 't', description: '主题 ID，如 w022'}),
-    title: Flags.string({description: '手动指定文章标题'}),
-    url: Flags.string({description: '文章来源 URL'}),
-    webSearch: Flags.boolean({description: 'AI 创作时启用联网搜索'}),
-    yes: Flags.boolean({char: 'y', description: '未提供的步骤使用默认值'}),
+    theme: Flags.string({char: 't', description: 'Theme ID, for example w022'}),
+    title: Flags.string({description: 'Manually specify the article title'}),
+    url: Flags.string({description: 'Article source URL'}),
+    webSearch: Flags.boolean({description: 'Enable web search during AI generation'}),
+    yes: Flags.boolean({char: 'y', description: 'Use defaults for any missing interactive step'}),
   }
 
   // eslint-disable-next-line complexity
@@ -68,12 +68,12 @@ export default class ArticleCompose extends BaseCommand {
     const layoutMode = await this.resolveLayoutMode(flags)
     const theme = await this.resolveTheme(flags)
     const action = await this.resolveAction(flags)
-    const useAi = flags.yes ? true : await confirm({default: true, message: '是否在流程中启用 AI 创作/改写步骤？'})
+    const useAi = flags.yes ? true : await confirm({default: true, message: 'Enable the AI writing / rewriting step in this workflow?'})
     const sourceDetail = await this.resolveSourceDetail(sourceMode, flags)
     const resolvedInputPath = sourceMode === 'markdown-file' ? sourceDetail : flags.input
     const resolvedPrompt = sourceMode === 'idea' ? sourceDetail : flags.prompt
     const resolvedUrl = sourceMode === 'url' ? sourceDetail : flags.url
-    const spinner = ora('正在准备文章输入').start()
+    const spinner = ora('Preparing article input').start()
     const streamRenderer = new MarkdownStreamRenderer()
 
     try {
@@ -89,7 +89,7 @@ export default class ArticleCompose extends BaseCommand {
       if (source.mode === 'idea') {
         if (useAi) {
           spinner.stop()
-          this.writeStreamHeader('AI 正在创作文章...')
+          this.writeStreamHeader('AI is writing the article...')
           markdownText = await createArticleMarkdown({
             localApiKey,
             model,
@@ -99,7 +99,7 @@ export default class ArticleCompose extends BaseCommand {
             webSearch: flags.webSearch,
           })
           streamRenderer.finish()
-          spinner.start('正在处理文章内容')
+          spinner.start('Processing article content')
         }
         else {
           markdownText = createIdeaMarkdownTemplate(source.ideaPrompt || source.title, source.title)
@@ -108,7 +108,7 @@ export default class ArticleCompose extends BaseCommand {
 
       if (useAi && markdownText.trim()) {
         spinner.stop()
-        this.writeStreamHeader(`AI 正在应用 ${layoutMode} 排版...`)
+        this.writeStreamHeader(`AI is applying the ${layoutMode} layout...`)
         markdownText = await layoutArticleMarkdown({
           localApiKey,
           markdown: markdownText,
@@ -118,10 +118,10 @@ export default class ArticleCompose extends BaseCommand {
           stream: true,
         })
         streamRenderer.finish()
-        spinner.start('正在渲染带主题的 HTML')
+        spinner.start('Rendering themed HTML')
       }
 
-      spinner.text = '正在渲染带主题的 HTML'
+      spinner.text = 'Rendering themed HTML'
       const {html, title} = await buildThemedHtmlDocument({
         countStatus: true,
         fallbackTitle: source.title,
@@ -140,15 +140,15 @@ export default class ArticleCompose extends BaseCommand {
 
       const notices: string[] = []
       if (action === 'copy') {
-        spinner.text = '正在生成公众号兼容内容'
+        spinner.text = 'Generating WeChat-compatible content'
         const payload = convertHtmlDocumentToWechatInline(html)
-        spinner.text = '正在写入系统剪贴板'
+        spinner.text = 'Writing to the system clipboard'
         await writeWechatHtmlToClipboard(payload)
-        notices.push('公众号兼容内容已复制到系统剪贴板。')
+        notices.push('WeChat-compatible content has been copied to the system clipboard.')
       }
 
       if (action === 'draft' || action === 'publish') {
-        spinner.text = '正在检查封面图'
+        spinner.text = 'Checking cover image'
         const inspectedCover = await inspectCover({
           explicitCoverImage: flags.coverImage,
           fileText: html,
@@ -163,13 +163,13 @@ export default class ArticleCompose extends BaseCommand {
             spinner.stop()
             shouldAutoCover = await confirm({
               default: true,
-              message: '当前文章没有可用封面图，是否自动生成一张 AI 封面？',
+              message: 'No usable cover image was found. Generate one with AI?',
             })
-            spinner.start('正在继续发布流程')
+            spinner.start('Continuing the publishing flow')
           }
 
           if (shouldAutoCover) {
-            spinner.text = '正在生成 AI 封面图'
+            spinner.text = 'Generating AI cover image'
             const {outputPath: generatedCoverPath} = await generateCoverImage({
               apiKey: appConfig?.ai.image?.apiKey,
               endpoint: appConfig?.ai.image?.endpoint,
@@ -191,8 +191,8 @@ export default class ArticleCompose extends BaseCommand {
           appSecret: flags.appSecret,
           yes: flags.yes,
         })
-        spinner.text = '正在准备发布参数'
-        spinner.text = action === 'publish' ? '正在提交公众号发布' : '正在推送到公众号草稿箱'
+        spinner.text = 'Preparing publishing parameters'
+        spinner.text = action === 'publish' ? 'Submitting WeChat publish request' : 'Pushing article to WeChat drafts'
         const result = await publishWechatArticle({
           appId: publishSettings.appId,
           appSecret: publishSettings.appSecret,
@@ -212,13 +212,13 @@ export default class ArticleCompose extends BaseCommand {
           title: flags.title || title,
         })
 
-        notices.push(action === 'publish' ? '公众号文章已提交发布。' : '公众号草稿已创建。', `draftMediaId: ${result.draftMediaId}`)
+        notices.push(action === 'publish' ? 'The WeChat article has been submitted for publishing.' : 'A WeChat draft has been created.', `draftMediaId: ${result.draftMediaId}`)
         if (result.publishId) {
           notices.push(`publishId: ${result.publishId}`)
         }
 
         if (result.previewUrl) {
-          notices.push(`链接: ${result.previewUrl}`)
+          notices.push(`preview: ${result.previewUrl}`)
         }
 
         if (result.articleUrls.length > 0) {
@@ -228,12 +228,12 @@ export default class ArticleCompose extends BaseCommand {
 
       spinner.succeed(
         action === 'publish'
-          ? '文章已完成发布链路'
+          ? 'The publishing flow completed successfully'
           : action === 'draft'
-            ? '文章已推送到公众号草稿箱'
+            ? 'The article has been pushed to WeChat drafts'
             : action === 'copy'
-              ? '文章已复制到公众号剪贴板'
-              : '文章已导出为 HTML',
+              ? 'The article has been copied for WeChat'
+              : 'The article has been exported as HTML',
       )
 
       this.log(
@@ -258,11 +258,11 @@ export default class ArticleCompose extends BaseCommand {
       )
 
       if (action === 'export-html' && !flags.output && !flags.input) {
-        this.log(`默认输出路径：${chalk.cyan(createDefaultHtmlOutputPath({title}))}`)
+        this.log(`Default output path: ${chalk.cyan(createDefaultHtmlOutputPath({title}))}`)
       }
     }
     catch (error) {
-      spinner.fail('文章工作流执行失败')
+      spinner.fail('Article workflow failed')
       this.error(error instanceof Error ? error.message : String(error))
     }
   }
@@ -273,12 +273,12 @@ export default class ArticleCompose extends BaseCommand {
 
     return select<ComposeAction>({
       choices: [
-        {name: '复制到公众号', value: 'copy'},
-        {name: '发布到草稿箱', value: 'draft'},
-        {name: '正式发布', value: 'publish'},
-        {name: '导出 HTML', value: 'export-html'},
+        {name: 'Copy to WeChat', value: 'copy'},
+        {name: 'Publish to draft', value: 'draft'},
+        {name: 'Publish live', value: 'publish'},
+        {name: 'Export HTML', value: 'export-html'},
       ],
-      message: '选择最终动作',
+      message: 'Choose the final action',
     })
   }
 
@@ -288,11 +288,11 @@ export default class ArticleCompose extends BaseCommand {
 
     return select<LayoutMode>({
       choices: [
-        {name: 'smart - 智能排版', value: 'smart'},
-        {name: 'simple - 基础排版', value: 'simple'},
-        {name: 'minimal - 极简排版', value: 'minimal'},
+        {name: 'smart - intelligent layout', value: 'smart'},
+        {name: 'simple - clean layout', value: 'simple'},
+        {name: 'minimal - minimal layout', value: 'minimal'},
       ],
-      message: '选择排版模式',
+      message: 'Choose a layout mode',
     })
   }
 
@@ -307,13 +307,13 @@ export default class ArticleCompose extends BaseCommand {
     if (fallbackValue) return fallbackValue
 
     if (inputValue.yes) {
-      this.error(`缺少必要参数 --${inputValue.flagName}`)
+      this.error(`Missing required flag --${inputValue.flagName}`)
     }
 
     const prompted = String(await input({message: inputValue.message})).trim()
     if (prompted) return prompted
 
-    this.error(`缺少必要参数 --${inputValue.flagName}`)
+    this.error(`Missing required flag --${inputValue.flagName}`)
   }
 
   private async resolveSourceDetail(
@@ -324,26 +324,26 @@ export default class ArticleCompose extends BaseCommand {
       const directValue = String(flags.input || '').trim()
       if (directValue) return directValue
       if (flags.yes) {
-        this.error('缺少必要参数 --input')
+        this.error('Missing required flag --input')
       }
 
-      const prompted = String(await input({message: '输入本地 Markdown 文件路径'})).trim()
+      const prompted = String(await input({message: 'Enter a local Markdown file path'})).trim()
       if (prompted) return prompted
 
-      this.error('缺少必要参数 --input')
+      this.error('Missing required flag --input')
     }
 
     if (sourceMode === 'url') {
       const directValue = String(flags.url || '').trim()
       if (directValue) return directValue
       if (flags.yes) {
-        this.error('缺少必要参数 --url')
+        this.error('Missing required flag --url')
       }
 
-      const prompted = String(await input({message: '输入文章来源 URL'})).trim()
+      const prompted = String(await input({message: 'Enter an article source URL'})).trim()
       if (prompted) return prompted
 
-      this.error('缺少必要参数 --url')
+      this.error('Missing required flag --url')
     }
 
     if (flags.prompt) {
@@ -351,10 +351,10 @@ export default class ArticleCompose extends BaseCommand {
     }
 
     if (flags.yes) {
-      return '写一篇适合公众号发布的文章'
+      return 'Write an article suitable for a WeChat Official Account'
     }
 
-    return input({message: '输入文章创意、主题或创作提示词'})
+    return input({message: 'Enter an article idea, topic, or writing prompt'})
   }
 
   private async resolveSourceMode(flags: {input?: string; url?: string; yes?: boolean}): Promise<SourceMode> {
@@ -364,18 +364,18 @@ export default class ArticleCompose extends BaseCommand {
 
     return select<SourceMode>({
       choices: [
-        {name: '从创意主题开始', value: 'idea'},
-        {name: '从本地 Markdown 文件开始', value: 'markdown-file'},
-        {name: '从 URL 开始', value: 'url'},
+        {name: 'Start from an idea or topic', value: 'idea'},
+        {name: 'Start from a local Markdown file', value: 'markdown-file'},
+        {name: 'Start from a URL', value: 'url'},
       ],
-      message: '选择输入来源',
+      message: 'Choose the input source',
     })
   }
 
   private async resolveTheme(flags: {theme?: string; yes?: boolean}) {
     if (flags.theme) {
       const matched = findTheme(flags.theme)
-      if (!matched) this.error(`未知主题：${flags.theme}`)
+      if (!matched) this.error(`Unknown theme: ${flags.theme}`)
       return matched
     }
 
@@ -383,7 +383,7 @@ export default class ArticleCompose extends BaseCommand {
 
     const chosen = await select<string>({
       choices: THEMES.map(theme => ({name: formatThemeLabel(theme), value: theme.id})),
-      message: '选择主题',
+      message: 'Choose a theme',
       pageSize: 12,
     })
 
@@ -399,13 +399,13 @@ export default class ArticleCompose extends BaseCommand {
     const appId = await this.resolveRequiredValue(input.appId, {
       fallbackValue: input.appConfig?.wechat?.appId,
       flagName: 'appId',
-      message: '请输入公众号 AppID',
+      message: 'Enter the WeChat AppID',
       yes: input.yes,
     })
     const appSecret = await this.resolveRequiredValue(input.appSecret, {
       fallbackValue: input.appConfig?.wechat?.appSecret,
       flagName: 'appSecret',
-      message: '请输入公众号 AppSecret',
+      message: 'Enter the WeChat AppSecret',
       yes: input.yes,
     })
 

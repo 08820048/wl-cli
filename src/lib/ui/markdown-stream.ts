@@ -88,7 +88,7 @@ function renderNode(node: RenderNodeLike, width: number): string[] {
     case 'img': {
       const alt = String(node.getAttribute('alt') || '').trim()
       const source = String(node.getAttribute('src') || '').trim()
-      return [`[图片] ${alt || source || '未命名图片'}`]
+      return [`[Image] ${alt || source || 'Untitled image'}`]
     }
 
     case 'ol': {
@@ -202,7 +202,7 @@ export function extractStableMarkdownChunk(markdownText: string): {
 export function renderMarkdownPreview(markdownText: string, width = 100): string {
   const source = stripFrontMatter(String(markdownText || ''))
   if (!source.trim()) {
-    return '正在等待内容...'
+    return 'Waiting for content...'
   }
 
   let html = ''

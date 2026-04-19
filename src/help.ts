@@ -33,11 +33,11 @@ export default class WlHelp extends Help {
     const savedCredentials = loadSavedCredentialsSync(this.config.configDir)
     const savedAppConfig = loadSavedAppConfigSync(this.config.configDir)
     const authSummary = savedCredentials
-      ? `已保存许可证：${maskEmail(savedCredentials.customerEmail)}`
-      : '未保存许可证，请先运行 wl auth login'
+      ? `Saved license: ${maskEmail(savedCredentials.customerEmail)}`
+      : 'No saved license. Run wl auth login first.'
     const setupSummary = savedAppConfig
-      ? `初始化状态：已完成 · AI ${savedAppConfig.ai.defaultModel}${savedAppConfig.ai.apiKey ? ' + Key' : ''}${savedAppConfig.ai.image?.defaultModel ? ` · Cover ${savedAppConfig.ai.image.defaultModel}` : ''}`
-      : '初始化状态：未完成，请先运行 wl setup'
+      ? `Setup: complete · AI ${savedAppConfig.ai.defaultModel}${savedAppConfig.ai.apiKey ? ' + Key' : ''}${savedAppConfig.ai.image?.defaultModel ? ` · Cover ${savedAppConfig.ai.image.defaultModel}` : ''}`
+      : 'Setup: incomplete. Run wl setup first.'
     const version = `v${this.config.version}`
     const website = link('https://waer.ltd')
     const developer = link('https://xuyi.dev')
@@ -63,24 +63,24 @@ export default class WlHelp extends Help {
     )
 
     const quickStart = createBulletList([
-      `${chalk.cyan('wl')}  首次启动时自动进入初始化向导`,
-      `${chalk.cyan('wl setup')}  重新进入配置流程`,
-      `${chalk.cyan('wl article compose')}  进入公众号文章创作工作流`,
-      `${chalk.cyan('wl cover generate --title "AI 工作流趋势"')}  生成公众号封面图`,
-      `${chalk.cyan('wl ai create --prompt "写一篇产品复盘"')}  用 AI 生成文章初稿`,
-      `${chalk.cyan('wl publish wechat article.html --mode draft')}  推送到公众号草稿箱`,
+      `${chalk.cyan('wl')}  Start the onboarding wizard`,
+      `${chalk.cyan('wl setup')}  Re-run setup`,
+      `${chalk.cyan('wl article compose')}  Start the article workflow`,
+      `${chalk.cyan('wl cover generate --title "AI Workflow Trends"')}  Generate a cover image`,
+      `${chalk.cyan('wl ai create --prompt "Write a product retrospective"')}  Draft an article with AI`,
+      `${chalk.cyan('wl publish wechat article.html --mode draft')}  Push to WeChat draft`,
     ])
 
     const coreFlow = createBulletList([
-      `${chalk.hex('#2a9d8f')('1.')} 认证许可证`,
-      `${chalk.hex('#2a9d8f')('2.')} AI 创作或整理 Markdown`,
-      `${chalk.hex('#2a9d8f')('3.')} 选择主题并导出公众号 HTML`,
-      `${chalk.hex('#2a9d8f')('4.')} 复制到公众号或直接发草稿 / 发布`,
+      `${chalk.hex('#2a9d8f')('1.')} Verify your license`,
+      `${chalk.hex('#2a9d8f')('2.')} Create or refine Markdown with AI`,
+      `${chalk.hex('#2a9d8f')('3.')} Apply a theme and export WeChat HTML`,
+      `${chalk.hex('#2a9d8f')('4.')} Copy to WeChat or publish directly`,
     ])
 
     const notes = createBulletList([
-      'CLI 只校验许可证，不负责设备激活。',
-      '如果许可证有效但当前设备未激活，请先在 Welight 桌面版中完成激活。',
+      'The CLI validates licenses, but does not activate devices.',
+      'If your license is valid but this device is not activated, activate it in the Welight desktop app first.',
     ])
 
     return [

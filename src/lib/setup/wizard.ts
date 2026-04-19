@@ -23,12 +23,12 @@ const PRESET_MODELS = [
 
 const PRESET_IMAGE_MODELS = [
   {
-    description: '默认推荐，适合公众号横版封面',
+    description: 'Recommended default for wide WeChat cover images',
     label: 'Qwen Image',
     value: 'Qwen/Qwen-Image',
   },
   {
-    description: '风格更强，生成速度快',
+    description: 'Stronger visual style with fast generation',
     label: 'Kolors',
     value: 'Kwai-Kolors/Kolors',
   },
@@ -69,7 +69,7 @@ interface SetupDraft {
 
 function maskSecret(value?: string): string {
   const resolved = String(value || '').trim()
-  if (!resolved) return '未配置'
+  if (!resolved) return 'not configured'
   if (resolved.length <= 8) return `${resolved.slice(0, 2)}***${resolved.slice(-1)}`
   return `${resolved.slice(0, 4)}***${resolved.slice(-4)}`
 }
@@ -80,7 +80,7 @@ async function promptProtectedValue(inputValue: {
   message: string
 }): Promise<string> {
   const existingValue = String(inputValue.existingValue || '').trim()
-  const promptMessage = existingValue ? `${inputValue.message}（留空则保留当前值）` : inputValue.message
+  const promptMessage = existingValue ? `${inputValue.message} (leave blank to keep the current value)` : inputValue.message
 
   const nextValue = String(await password({
     mask: '*',
@@ -132,11 +132,11 @@ async function validateAiConfiguration(inputValue: {apiKey?: string; model: stri
     localApiKey: inputValue.apiKey,
     messages: [
       {
-        content: '你是 Welight CLI 的 AI 配置测试助手，只回复 OK。',
+        content: 'You are the AI configuration test assistant for Welight CLI. Reply with OK only.',
         role: 'system',
       },
       {
-        content: '请只回复 OK',
+        content: 'Reply with OK only',
         role: 'user',
       },
     ],
@@ -179,7 +179,7 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
   const sequence = resolveSetupSequence(section)
 
   if (section !== 'all' && (!existingCredentials || !existingConfig)) {
-    throw new Error('当前还没有完整初始化，请先运行 `wl setup` 完成一次完整配置。')
+    throw new Error('The CLI has not been fully initialized yet. Run `wl setup` to complete the initial configuration first.')
   }
 
   inputValue.log(renderLogo())
@@ -190,9 +190,9 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
       [
         chalk.bold('Welight Setup'),
         '',
-        '首次使用请先完成许可证、AI 和公众号配置。',
-        '后续如果需要重新配置，随时可以运行 `wl setup`。',
-        '也可以使用 `wl setup --section ai|license|wechat` 只重配某一段。',
+        'Complete the license, AI, and WeChat configuration before using the CLI.',
+        'You can run `wl setup` again anytime to update the configuration.',
+        'You can also use `wl setup --section ai|license|wechat` to reconfigure only one section.',
       ].join('\n'),
       {
         borderColor: '#f4a261',
@@ -206,10 +206,10 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
     const current = sequence.indexOf('license') + 1
     inputValue.log(renderSetupStep({
       current,
-      description: '确认当前设备的许可证状态。CLI 只做校验，不负责激活。',
+      description: 'Check the license status for this device. The CLI validates licenses, but does not activate devices.',
       summary: [
-        `${chalk.bold('已保存邮箱')}  ${draft.credentials.customerEmail || '未配置'}`,
-        `${chalk.bold('许可证')}    ${maskSecret(draft.credentials.licenseKey)}`,
+        `${chalk.bold('Saved email')}  ${draft.credentials.customerEmail || 'not configured'}`,
+        `${chalk.bold('License')}      ${maskSecret(draft.credentials.licenseKey)}`,
       ],
       title: 'License',
       total: sequence.length,
@@ -217,40 +217,40 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
 
     draft.credentials.licenseKey = String(await input({
       default: draft.credentials.licenseKey,
-      message: '许可证密钥',
+      message: 'License key',
     })).trim()
     draft.credentials.customerEmail = String(await input({
       default: draft.credentials.customerEmail,
-      message: '购买邮箱',
+      message: 'Purchase email',
     })).trim()
 
-    const licenseSpinner = ora('正在验证许可证状态').start()
+    const licenseSpinner = ora('Validating license status').start()
 
     let licenseCheck
 
     try {
       licenseCheck = await validateLicenseStatus(draft.credentials)
     } catch (error) {
-      licenseSpinner.fail('许可证校验失败')
+      licenseSpinner.fail('License validation failed')
       throw new Error(formatLicenseClientError(error))
     }
 
     if (licenseCheck.state === 'invalid') {
-      licenseSpinner.fail('许可证不可用')
+      licenseSpinner.fail('License is not valid')
       throw new Error(licenseCheck.message)
     }
 
     if (licenseCheck.state !== 'active') {
-      licenseSpinner.fail('许可证尚未在当前设备激活')
+      licenseSpinner.fail('This device is not activated yet')
       throw new Error(
         [
-          '许可证验证通过，但当前设备尚未在 Welight 桌面版中激活。',
-          '请先打开桌面版完成激活，然后重新运行 `wl setup`。',
+          'The license is valid, but this device has not been activated in the Welight desktop app yet.',
+          'Open the desktop app, activate this device, then run `wl setup` again.',
         ].join('\n'),
       )
     }
 
-    licenseSpinner.succeed('许可证验证通过')
+    licenseSpinner.succeed('License validation passed')
   }
 
   if (sequence.includes('ai')) {
@@ -258,11 +258,11 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
     inputValue.log('')
     inputValue.log(renderSetupStep({
       current,
-      description: '配置默认 AI 模型，并对模型与 API Key 做实际可用性验证。',
+      description: 'Configure the default AI model and verify that the model and API key are actually usable.',
       summary: [
-        `${chalk.bold('当前模型')}  ${draft.ai.defaultModel || '未配置'}`,
-        `${chalk.bold('AI Key')}   ${draft.ai.apiKey ? '已配置' : '未配置'}`,
-        `${chalk.bold('封面图')}   ${draft.ai.image?.defaultModel || '未配置'}`,
+        `${chalk.bold('Current model')}  ${draft.ai.defaultModel || 'not configured'}`,
+        `${chalk.bold('AI Key')}         ${draft.ai.apiKey ? 'configured' : 'not configured'}`,
+        `${chalk.bold('Cover model')}    ${draft.ai.image?.defaultModel || 'not configured'}`,
       ],
       title: 'AI',
       total: sequence.length,
@@ -274,43 +274,43 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
           name: `${item.label}  ${chalk.gray(item.value)}`,
           value: item.value,
         })),
-        {name: 'Custom  手动输入模型标识', value: '__custom__'},
+        {name: 'Custom  enter a model identifier manually', value: '__custom__'},
       ],
       default: resolveModelChoice(draft.ai.defaultModel || 'qwen3-max'),
-      message: '选择默认 AI 模型',
+      message: 'Choose the default AI model',
     })
 
     draft.ai.defaultModel = modelChoice === '__custom__'
       ? String(await input({
           default: draft.ai.defaultModel,
-          message: '输入默认 AI 模型标识',
+          message: 'Enter the default AI model identifier',
         })).trim()
       : modelChoice
 
     draft.ai.apiKey = modelRequiresApiKey(draft.ai.defaultModel)
       ? await promptProtectedValue({
-          emptyMessage: 'AI API Key 不能为空',
+          emptyMessage: 'AI API key cannot be empty',
           existingValue: draft.ai.apiKey,
-          message: '输入 AI API Key',
+          message: 'Enter the AI API key',
         })
       : undefined
 
-    const aiSpinner = ora('正在验证 AI 配置').start()
+    const aiSpinner = ora('Validating AI configuration').start()
 
     try {
       await validateAiConfiguration({
         apiKey: draft.ai.apiKey,
         model: draft.ai.defaultModel,
       })
-      aiSpinner.succeed(`AI 配置验证通过：${draft.ai.defaultModel}`)
+      aiSpinner.succeed(`AI configuration validated: ${draft.ai.defaultModel}`)
     } catch (error) {
-      aiSpinner.fail('AI 配置验证失败')
+      aiSpinner.fail('AI configuration validation failed')
       throw new Error(error instanceof Error ? error.message : String(error))
     }
 
     const configureImageModel = draft.ai.image
-      ? await confirm({default: false, message: '是否更新 AI 封面图配置？'})
-      : await confirm({default: true, message: '是否配置 AI 封面图生成（用于自动封面）？'})
+      ? await confirm({default: false, message: 'Update the AI cover image configuration?'})
+      : await confirm({default: true, message: 'Configure AI cover image generation for automatic covers?'})
 
     if (configureImageModel) {
       const imageModelChoice = await select<string>({
@@ -320,35 +320,35 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
             name: `${item.label}  ${chalk.gray(item.value)}`,
             value: item.value,
           })),
-          {name: 'Custom  手动输入图片模型标识', value: '__custom__'},
+          {name: 'Custom  enter an image model identifier manually', value: '__custom__'},
         ],
         default: resolveImageModelChoice(draft.ai.image?.defaultModel || 'Qwen/Qwen-Image'),
-        message: '选择默认图片模型',
+        message: 'Choose the default image model',
       })
 
       const imageModel = imageModelChoice === '__custom__'
         ? String(await input({
             default: draft.ai.image?.defaultModel || 'Qwen/Qwen-Image',
-            message: '输入图片模型标识',
+            message: 'Enter the image model identifier',
           })).trim()
         : imageModelChoice
 
-      inputValue.log(chalk.gray(`将为 ${imageModel} 配置图片生成调用信息。`))
+      inputValue.log(chalk.gray(`Configure the image generation settings for ${imageModel}.`))
 
       draft.ai.image = {
         apiKey: await promptProtectedValue({
-          emptyMessage: '图片模型 API Key 不能为空',
+          emptyMessage: 'Image model API key cannot be empty',
           existingValue: draft.ai.image?.apiKey,
-          message: `输入 ${imageModel} 的 API Key`,
+          message: `Enter the API key for ${imageModel}`,
         }),
         defaultModel: imageModel,
         defaultSize: String(await input({
           default: draft.ai.image?.defaultSize || '1536x1024',
-          message: '默认图片尺寸',
+          message: 'Default image size',
         })).trim(),
         endpoint: String(await input({
           default: draft.ai.image?.endpoint || 'https://api.siliconflow.cn/v1',
-          message: '图片模型接口地址',
+          message: 'Image model endpoint',
         })).trim(),
       }
     }
@@ -359,10 +359,10 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
     inputValue.log('')
     inputValue.log(renderSetupStep({
       current,
-      description: '配置用于发布公众号文章的 AppID、AppSecret 和代理地址。',
+      description: 'Configure the AppID, AppSecret, and proxy origin used to publish WeChat articles.',
       summary: [
-        `${chalk.bold('AppID')}    ${draft.wechat.appId || '未配置'}`,
-        `${chalk.bold('Secret')}   ${draft.wechat.appSecret ? '已配置' : '未配置'}`,
+        `${chalk.bold('AppID')}    ${draft.wechat.appId || 'not configured'}`,
+        `${chalk.bold('Secret')}   ${draft.wechat.appSecret ? 'configured' : 'not configured'}`,
         `${chalk.bold('Proxy')}    ${draft.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN}`,
       ],
       title: 'WeChat',
@@ -371,19 +371,19 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
 
     draft.wechat.appId = String(await input({
       default: draft.wechat.appId,
-      message: '公众号 AppID',
+      message: 'WeChat AppID',
     })).trim()
     draft.wechat.appSecret = await promptProtectedValue({
-      emptyMessage: '公众号 AppSecret 不能为空',
+      emptyMessage: 'WeChat AppSecret cannot be empty',
       existingValue: draft.wechat.appSecret,
-      message: '公众号 AppSecret',
+      message: 'WeChat AppSecret',
     })
     draft.wechat.proxyOrigin = String(await input({
       default: draft.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN,
-      message: '微信代理地址',
+      message: 'WeChat proxy origin',
     })).trim()
 
-    const wechatSpinner = ora('正在验证公众号配置').start()
+    const wechatSpinner = ora('Validating WeChat configuration').start()
 
     try {
       await getWechatAccessToken({
@@ -391,9 +391,9 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
         appSecret: draft.wechat.appSecret,
         proxyOrigin: draft.wechat.proxyOrigin,
       })
-      wechatSpinner.succeed('公众号配置验证通过')
+      wechatSpinner.succeed('WeChat configuration validated')
     } catch (error) {
-      wechatSpinner.fail('公众号配置验证失败')
+      wechatSpinner.fail('WeChat configuration validation failed')
       throw new Error(error instanceof Error ? error.message : String(error))
     }
   }
@@ -418,7 +418,7 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
         `${chalk.bold('WeChat')}     ${appConfig.wechat.appId}`,
         `${chalk.bold('Proxy')}      ${appConfig.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN}`,
         '',
-        `现在可以开始使用 ${chalk.cyan('wl article compose')} 了。`,
+        `You can now start with ${chalk.cyan('wl article compose')}.`,
       ].join('\n'),
       {
         borderColor: '#2a9d8f',

@@ -7,10 +7,10 @@ import {getAuthFilePath} from '../lib/config/paths.js'
 import {loadSavedAppConfig} from '../lib/config/store.js'
 
 export default class Doctor extends BaseCommand {
-  static description = '检查 CLI 的本地环境和关键路径'
+  static description = 'Inspect the local CLI environment and key paths'
   static enableJsonFlag = true
   static flags = {
-    verbose: Flags.boolean({char: 'v', description: '显示更多环境信息'}),
+    verbose: Flags.boolean({char: 'v', description: 'Show more environment details'}),
   }
   static requiresAuth = false
   static requiresSetup = false

@@ -13,20 +13,20 @@ import {loadSavedAppConfig} from '../../lib/config/store.js'
 import {MarkdownStreamRenderer} from '../../lib/ui/markdown-stream.js'
 
 export default class AiCreate extends BaseCommand {
-  static description = '用 AI 创作公众号文章 Markdown'
+  static description = 'Create article Markdown with AI'
   static examples = [
-    '<%= config.bin %> <%= command.id %> --prompt "写一篇关于个人知识管理的公众号文章"',
-    '<%= config.bin %> <%= command.id %> --prompt "写一篇产品复盘" --layout smart --output article.md',
+    '<%= config.bin %> <%= command.id %> --prompt "Write a WeChat article about personal knowledge management"',
+    '<%= config.bin %> <%= command.id %> --prompt "Write a product retrospective" --layout smart --output article.md',
   ]
   static flags = {
     layout: Flags.string({
-      description: '生成后是否再做一次 Markdown 排版',
+      description: 'Optionally apply a Markdown layout pass after generation',
       options: ['minimal', 'simple', 'smart'],
     }),
-    model: Flags.string({description: '使用的 AI 模型标识'}),
-    output: Flags.string({char: 'o', description: '输出 Markdown 文件路径'}),
-    prompt: Flags.string({char: 'p', description: '文章主题或创作提示词'}),
-    webSearch: Flags.boolean({description: '创作时启用联网搜索'}),
+    model: Flags.string({description: 'AI model identifier'}),
+    output: Flags.string({char: 'o', description: 'Output Markdown file path'}),
+    prompt: Flags.string({char: 'p', description: 'Topic or writing prompt'}),
+    webSearch: Flags.boolean({description: 'Enable web search during generation'}),
   }
 
   async run(): Promise<void> {
@@ -34,13 +34,13 @@ export default class AiCreate extends BaseCommand {
     const appConfig = this.appConfig || await loadSavedAppConfig(this.config.configDir)
     const model = String(flags.model || appConfig?.ai.defaultModel || 'qwen3-max').trim()
     const localApiKey = appConfig?.ai.apiKey
-    const prompt = String(flags.prompt || await promptInput({message: '请输入文章主题或创作提示词'})).trim()
-    const spinner = ora('正在调用 AI 创作文章').start()
+    const prompt = String(flags.prompt || await promptInput({message: 'Enter a topic or writing prompt'})).trim()
+    const spinner = ora('Generating article with AI').start()
     const streamRenderer = new MarkdownStreamRenderer()
 
     try {
       spinner.stop()
-      this.writeStreamHeader('AI 正在创作文章...')
+      this.writeStreamHeader('AI is generating the article...')
       let markdown = await createArticleMarkdown({
         localApiKey,
         model,
@@ -52,7 +52,7 @@ export default class AiCreate extends BaseCommand {
       streamRenderer.finish()
 
       if (flags.layout) {
-        this.writeStreamHeader(`AI 正在应用 ${flags.layout} 排版...`)
+        this.writeStreamHeader(`AI is applying the ${flags.layout} layout...`)
         markdown = await layoutArticleMarkdown({
           localApiKey,
           markdown,
@@ -64,16 +64,16 @@ export default class AiCreate extends BaseCommand {
         streamRenderer.finish()
       }
 
-      spinner.succeed('AI 创作完成')
+      spinner.succeed('AI generation complete')
 
       if (flags.output) {
         const outputPath = path.resolve(flags.output)
         await fs.mkdir(path.dirname(outputPath), {recursive: true})
         await fs.writeFile(outputPath, `${markdown.trim()}\n`, 'utf8')
-        this.log(`已写入 ${chalk.cyan(outputPath)}`)
+        this.log(`Written to ${chalk.cyan(outputPath)}`)
       }
     } catch (error) {
-      spinner.fail('AI 创作失败')
+      spinner.fail('AI generation failed')
       this.error(error instanceof Error ? error.message : String(error))
     }
   }

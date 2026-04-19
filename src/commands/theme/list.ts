@@ -4,10 +4,10 @@ import BaseCommand from '../../base-command.js'
 import {formatThemeLabel, THEMES} from '../../lib/theme/catalog.js'
 
 export default class ThemeList extends BaseCommand {
-  static description = '查看内置主题目录'
+  static description = 'List built-in themes'
   static enableJsonFlag = true
   static flags = {
-    limit: Flags.integer({description: '限制显示数量'}),
+    limit: Flags.integer({description: 'Limit the number of themes shown'}),
   }
 
   async run(): Promise<void | {themes: typeof THEMES}> {

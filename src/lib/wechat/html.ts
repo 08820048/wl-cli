@@ -198,10 +198,10 @@ export function convertHtmlDocumentToWechatInline(inputHtml: string): {html: str
   const {document} = sourceDom.window
   const title = document.querySelector('title')?.textContent?.trim()
     || document.querySelector('#output h1')?.textContent?.trim()
-    || '未命名文章'
+    || 'Untitled Article'
   const output = document.querySelector('#output')
   if (!output) {
-    throw new Error('HTML 中缺少 #output，无法生成公众号兼容内容')
+    throw new Error('The HTML document is missing #output, so WeChat-compatible content cannot be generated')
   }
 
   const styleText = [...document.querySelectorAll('style')]
@@ -227,7 +227,7 @@ export function convertHtmlDocumentToWechatInline(inputHtml: string): {html: str
   const inlineDocument = inlineDom.window.document
   const inlineOutput = inlineDocument.querySelector('#output')
   if (!inlineOutput) {
-    throw new Error('HTML 内联失败，未找到 #output')
+    throw new Error('Failed to inline the HTML because #output could not be found')
   }
 
   for (const element of inlineOutput.querySelectorAll('style, link[rel="stylesheet"]')) element.remove()

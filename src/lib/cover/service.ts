@@ -122,7 +122,7 @@ async function resolveGeneratedBytes(source: string): Promise<{bytes: Uint8Array
   })
 
   if (!response.ok) {
-    throw new Error(`下载生成图片失败 (${response.status})`)
+    throw new Error(`Failed to download the generated image (${response.status})`)
   }
 
   const bytes = new Uint8Array(await response.arrayBuffer())
@@ -201,12 +201,12 @@ export function createDefaultCoverOutputPath(inputValue: {directory?: string; ti
 export async function generateCoverImage(inputValue: CoverGenerationInput): Promise<CoverGenerationResult> {
   const apiKey = String(inputValue.apiKey || '').trim()
   if (!apiKey) {
-    throw new Error('缺少图片模型 API Key，请先运行 `wl setup` 配置图片模型，或通过参数传入。')
+    throw new Error('Missing image model API key. Run `wl setup` to configure it, or pass one explicitly.')
   }
 
   const title = String(inputValue.title || '').trim()
   if (!title) {
-    throw new Error('缺少封面标题')
+    throw new Error('Missing cover title')
   }
 
   const prompt = String(inputValue.prompt || '').trim() || buildCoverPrompt({
@@ -236,7 +236,7 @@ export async function generateCoverImage(inputValue: CoverGenerationInput): Prom
 
   const text = await response.text()
   if (!response.ok) {
-    throw new Error(text || `封面图生成失败 (${response.status})`)
+    throw new Error(text || `Cover generation failed (${response.status})`)
   }
 
   let payload: ImageGenerationResponsePayload
@@ -244,12 +244,12 @@ export async function generateCoverImage(inputValue: CoverGenerationInput): Prom
   try {
     payload = JSON.parse(text) as ImageGenerationResponsePayload
   } catch {
-    throw new Error(text || '封面图响应解析失败')
+    throw new Error(text || 'Failed to parse the cover generation response')
   }
 
   const source = resolveCoverResponseSource(payload)
   if (!source) {
-    throw new Error('图片生成成功，但响应中没有可用图片地址')
+    throw new Error('The image request succeeded, but no usable image URL was returned')
   }
 
   const resolved = await resolveGeneratedBytes(source)
