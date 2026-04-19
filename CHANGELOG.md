@@ -6,9 +6,14 @@ The format is based on Keep a Changelog, with one section per released version.
 
 ## [Unreleased]
 
+### Added
+
+- Added `wl config path/list/get/set/unset/export/import` commands for inspecting and managing CLI configuration without rerunning setup.
+- Added a dedicated command reference at `docs/指令帮助文档.md`.
+
 ### Changed
 
-- Update this section before the next release.
+- Updated the README and installation guide with clearer install, update, uninstall, and release-note documentation.
 
 ## [0.0.2] - 2026-04-19
 

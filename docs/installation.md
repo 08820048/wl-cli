@@ -15,6 +15,7 @@ npm i -g welight-cli
 安装完成后验证：
 
 ```bash
+wl --version
 wl --help
 ```
 
@@ -35,14 +36,22 @@ CLI 会自动进入初始化向导，完成：
 
 ## 升级
 
-```bash
-npm update -g welight-cli
-```
-
-也可以重新安装最新版本：
+推荐直接安装最新版本：
 
 ```bash
 npm i -g welight-cli@latest
+```
+
+升级后检查版本：
+
+```bash
+wl --version
+```
+
+也可以使用 `npm update`：
+
+```bash
+npm update -g welight-cli
 ```
 
 ## 卸载

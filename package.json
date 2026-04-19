@@ -89,6 +89,9 @@
       "copy": {
         "description": "Copy WeChat-compatible content to the clipboard"
       },
+      "config": {
+        "description": "Inspect and manage saved CLI configuration"
+      },
       "auth": {
         "description": "License login and status checks"
       },

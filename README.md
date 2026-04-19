@@ -12,11 +12,27 @@ npm i -g welight-cli
 安装后直接运行：
 
 ```bash
+wl --version
 wl
 wl --help
 ```
 
+更新到最新版本：
+
+```bash
+npm i -g welight-cli@latest
+wl --version
+```
+
+卸载：
+
+```bash
+npm uninstall -g welight-cli
+```
+
 更完整的安装、升级和卸载说明见：[docs/installation.md](./docs/installation.md)
+
+命令说明与常见示例见：[docs/指令帮助文档.md](./docs/%E6%8C%87%E4%BB%A4%E5%B8%AE%E5%8A%A9%E6%96%87%E6%A1%A3.md)
 
 ## 快速开始
 
@@ -100,6 +116,11 @@ GitHub Actions 会自动执行：
 - 发布 `welight-cli` 到 npm
 - 用 `CHANGELOG.md` 中的对应版本内容创建 GitHub Release
 
+发布日志来源：
+
+- 所有版本变更统一维护在 [CHANGELOG.md](./CHANGELOG.md)
+- release workflow 会直接读取 `CHANGELOG.md` 中当前版本的小节生成 GitHub Release 正文
+
 发布前需要在 GitHub 仓库 `Settings -> Secrets and variables -> Actions` 中配置：
 
 - `NPM_TOKEN`
@@ -115,8 +136,22 @@ npm i -g welight-cli
 安装后使用：
 
 ```bash
+wl --version
 wl
 wl --help
+```
+
+用户更新命令：
+
+```bash
+npm i -g welight-cli@latest
+wl --version
+```
+
+用户卸载命令：
+
+```bash
+npm uninstall -g welight-cli
 ```
 
 ## Open source
