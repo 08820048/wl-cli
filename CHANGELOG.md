@@ -6,6 +6,8 @@ The format is based on Keep a Changelog, with one section per released version.
 
 ## [Unreleased]
 
+## [0.0.3] - 2026-04-19
+
 ### Added
 
 - Added `wl config path/list/get/set/unset/export/import` commands for inspecting and managing CLI configuration without rerunning setup.
