@@ -110,7 +110,7 @@ function renderNode(node: RenderNodeLike, width: number): string[] {
 
       let lines: string[]
       try {
-        const highlighted = cliHighlight(rawCode, {language: lang, ignoreIllegals: true})
+        const highlighted = cliHighlight(rawCode, {ignoreIllegals: true, language: lang})
         lines = highlighted.split('\n')
       } catch {
         lines = rawCode.split('\n')
