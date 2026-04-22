@@ -13,6 +13,8 @@ export type ConfigKey =
   | 'ai.image.defaultModel'
   | 'ai.image.defaultSize'
   | 'ai.image.endpoint'
+  | 'search.apiKey'
+  | 'search.provider'
   | 'wechat.appId'
   | 'wechat.appSecret'
   | 'wechat.proxyOrigin'
@@ -24,6 +26,8 @@ export const CONFIG_KEYS: readonly ConfigKeyDefinition[] = [
   {description: 'Image model API key', isSecret: true, key: 'ai.image.apiKey'},
   {description: 'Image model endpoint', key: 'ai.image.endpoint'},
   {description: 'Default image size', key: 'ai.image.defaultSize'},
+  {description: 'Search provider', key: 'search.provider'},
+  {description: 'Search provider API key', isSecret: true, key: 'search.apiKey'},
   {description: 'WeChat AppID', key: 'wechat.appId'},
   {description: 'WeChat AppSecret', isSecret: true, key: 'wechat.appSecret'},
   {description: 'WeChat proxy origin', key: 'wechat.proxyOrigin'},
@@ -67,6 +71,14 @@ export function getConfigValue(config: AppConfigDraft, key: ConfigKey): string |
 
     case 'ai.image.endpoint': {
       return config.ai?.image?.endpoint
+    }
+
+    case 'search.apiKey': {
+      return config.search?.apiKey
+    }
+
+    case 'search.provider': {
+      return config.search?.provider
     }
 
     case 'wechat.appId': {
@@ -159,6 +171,26 @@ export function setConfigValue(config: AppConfigDraft, key: ConfigKey, value: st
       }
     }
 
+    case 'search.apiKey': {
+      return {
+        ...config,
+        search: {
+          ...config.search,
+          apiKey: trimmedValue,
+        },
+      }
+    }
+
+    case 'search.provider': {
+      return {
+        ...config,
+        search: {
+          ...config.search,
+          provider: trimmedValue === 'tavily' ? 'tavily' : undefined,
+        },
+      }
+    }
+
     case 'wechat.appId': {
       return {
         ...config,
@@ -227,6 +259,16 @@ export function unsetConfigValue(config: AppConfigDraft, key: ConfigKey): AppCon
       break
     }
 
+    case 'search.apiKey': {
+      if (next.search) delete next.search.apiKey
+      break
+    }
+
+    case 'search.provider': {
+      if (next.search) delete next.search.provider
+      break
+    }
+
     case 'wechat.appId': {
       if (next.wechat) delete next.wechat.appId
       break
@@ -245,6 +287,7 @@ export function unsetConfigValue(config: AppConfigDraft, key: ConfigKey): AppCon
 
   if (next.ai?.image && Object.keys(next.ai.image).length === 0) delete next.ai.image
   if (next.ai && Object.keys(next.ai).length === 0) delete next.ai
+  if (next.search && Object.keys(next.search).length === 0) delete next.search
   if (next.wechat && Object.keys(next.wechat).length === 0) delete next.wechat
 
   return next

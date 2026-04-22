@@ -27,12 +27,14 @@ describe('config store', () => {
 
     await saveDraftAppConfig(configDir, {
       ai: {apiKey: 'sk-test', defaultModel: 'gpt-4.1'},
+      search: {apiKey: 'tvly-test', provider: 'tavily'},
       wechat: {appId: 'wx123', appSecret: 'secret-123'},
     })
 
     const saved = await loadSavedAppConfig(configDir)
 
     expect(saved?.ai.defaultModel).to.equal('gpt-4.1')
+    expect(saved?.search?.provider).to.equal('tavily')
     expect(saved?.wechat.appSecret).to.equal('secret-123')
     expect(saved?.setupCompletedAt).to.be.a('string')
   })

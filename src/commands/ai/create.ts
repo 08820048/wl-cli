@@ -26,7 +26,11 @@ export default class AiCreate extends BaseCommand {
     model: Flags.string({description: 'AI model identifier'}),
     output: Flags.string({char: 'o', description: 'Output Markdown file path'}),
     prompt: Flags.string({char: 'p', description: 'Topic or writing prompt'}),
-    webSearch: Flags.boolean({description: 'Enable web search during generation'}),
+    webSearch: Flags.boolean({
+      allowNo: true,
+      default: true,
+      description: 'Use real-time web search before article generation',
+    }),
   }
 
   async run(): Promise<void> {
@@ -34,6 +38,7 @@ export default class AiCreate extends BaseCommand {
     const appConfig = this.appConfig || await loadSavedAppConfig(this.config.configDir)
     const model = String(flags.model || appConfig?.ai.defaultModel || 'qwen3-max').trim()
     const localApiKey = appConfig?.ai.apiKey
+    const searchConfig = appConfig?.search
     const prompt = String(flags.prompt || await promptInput({message: 'Enter a topic or writing prompt'})).trim()
     const spinner = ora('Generating article with AI').start()
     const streamRenderer = new MarkdownStreamRenderer()
@@ -46,6 +51,7 @@ export default class AiCreate extends BaseCommand {
         model,
         onToken: token => streamRenderer.append(token),
         prompt,
+        searchConfig,
         stream: true,
         webSearch: flags.webSearch,
       })

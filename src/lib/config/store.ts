@@ -16,6 +16,8 @@ function normalizeDraftAppConfig(raw: unknown): AppConfigDraft {
   const imageApiKey = String(value.ai?.image?.apiKey || '').trim()
   const imageEndpoint = String(value.ai?.image?.endpoint || '').trim()
   const imageSize = String(value.ai?.image?.defaultSize || '').trim()
+  const searchProvider = String(value.search?.provider || '').trim()
+  const searchApiKey = String(value.search?.apiKey || '').trim()
   const appId = String(value.wechat?.appId || '').trim()
   const appSecret = String(value.wechat?.appSecret || '').trim()
   const proxyOrigin = String(value.wechat?.proxyOrigin || '').trim()
@@ -35,6 +37,12 @@ function normalizeDraftAppConfig(raw: unknown): AppConfigDraft {
                 endpoint: imageEndpoint || undefined,
               }
             : undefined,
+        }
+      : undefined,
+    search: searchProvider || searchApiKey
+      ? {
+          apiKey: searchApiKey || undefined,
+          provider: searchProvider === 'tavily' ? 'tavily' : undefined,
         }
       : undefined,
     setupCompletedAt: setupCompletedAt || undefined,
@@ -57,6 +65,8 @@ function normalizeSavedAppConfig(raw: unknown): null | SavedAppConfig {
   const imageApiKey = String(value.ai?.image?.apiKey || '').trim()
   const imageEndpoint = String(value.ai?.image?.endpoint || '').trim()
   const imageSize = String(value.ai?.image?.defaultSize || '').trim()
+  const searchProvider = String(value.search?.provider || '').trim()
+  const searchApiKey = String(value.search?.apiKey || '').trim()
   const appId = String(value.wechat?.appId || '').trim()
   const appSecret = String(value.wechat?.appSecret || '').trim()
   const proxyOrigin = String(value.wechat?.proxyOrigin || '').trim()
@@ -79,6 +89,12 @@ function normalizeSavedAppConfig(raw: unknown): null | SavedAppConfig {
           }
         : undefined,
     },
+    search: searchProvider || searchApiKey
+      ? {
+          apiKey: searchApiKey || undefined,
+          provider: searchProvider === 'tavily' ? 'tavily' : undefined,
+        }
+      : undefined,
     setupCompletedAt: setupCompletedAt || updatedAt || new Date().toISOString(),
     updatedAt: updatedAt || setupCompletedAt || new Date().toISOString(),
     wechat: {
@@ -135,6 +151,7 @@ export async function saveDraftAppConfig(configDir: string, config: AppConfigDra
   const candidateSetupTimestamp = normalized.setupCompletedAt || now
   const payload: AppConfigDraft = {
     ai: normalized.ai,
+    search: normalized.search,
     setupCompletedAt: normalized.setupCompletedAt,
     updatedAt: now,
     wechat: normalized.wechat,

@@ -1,4 +1,5 @@
 import type {LayoutMode} from '../article/types.js'
+import type {SearchConfigInput} from './api-client.js'
 
 import {runAiChat} from './api-client.js'
 import {buildArticleCreationMessages, buildArticleLayoutMessages} from './prompts.js'
@@ -10,6 +11,7 @@ export async function createArticleMarkdown(input: {
   model?: string
   onToken?: (token: string) => void
   prompt: string
+  searchConfig?: SearchConfigInput
   stream?: boolean
   webSearch?: boolean
 }): Promise<string> {
@@ -18,8 +20,9 @@ export async function createArticleMarkdown(input: {
     messages: buildArticleCreationMessages(input.prompt),
     model: input.model || DEFAULT_AI_MODEL,
     onToken: input.onToken,
+    searchConfig: input.searchConfig,
     stream: input.stream,
-    webSearch: input.webSearch,
+    webSearch: input.webSearch !== false,
   })
 }
 

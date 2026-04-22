@@ -53,7 +53,11 @@ export default class ArticleCompose extends BaseCommand {
     theme: Flags.string({char: 't', description: 'Theme ID, for example w022'}),
     title: Flags.string({description: 'Manually specify the article title'}),
     url: Flags.string({description: 'Article source URL'}),
-    webSearch: Flags.boolean({description: 'Enable web search during AI generation'}),
+    webSearch: Flags.boolean({
+      allowNo: true,
+      default: true,
+      description: 'Use real-time web search before AI article writing',
+    }),
     yes: Flags.boolean({char: 'y', description: 'Use defaults for any missing interactive step'}),
   }
 
@@ -62,6 +66,7 @@ export default class ArticleCompose extends BaseCommand {
     const {flags} = await this.parse(ArticleCompose)
     const appConfig = this.appConfig || await loadSavedAppConfig(this.config.configDir)
     const localApiKey = appConfig?.ai.apiKey
+    const searchConfig = appConfig?.search
     const model = String(flags.model || appConfig?.ai.defaultModel || 'qwen3-max').trim()
     const proxyOrigin = String(flags.proxyOrigin || appConfig?.wechat.proxyOrigin || DEFAULT_PROXY_ORIGIN).trim()
     const sourceMode = await this.resolveSourceMode(flags)
@@ -95,6 +100,7 @@ export default class ArticleCompose extends BaseCommand {
             model,
             onToken: token => streamRenderer.append(token),
             prompt: source.ideaPrompt || source.title,
+            searchConfig,
             stream: true,
             webSearch: flags.webSearch,
           })

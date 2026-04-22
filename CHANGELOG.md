@@ -6,6 +6,16 @@ The format is based on Keep a Changelog, with one section per released version.
 
 ## [Unreleased]
 
+## [0.0.5] - 2026-04-22
+
+### Added
+
+- Added Tavily web search configuration in `wl setup --section ai`, plus `search.provider` and `search.apiKey` config keys.
+
+### Changed
+
+- `wl ai create` and AI writing inside `wl article compose` now use Tavily real-time search by default before generating article content, unless `--no-webSearch` is explicitly provided.
+
 ## [0.0.4] - 2026-04-22
 
 ### Added

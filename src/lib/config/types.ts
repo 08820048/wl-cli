@@ -9,6 +9,10 @@ export interface AppConfigInput {
       endpoint?: string
     }
   }
+  search?: {
+    apiKey?: string
+    provider?: 'tavily'
+  }
   wechat: {
     appId: string
     appSecret: string
@@ -26,6 +30,10 @@ export interface AppConfigDraft {
       defaultSize?: string
       endpoint?: string
     }
+  }
+  search?: {
+    apiKey?: string
+    provider?: 'tavily'
   }
   setupCompletedAt?: string
   updatedAt?: string

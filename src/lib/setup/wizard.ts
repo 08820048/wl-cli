@@ -6,10 +6,11 @@ import ora from 'ora'
 import type {SavedCredentials} from '../auth/types.js'
 import type {SavedAppConfig} from '../config/types.js'
 
-import {modelRequiresApiKey, runAiChat, validateAiModelIdentifier} from '../ai/api-client.js'
+import {modelRequiresApiKey, runAiChat, supportsNativeWebSearch, validateAiModelIdentifier} from '../ai/api-client.js'
 import {loadSavedCredentials, saveCredentials} from '../auth/auth-store.js'
 import {formatLicenseClientError, validateLicenseStatus} from '../auth/license-client.js'
 import {loadSavedAppConfig, saveAppConfig} from '../config/store.js'
+import {validateTavilyApiKey} from '../search/tavily.js'
 import {centerBlock, getAdaptiveBoxWidth, renderLogo} from '../ui/banner.js'
 import {DEFAULT_PROXY_ORIGIN, getWechatAccessToken} from '../wechat/api.js'
 
@@ -59,6 +60,10 @@ interface SetupDraft {
   credentials: {
     customerEmail: string
     licenseKey: string
+  }
+  search: {
+    apiKey?: string
+    provider?: 'tavily'
   }
   wechat: {
     appId: string
@@ -126,8 +131,8 @@ function renderSetupStep(inputValue: {
   ))
 }
 
-async function validateAiConfiguration(inputValue: {apiKey?: string; model: string}): Promise<void> {
-  await validateAiModelIdentifier(inputValue.model)
+async function validateAiConfiguration(inputValue: {apiKey?: string; model: string}): Promise<{identifier: string; provider: string}> {
+  const resolvedModel = await validateAiModelIdentifier(inputValue.model)
   await runAiChat({
     localApiKey: inputValue.apiKey,
     messages: [
@@ -142,6 +147,8 @@ async function validateAiConfiguration(inputValue: {apiKey?: string; model: stri
     ],
     model: inputValue.model,
   })
+
+  return resolvedModel
 }
 
 function createInitialDraft(
@@ -158,6 +165,7 @@ function createInitialDraft(
       customerEmail: existingCredentials?.customerEmail || '',
       licenseKey: existingCredentials?.licenseKey || '',
     },
+    search: existingConfig?.search || {},
     wechat: {
       appId: existingConfig?.wechat.appId || '',
       appSecret: existingConfig?.wechat.appSecret || '',
@@ -263,6 +271,7 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
         `${chalk.bold('Current model')}  ${draft.ai.defaultModel || 'not configured'}`,
         `${chalk.bold('AI Key')}         ${draft.ai.apiKey ? 'configured' : 'not configured'}`,
         `${chalk.bold('Cover model')}    ${draft.ai.image?.defaultModel || 'not configured'}`,
+        `${chalk.bold('Web Search')}     ${draft.search.provider === 'tavily' ? `Tavily (${draft.search.apiKey ? 'configured' : 'missing key'})` : 'not configured'}`,
       ],
       title: 'AI',
       total: sequence.length,
@@ -297,8 +306,10 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
 
     const aiSpinner = ora('Validating AI configuration').start()
 
+    let resolvedModel
+
     try {
-      await validateAiConfiguration({
+      resolvedModel = await validateAiConfiguration({
         apiKey: draft.ai.apiKey,
         model: draft.ai.defaultModel,
       })
@@ -306,6 +317,35 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
     } catch (error) {
       aiSpinner.fail('AI configuration validation failed')
       throw new Error(error instanceof Error ? error.message : String(error))
+    }
+
+    const nativeWebSearchSupported = supportsNativeWebSearch(resolvedModel)
+    const configureSearchFallback = draft.search.provider === 'tavily'
+      ? await confirm({default: true, message: 'Update the Tavily real-time web search configuration?'})
+      : await confirm({
+        default: true,
+        message: nativeWebSearchSupported
+            ? 'Configure Tavily real-time web search? Welight uses it before AI article generation by default.'
+            : 'This model does not support native web search. Configure Tavily real-time search now?',
+        })
+
+    if (configureSearchFallback) {
+      draft.search.provider = 'tavily'
+      draft.search.apiKey = await promptProtectedValue({
+        emptyMessage: 'Tavily API key cannot be empty',
+        existingValue: draft.search.apiKey,
+        message: 'Enter the Tavily API key for real-time web search',
+      })
+
+      const searchSpinner = ora('Validating Tavily configuration').start()
+
+      try {
+        await validateTavilyApiKey(draft.search.apiKey)
+        searchSpinner.succeed('Tavily configuration validated')
+      } catch (error) {
+        searchSpinner.fail('Tavily configuration validation failed')
+        throw new Error(error instanceof Error ? error.message : String(error))
+      }
     }
 
     const configureImageModel = draft.ai.image
@@ -402,6 +442,7 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
 
   const appConfig = await saveAppConfig(inputValue.configDir, {
     ai: draft.ai,
+    search: draft.search,
     wechat: draft.wechat,
   })
 
@@ -413,6 +454,7 @@ export async function runSetupWizard(inputValue: SetupWizardInput): Promise<Setu
         '',
         `${chalk.bold('AI Model')}   ${appConfig.ai.defaultModel}`,
         `${chalk.bold('AI Key')}     ${appConfig.ai.apiKey ? 'configured' : 'not required'}`,
+        `${chalk.bold('Search')}     ${appConfig.search?.provider === 'tavily' ? 'Tavily configured' : 'not configured'}`,
         `${chalk.bold('AI Image')}   ${appConfig.ai.image?.defaultModel || 'not configured'}`,
         `${chalk.bold('License')}    ${maskSecret(credentials.licenseKey)}`,
         `${chalk.bold('WeChat')}     ${appConfig.wechat.appId}`,

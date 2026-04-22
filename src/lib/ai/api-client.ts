@@ -2,12 +2,19 @@ import type {Response} from 'undici'
 
 import {fetch} from 'undici'
 
+import {buildTavilySearchContext, searchWithTavily} from '../search/tavily.js'
+
 const AI_API_BASE_URL = 'https://ilikexff.cn/api'
 const CLIENT_INFO = 'Welight CLI'
 
 export interface ChatMessage {
   content: string
   role: 'assistant' | 'system' | 'user'
+}
+
+export interface SearchConfigInput {
+  apiKey?: string
+  provider?: 'tavily'
 }
 
 interface ApiResponse<T> {
@@ -221,6 +228,70 @@ function buildApiUrl(config: ResolvedModelConfig): string {
   return baseUrl.endsWith('/chat/completions')
     ? baseUrl
     : `${baseUrl}/chat/completions`
+}
+
+export function supportsNativeWebSearch(input: {identifier: string; provider: string}): boolean {
+  const provider = String(input.provider || '').trim().toUpperCase()
+  const identifier = String(input.identifier || '').trim().toLowerCase()
+
+  if (!provider || identifier.startsWith('deepseek')) {
+    return false
+  }
+
+  return provider === 'KIMI' || provider === 'QWEN' || provider === 'ZHIPU'
+}
+
+function buildWebSearchQuery(messages: ChatMessage[]): string {
+  const lastUserMessage = [...messages].reverse().find(message => message.role === 'user')
+  if (lastUserMessage?.content.trim()) {
+    return lastUserMessage.content.trim()
+  }
+
+  return messages
+    .map(message => message.content.trim())
+    .filter(Boolean)
+    .slice(-3)
+    .join('\n\n')
+}
+
+async function buildMessagesWithExternalWebSearch(input: {
+  messages: ChatMessage[]
+  searchConfig?: SearchConfigInput
+  webSearch: boolean
+}): Promise<ChatMessage[]> {
+  if (!input.webSearch) {
+    return input.messages
+  }
+
+  const searchProvider = input.searchConfig?.provider || 'tavily'
+  const searchApiKey = String(input.searchConfig?.apiKey || '').trim()
+
+  if (searchProvider !== 'tavily' || !searchApiKey) {
+    throw new Error(
+      [
+        'Real-time web search is required for this request, but Tavily is not configured yet.',
+        'Run `wl setup --section ai` or `wl config set search.apiKey <key>` and `wl config set search.provider tavily` first.',
+      ].join(' '),
+    )
+  }
+
+  const query = buildWebSearchQuery(input.messages)
+  const searchResponse = await searchWithTavily({
+    apiKey: searchApiKey,
+    query,
+  })
+  const contextMessage: ChatMessage = {
+    content: buildTavilySearchContext({response: searchResponse}),
+    role: 'system',
+  }
+  const systemMessages = input.messages.filter(message => message.role === 'system')
+  const nonSystemMessages = input.messages.filter(message => message.role !== 'system')
+
+  return [
+    ...systemMessages,
+    contextMessage,
+    ...nonSystemMessages,
+  ]
 }
 
 function buildRequestBody(config: ResolvedModelConfig, messages: ChatMessage[], webSearch: boolean, stream: boolean) {
@@ -475,11 +546,17 @@ export async function runAiChat(input: {
   messages: ChatMessage[]
   model: string
   onToken?: (token: string) => void
+  searchConfig?: SearchConfigInput
   stream?: boolean
   webSearch?: boolean
 }): Promise<string> {
   const config = await resolveModelConfig(input.model, input.localApiKey)
   const useStream = Boolean(input.stream && input.onToken)
+  const messages = await buildMessagesWithExternalWebSearch({
+    messages: input.messages,
+    searchConfig: input.searchConfig,
+    webSearch: Boolean(input.webSearch),
+  })
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
   }
@@ -489,7 +566,7 @@ export async function runAiChat(input: {
   }
 
   const response = await fetch(buildApiUrl(config), {
-    body: JSON.stringify(buildRequestBody(config, input.messages, Boolean(input.webSearch), useStream)),
+    body: JSON.stringify(buildRequestBody(config, messages, false, useStream)),
     headers,
     method: 'POST',
     signal: AbortSignal.timeout(180_000),
