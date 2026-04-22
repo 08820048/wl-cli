@@ -1,3 +1,4 @@
+import {highlight as cliHighlight} from 'cli-highlight'
 import {JSDOM} from 'jsdom'
 import {Marked} from 'marked'
 
@@ -102,11 +103,20 @@ function renderNode(node: RenderNodeLike, width: number): string[] {
     }
 
     case 'pre': {
-      const code = node.textContent || ''
-      return code
-        .replace(/\n+$/u, '')
-        .split('\n')
-        .map(line => `    ${line}`)
+      const codeChild = [...node.children].find(child => child.tagName.toLowerCase() === 'code')
+      const langClass = codeChild?.getAttribute('class') || ''
+      const lang = /\blanguage-(\w+)\b/u.exec(langClass)?.[1]
+      const rawCode = (codeChild?.textContent || node.textContent || '').replace(/\n+$/u, '')
+
+      let lines: string[]
+      try {
+        const highlighted = cliHighlight(rawCode, {language: lang, ignoreIllegals: true})
+        lines = highlighted.split('\n')
+      } catch {
+        lines = rawCode.split('\n')
+      }
+
+      return lines.map(line => `    ${line}`)
     }
 
     case 'ul': {

@@ -6,6 +6,12 @@ The format is based on Keep a Changelog, with one section per released version.
 
 ## [Unreleased]
 
+## [0.0.6] - 2026-04-22
+
+### Added
+
+- Terminal markdown preview now renders code blocks with ANSI syntax highlighting via `cli-highlight`. Language is auto-detected from the fenced code block tag (e.g. ` ```javascript `); unlabelled blocks fall back to plain text.
+
 ## [0.0.5] - 2026-04-22
 
 ### Added
