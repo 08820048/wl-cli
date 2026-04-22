@@ -1,7 +1,7 @@
 {
   "name": "welight-cli",
   "description": "Welight CLI for WeChat article production",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "xuyi",
   "bin": {
     "wl": "bin/run.js"

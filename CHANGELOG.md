@@ -6,6 +6,13 @@ The format is based on Keep a Changelog, with one section per released version.
 
 ## [Unreleased]
 
+## [0.0.4] - 2026-04-22
+
+### Added
+
+- Added `wl ai title` for AI-powered title recommendations with parsed scores, reasons, and optional cover lookup.
+- Added `wl cover recommend` for Pixabay-based cover recommendations derived from article content or direct search queries.
+
 ## [0.0.3] - 2026-04-19
 
 ### Added
